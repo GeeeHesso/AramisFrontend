@@ -16,11 +16,12 @@ export class MapBottomComponent implements OnInit {
 
   ngOnInit(): void {
     this.map = L.map('mapBottom').setView([51.505, -0.09], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+      maxZoom: 16
     }).addTo(this.map);
 
-    this.map.on('moveend', () => {
+    this.map.on('move', () => {
       this.mapService.setView(this.map.getCenter(), this.map.getZoom(), 'bottom');
     });
 

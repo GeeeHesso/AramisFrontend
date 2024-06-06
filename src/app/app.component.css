@@ -1,7 +1,6 @@
 .separator {
-  position: absolute;
-  bottom: 0;
   width: 100%;
-  height: 10px; /* Thickness of the separator line */
+  height: 4px; /* Thickness of the separator line */
   background-color: #000; /* Color of the separator line */
+  z-index: 1000; /* Ensure it is above the maps */
 }
