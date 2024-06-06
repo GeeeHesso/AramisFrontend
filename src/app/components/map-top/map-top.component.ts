@@ -15,7 +15,12 @@ export class MapTopComponent implements OnInit {
   constructor(private mapService: MapService) {}
 
   ngOnInit(): void {
-    this.map = L.map('mapTop').setView([51.505, -0.09], 13);
+    this.map = L.map('mapTop', {
+      center: [46.8182, 8.2275], // Centered on Switzerland
+      zoom: 8,
+      zoomControl: false, // Disable the default zoom control
+      attributionControl: false // Disable the attribution control
+    });
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
       maxZoom: 16
