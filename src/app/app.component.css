@@ -4,3 +4,14 @@
   background-color: #000; /* Color of the separator line */
   z-index: 1000; /* Ensure it is above the maps */
 }
+.overlay {
+  position: absolute;
+  top: 10px; /* Adjust this value to position the overlay inside the map */
+  left: 10px; /* Adjust this value to position the overlay inside the map */
+  padding: 5px 10px;
+  background-color: rgba(128, 128, 128, 0.8); /* Gray background with some transparency */
+  color: white; /* Text color */
+  font-size: 30px; /* Font size */
+  border-radius: 4px; /* Rounded corners */
+  z-index: 1001; /* Ensure it is above the map content */
+}
