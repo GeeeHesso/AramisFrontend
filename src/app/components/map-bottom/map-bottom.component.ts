@@ -44,7 +44,7 @@ export class MapBottomComponent implements AfterViewInit {
         }).addTo(this.map);
 
         // Set the initial view to Switzerland after adding the mask
-        this.map.setView([46.8182, 8.2275], 8);
+        this.map.setView([46.8182, 8.2275], 10);
       })
       .catch(error => {
         console.error('Error loading GeoJSON data:', error);
