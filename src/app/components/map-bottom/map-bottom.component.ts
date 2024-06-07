@@ -22,7 +22,8 @@ export class MapBottomComponent implements AfterViewInit {
 
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-      maxZoom: 16
+      maxZoom: 16,
+      minZoom: 8
     }).addTo(this.map);
 
     fetch('assets/world_mask_without_switzerland.geojson')
@@ -63,7 +64,7 @@ export class MapBottomComponent implements AfterViewInit {
   private initMap(): void {
     this.map = L.map('mapBottom', {
       center: [46.8182, 8.2275], // Centered on Switzerland
-      zoom: 8,
+      zoom: 10,
       zoomControl: false, // Disable the default zoom control
       attributionControl: false // Disable the attribution control
     });
