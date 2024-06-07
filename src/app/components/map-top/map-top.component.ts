@@ -25,6 +25,31 @@ export class MapTopComponent implements AfterViewInit {
       maxZoom: 16
     }).addTo(this.map);
 
+    console.log('Fetching GeoJSON data');
+    fetch('assets/world_mask_without_switzerland.geojson')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('GeoJSON data loaded', data);
+        const mask = L.geoJSON(data, {
+          style: {
+            color: '#ffffff', // Color of the mask
+            fillOpacity: 1, // Opacity of the mask
+            weight: 0
+          }
+        }).addTo(this.map);
+
+        // Set the initial view to Switzerland after adding the mask
+        this.map.setView([46.8182, 8.2275], 8);
+      })
+      .catch(error => {
+        console.error('Error loading GeoJSON data:', error);
+      });
+
     this.map.on('move', () => {
       this.mapService.setView(this.map.getCenter(), this.map.getZoom(), 'top');
     });
