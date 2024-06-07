@@ -1,26 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
-import {MapService} from "../../services/map.service";
+import { MapService } from '../../services/map.service';
 import 'leaflet/dist/leaflet.css';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-map-top',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './map-top.component.html',
-  styleUrl: './map-top.component.css'
+  styleUrls: ['./map-top.component.css']
 })
-export class MapTopComponent implements OnInit {
-  map!: L.Map;  // Use definite assignment assertion
+export class MapTopComponent implements AfterViewInit {
+  map!: L.Map; // Use definite assignment assertion
 
   constructor(private mapService: MapService) {}
 
-  ngOnInit(): void {
-    this.map = L.map('mapTop', {
-      center: [46.8182, 8.2275], // Centered on Switzerland
-      zoom: 8,
-      zoomControl: false, // Disable the default zoom control
-      attributionControl: false // Disable the attribution control
-    });
+  ngAfterViewInit(): void {
+    // DOM manipulation and third-party library initialization
+    this.initMap();
+
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
       maxZoom: 16
@@ -34,6 +33,15 @@ export class MapTopComponent implements OnInit {
       if (view.origin !== 'top') {
         this.map.setView(view.center, view.zoom, { animate: false });
       }
+    });
+  }
+
+  private initMap(): void {
+    this.map = L.map('mapTop', {
+      center: [46.8182, 8.2275], // Centered on Switzerland
+      zoom: 8,
+      zoomControl: false, // Disable the default zoom control
+      attributionControl: false // Disable the attribution control
     });
   }
 }
