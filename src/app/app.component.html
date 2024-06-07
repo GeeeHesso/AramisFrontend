@@ -1,6 +1,6 @@
 <mat-drawer-container autosize>
   <mat-drawer #drawer class="example-sidenav" mode="side">
-    <p><b>Anomalies détectées</b></p>
+    <p><b>Anomalies detected</b></p>
     <p>02.01.2024 23:59</p>
     <p style="color: red; font-weight: bold;">03.01.2024 06:22</p>
     <p>05.02.2024 05:04</p>
@@ -11,7 +11,7 @@
   <div class="container">
     <div class="flex-item">
       <app-map-top></app-map-top>
-      <div class="overlay" id="reality-overlay">Simulation</div>
+      <div class="overlay" id="reality-overlay">Displayed data</div>
     </div>
     <div class="separator"></div>
     <button type="button" mat-button (click)="drawer.toggle()">
@@ -19,7 +19,7 @@
     </button>
     <div class="flex-item">
       <app-map-bottom></app-map-bottom>
-      <div class="overlay" id="simulation-overlay">Reality</div>
+      <div class="overlay" id="simulation-overlay">Real data</div>
     </div>
   </div>
 </mat-drawer-container>
