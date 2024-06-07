@@ -50,6 +50,7 @@ export class MapBottomComponent implements AfterViewInit {
         console.error('Error loading GeoJSON data:', error);
       });
 
+
     this.map.on('move', () => {
       this.mapService.setView(this.map.getCenter(), this.map.getZoom(), 'bottom');
     });

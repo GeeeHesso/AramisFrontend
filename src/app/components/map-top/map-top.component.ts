@@ -45,7 +45,7 @@ export class MapTopComponent implements AfterViewInit {
         }).addTo(this.map);
 
         // Set the initial view to Switzerland after adding the mask
-        this.map.setView([46.8182, 8.2275], 8);
+        this.map.setView([46.8182, 8.2275], 10);
       })
       .catch(error => {
         console.error('Error loading GeoJSON data:', error);
@@ -65,7 +65,7 @@ export class MapTopComponent implements AfterViewInit {
   private initMap(): void {
     this.map = L.map('mapTop', {
       center: [46.8182, 8.2275], // Centered on Switzerland
-      zoom: 8,
+      zoom: 10,
       zoomControl: false, // Disable the default zoom control
       attributionControl: false // Disable the attribution control
     });
