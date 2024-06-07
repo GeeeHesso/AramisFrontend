@@ -26,7 +26,7 @@ export class MapBottomComponent implements AfterViewInit {
       minZoom: 8
     }).addTo(this.map);
 
-    fetch('assets/world_mask_without_switzerland.geojson')
+    fetch('assets/world_mask_without_switzerland_v2.geojson')
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok ' + response.statusText);
