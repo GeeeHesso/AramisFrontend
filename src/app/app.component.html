@@ -1,13 +1,25 @@
-<mat-drawer-container class="example-container" autosize>
-  <mat-drawer-container class="example-container" autosize>
-<div class="container">
-  <div class="flex-item">
-    <app-map-top></app-map-top>
-    <div class="overlay" id="reality-overlay">Simulation</div>
+<mat-drawer-container autosize>
+  <mat-drawer #drawer class="example-sidenav" mode="side">
+    <p><b>Anomalies détectées</b></p>
+    <p>02.01.2024 23:59</p>
+    <p style="color: red; font-weight: bold;">03.01.2024 06:22</p>
+    <p>05.02.2024 05:04</p>
+    <p>07.03.2024 13:56</p>
+    <p>23.01.2024 11:26</p>
+    <p>27.06.2024 03:54</p>
+  </mat-drawer>
+  <div class="container">
+    <div class="flex-item">
+      <app-map-top></app-map-top>
+      <div class="overlay" id="reality-overlay">Simulation</div>
+    </div>
+    <div class="separator"></div>
+    <button type="button" mat-button (click)="drawer.toggle()">
+      Toggle sidenav
+    </button>
+    <div class="flex-item">
+      <app-map-bottom></app-map-bottom>
+      <div class="overlay" id="simulation-overlay">Reality</div>
+    </div>
   </div>
-  <div class="separator"></div>
-  <div class="flex-item">
-    <app-map-bottom></app-map-bottom>
-    <div class="overlay" id="simulation-overlay">Reality</div>
-  </div>
-</div>
+</mat-drawer-container>

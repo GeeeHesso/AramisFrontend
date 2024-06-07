@@ -21,7 +21,10 @@
   flex-direction: column;
   height: 100vh;
 }
-
+.example-sidenav {
+  padding: 20px;
+  width: 20%;
+}
 .flex-item {
   flex: 1;
   position: relative;
