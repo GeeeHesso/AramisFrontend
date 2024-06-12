@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './map-top.component.html',
-  styleUrls: ['./map-top.component.css']
+  styleUrls: ['./map-top.component.scss']
 })
 export class MapTopComponent implements AfterViewInit {
   map!: L.Map; // Use definite assignment assertion
@@ -30,7 +30,7 @@ export class MapTopComponent implements AfterViewInit {
     fetch('assets/world_mask_without_switzerland_v2.geojson')
       .then(response => {
         if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
+          throw new Error('Netw ork response was not ok ' + response.statusText);
         }
         return response.json();
       })

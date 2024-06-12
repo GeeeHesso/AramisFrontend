@@ -9,7 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
   imports: [
     MatSidenavModule,RouterOutlet, MapTopComponent, MapBottomComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = 'swissgrid';

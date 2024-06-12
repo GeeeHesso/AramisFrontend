@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './map-bottom.component.html',
-  styleUrls: ['./map-bottom.component.css']
+  styleUrls: ['./map-bottom.component.scss']
 })
 export class MapBottomComponent implements AfterViewInit {
   map!: L.Map; // Use definite assignment assertion
