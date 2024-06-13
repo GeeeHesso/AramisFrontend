@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "swissgrid": {
+    "aramis": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/swissgrid",
+            "outputPath": "dist/aramis",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -32,7 +32,9 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "@angular/material/prebuilt-themes/rose-red.css",
+              "src/scss/styles.scss",
+              "src/scss/variables.scss"
             ],
             "scripts": []
           },
@@ -64,10 +66,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "swissgrid:build:production"
+              "buildTarget": "aramis:build:production"
             },
             "development": {
-              "buildTarget": "swissgrid:build:development"
+              "buildTarget": "aramis:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +89,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "@angular/material/prebuilt-themes/rose-red.css",
+              "src/scss/styles.scss",
+              "src/scss/variables.scss"
             ],
             "scripts": []
           }
