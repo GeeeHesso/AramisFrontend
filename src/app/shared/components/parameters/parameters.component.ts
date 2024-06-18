@@ -33,7 +33,38 @@ export class ParametersComponent {
   selectedData = { season: '', dayType: '', timeSlot: '' };
 
   //It's possible to do a chips autocomplete form: https://material.angular.io/components/chips/overview#autocomplete
-  targets = ['Grimsel', 'Chamoson', 'Mapragg', 'Laufenburg', 'Tierfehd'];
+  targets = [
+    'Bärenburg',
+    'Bâtiaz',
+    'Bavona',
+    'Biasca',
+    'Bitsch',
+    'Castasegna',
+    'Cavergno',
+    'Chamoson',
+    'Ferrera',
+    'Fionnay FMM',
+    'Fionnay GD',
+    'Göschenen',
+    'Grimsel',
+    'Handeck',
+    'Innertkirchen',
+    'Limmern',
+    'Löbbia',
+    'Mapragg',
+    'Olivone',
+    'Pradella',
+    'Riddes',
+    'Robiei',
+    'Rothenbrunnen',
+    'Sedrun',
+    'Sils',
+    'Stalden',
+    'Tavanasa',
+    'Tierfehd',
+    'Verbano',
+    'Veytaux',
+  ];
   selectedTargets = [];
 
   algorithmList = ['MLPR', 'Random forest'];
