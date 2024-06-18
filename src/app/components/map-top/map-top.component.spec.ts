@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MapTopComponent } from './map-top.component';
 
 describe('MapTopComponent', () => {
@@ -8,9 +7,8 @@ describe('MapTopComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MapTopComponent]
-    })
-    .compileComponents();
+      imports: [MapTopComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MapTopComponent);
     component = fixture.componentInstance;

@@ -1,51 +1,39 @@
-.separator {
-  width: 100%;
-  height: 4px; /* Thickness of the separator line */
-  background-color: rgba(128, 128, 128, 0.8); /* Color of the separator line */
-  z-index: 1000; /* Ensure it is above the maps */
-}
-.overlay {
-  position: absolute;
-  top: 10px; /* Adjust this value to position the overlay inside the map */
-  left: 10px; /* Adjust this value to position the overlay inside the map */
-  padding: 5px 10px;
-  background-color: rgba(128, 128, 128, 0.8); /* Gray background with some transparency */
-  color: white; /* Text color */
-  font-size: 20px; /* Font size */
-  border-radius: 4px; /* Rounded corners */
-  z-index: 1001; /* Ensure it is above the map content */
-}
-/* app.component.scss */
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-/* Hide both horizontal and vertical scrollbars for the body */
+:host {
+  mat-toolbar {
+    height: 4vh;
+    border-bottom: 1px solid black;
+    .example-spacer {
+      flex: 1 1 auto;
+    }
+  }
 
-.header {
-  width: 100%;
-  height: 4vh; /* Adjust the height as needed */
-  background-color: #565656;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add drop shadow */
-  padding: 0; /* Ensure no extra padding */
-}
+  mat-sidenav-container {
+    height: 96vh;
+  }
 
-.header h3 {
-  margin: 0;
-  font-size: 1.3em; /* Adjust the font size as needed */
-  padding: 0; /* Ensure no extra padding on the title itself */
-}
-.example-sidenav {
-  padding: 20px;
-  width: 20%;
-}
-.flex-item {
-  flex: 1;
-  position: relative;
-}
+  mat-sidenav {
+    padding: var(--space);
+    border-radius: 0;
+    border-right: 1px solid black;
+  }
 
+  .flex-item {
+    flex: 1;
+    position: relative;
+  }
+  .overlay {
+    position: absolute;
+    top: 10px; /* Adjust this value to position the overlay inside the map */
+    left: 10px; /* Adjust this value to position the overlay inside the map */
+    padding: var(--space-smallest) var(--space);
+    color: white; /* Text color */
+    background-color: rgba(
+      128,
+      128,
+      128,
+      0.8
+    ); /* Gray background with some transparency */
+    font-size: 20px; /* Font size */
+    z-index: 1000; /* Ensure it is above the map content */
+  }
+}
