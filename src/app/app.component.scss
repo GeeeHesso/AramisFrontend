@@ -1,10 +1,7 @@
 :host {
   mat-toolbar {
     height: 4vh;
-    border-bottom: 1px solid black;
-    .example-spacer {
-      flex: 1 1 auto;
-    }
+    border: 1px solid black;
   }
 
   mat-sidenav-container {
