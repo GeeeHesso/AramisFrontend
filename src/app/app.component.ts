@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { MapBottomComponent } from './components/map-bottom/map-bottom.component';
-import { MapTopComponent } from './components/map-top/map-top.component';
-import { ParametersComponent } from './components/parameters/parameters.component';
+import { MapBottomComponent } from '@shared/components/maps/map-bottom/map-bottom.component';
+import { MapTopComponent } from '@shared/components/maps/map-top/map-top.component';
+import { ParametersComponent } from '@shared/components/parameters/parameters.component';
 
 @Component({
   standalone: true,

@@ -31,11 +31,15 @@ export class ParametersComponent {
   dayTypes = ['Weekday', 'Weekend'];
   timeSlots = ['22-2h', '2-6h', '6-10h', '10-14h', '14-18h', '18-22h'];
   selectedData = { season: '', dayType: '', timeSlot: '' };
+
+  //It's possible to do a chips autocomplete form: https://material.angular.io/components/chips/overview#autocomplete
   targets = ['Grimsel', 'Chamoson', 'Mapragg', 'Laufenburg', 'Tierfehd'];
   selectedTargets = [];
+
   algorithmList = ['MLPR', 'Random forest'];
   selectedAlgo = [];
 
+  //TODO: learn how to do http request: https://angular.dev/guide/http/setup
   loadData() {
     console.log('selectedData', this.selectedData);
   }

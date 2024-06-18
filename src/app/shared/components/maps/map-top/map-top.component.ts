@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapService } from '../../services/map.service';
+import { MapComponent } from '../map.component';
 
 @Component({
   selector: 'app-map-top',
@@ -10,16 +10,15 @@ import { MapService } from '../../services/map.service';
   imports: [CommonModule],
   templateUrl: './map-top.component.html',
 })
-export class MapTopComponent implements AfterViewInit {
-  map!: L.Map;
-  constructor(private _mapService: MapService) {}
+export class MapTopComponent extends MapComponent implements AfterViewInit {
+  protected map!: L.Map;
 
   ngAfterViewInit(): void {
     this.map = L.map('mapTop', {
-      center: [46.8182, 8.2275], // Centered on Switzerland
-      zoom: 10,
-      zoomControl: false, // Disable the default zoom control
-      attributionControl: false, // Disable the attribution control
+      center: this.center,
+      zoom: this.zoom,
+      zoomControl: this.zoomControl, // Disable the default zoom control
+      attributionControl: this.attributionControl, // Disable the attribution control
     });
 
     this._mapService.initMap(this.map, 'mapTop');

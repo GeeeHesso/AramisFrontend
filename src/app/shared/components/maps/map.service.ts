@@ -26,22 +26,23 @@ export class MapService {
       {
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
         maxZoom: 16,
-        minZoom: 8,
+        minZoom: 7,
       }
     ).addTo(map);
 
     //@TODO: analyze
-    fetch('assets/world_mask_without_switzerland_v2.geojson')
+    fetch('assets/world_mask_without_switzerland.geojson')
       .then((response) => {
         if (!response.ok) {
+          // @todo: why? there is a catch under, check if usefull
           throw new Error(
-            'Netw ork response was not ok ' + response.statusText
+            //@todo: not a network error, improve error management
+            'Network response was not ok ' + response.statusText
           );
         }
         return response.json();
       })
       .then((data) => {
-        console.log('GeoJSON data loaded', data);
         const mask = L.geoJSON(data, {
           style: {
             color: '#ffffff', // Color of the mask
@@ -50,8 +51,9 @@ export class MapService {
           },
         }).addTo(map);
 
+        //@todo: delete is useless
         // Set the initial view to Switzerland after adding the mask
-        map.setView([46.8182, 8.2275], 10);
+        //map.setView([46.8182, 8.2275], 10);
       })
       .catch((error) => {
         console.error('Error loading GeoJSON data:', error);
