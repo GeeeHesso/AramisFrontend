@@ -128,7 +128,7 @@ export class BusService {
    */
   private _getSizeProportionalMax(val: number, maxValue: number): number {
     let size = (val / maxValue) * 100;
-    //TODO: use GEN_MIN_MAX_PROD
+    //@TODO: use GEN_MIN_MAX_PROD
     if (size < 2) {
       //console.log("<1: "+ size)
       // set a min

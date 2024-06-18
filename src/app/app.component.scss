@@ -14,11 +14,11 @@
     border-right: 1px solid black;
   }
 
-  .flex-item {
+  .map-container {
     flex: 1;
     position: relative;
   }
-  .overlay {
+  .map-label {
     position: absolute;
     top: 10px; /* Adjust this value to position the overlay inside the map */
     left: 10px; /* Adjust this value to position the overlay inside the map */

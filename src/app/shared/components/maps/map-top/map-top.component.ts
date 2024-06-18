@@ -14,6 +14,7 @@ export class MapTopComponent extends MapComponent implements AfterViewInit {
   protected map!: L.Map;
 
   ngAfterViewInit(): void {
+    //@todo: check if inheritance can be improve
     this.map = L.map('mapTop', {
       center: this.center,
       zoom: this.zoom,
