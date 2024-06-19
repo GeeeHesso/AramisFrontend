@@ -34,40 +34,20 @@ export class ParametersComponent {
 
   //It's possible to do a chips autocomplete form: https://material.angular.io/components/chips/overview#autocomplete
   targets = [
-    'Bärenburg',
-    'Bâtiaz',
-    'Bavona',
-    'Biasca',
-    'Bitsch',
-    'Castasegna',
     'Cavergno',
-    'Chamoson',
-    'Ferrera',
-    'Fionnay FMM',
-    'Fionnay GD',
-    'Göschenen',
-    'Grimsel',
-    'Handeck',
     'Innertkirchen',
-    'Limmern',
     'Löbbia',
-    'Mapragg',
-    'Olivone',
     'Pradella',
     'Riddes',
-    'Robiei',
     'Rothenbrunnen',
     'Sedrun',
     'Sils',
     'Stalden',
     'Tavanasa',
-    'Tierfehd',
-    'Verbano',
-    'Veytaux',
   ];
   selectedTargets = [];
 
-  algorithmList = ['MLPR', 'Random forest'];
+  algorithmList = ['MLPR'];
   selectedAlgo = [];
 
   //TODO: learn how to do http request: https://angular.dev/guide/http/setup
