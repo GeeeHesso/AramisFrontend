@@ -99,7 +99,7 @@ export class MapService {
         data.bus[data.branch[br].f_bus] == undefined ||
         data.bus[data.branch[br].t_bus] == undefined
       ) {
-        console.log(
+        console.warn(
           'Branch ' +
             br +
             ' is not show because fromBus ' +

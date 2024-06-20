@@ -10,7 +10,6 @@ import L, { CircleMarker } from 'leaflet';
   providedIn: 'root',
 })
 export class BusService {
-  private _zoomFactor = 0.6; // Factor multiplying zoom value for relative size of gen and load
   public busMarkers: CircleMarker[] = [];
 
   /**

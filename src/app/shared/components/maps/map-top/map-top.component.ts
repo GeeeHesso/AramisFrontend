@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
-import * as defaultData from '@assets/switzerland.json';
+import * as defaultData from '@assets/initial_grid.json';
 import { Pantagruel } from '@core/models/pantagruel';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';

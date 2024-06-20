@@ -10,16 +10,18 @@
   }}</mat-chip-option>
 </mat-chip-listbox>
 <h3>Time slot</h3>
-<mat-chip-listbox aria-label="Time slot" [(ngModel)]="selectedData.timeSlot">
-  <mat-chip-option *ngFor="let timeSlot of timeSlots">{{
-    timeSlot
+<mat-chip-listbox aria-label="Time slot" [(ngModel)]="selectedData.time">
+  <mat-chip-option *ngFor="let timeSlot of times | keyvalue">{{
+    timeSlot.key
   }}</mat-chip-option>
 </mat-chip-listbox>
 <button mat-flat-button (click)="loadData()">Load data</button>
 
 <h2>Attack</h2>
 <mat-chip-listbox aria-label="Targets" multiple [(ngModel)]="selectedTargets">
-  <mat-chip-option *ngFor="let target of targets">{{ target }}</mat-chip-option>
+  <mat-chip-option *ngFor="let target of targets | keyvalue">{{
+    target.key
+  }}</mat-chip-option>
 </mat-chip-listbox>
 <button mat-flat-button (click)="simulateAttack()">Simulate attack</button>
 
