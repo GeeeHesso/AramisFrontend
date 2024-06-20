@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
+import * as defaultData from '@assets/switzerland.json';
+import { Pantagruel } from '@core/models/pantagruel';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapComponent } from '../map.component';
@@ -23,5 +25,9 @@ export class MapTopComponent extends MapComponent implements AfterViewInit {
     });
 
     this._mapService.initMap(this.map, 'mapTop');
+
+    // example how to load data on map
+    //@todo: search how to remove "any"
+    this._mapService.drawOnMap(this.map, defaultData as Pantagruel | any);
   }
 }

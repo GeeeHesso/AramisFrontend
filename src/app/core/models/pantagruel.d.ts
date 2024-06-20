@@ -33,10 +33,6 @@ export interface Bus {
   vmin: number; // minimum allowed voltage
   va: number; // voltage angle
   vm: number; // voltage angle per unit (vm = 1 means voltage is base voltage)
-
-  // Added properties
-  loads: Load[];
-  gens: Gen[];
 }
 
 export interface Branch {
@@ -67,13 +63,6 @@ export interface Branch {
   tap: number; // current tap setting, only applicable for transformers, must be present in each entry
 
   // Added properties
-  loadInjected: number; // percentage of usage
-  originalLoadInjected: number; // original value of loadInjected
-  totalPowerW: number; // usage in Watt
-  originalTotalPowerW: number; // original usage in Watt
-  originalStatus: number;
-  thermalRatingW: number;
-  losses: number;
   fromBus: Bus; // !!! correspond to t_bus if pf negative
   toBus: Bus; // !!! correspond to f_bus if pf negative
 }
@@ -102,9 +91,5 @@ export interface Gen {
   ncost: number; // order of cost model
 
   // Added properties
-  produceW: number; // production in Watt
-  maxW: number; // max production in Watt
   coord: number[];
-  categoryText: string;
-  originalProduceW: number; // original production in Watt
 }

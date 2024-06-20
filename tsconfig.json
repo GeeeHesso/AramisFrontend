@@ -21,8 +21,10 @@
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "baseUrl": "src",
+    "resolveJsonModule": true,
     "paths": {
       "@components/*": ["/app/components/*"],
+      "@assets/*": ["assets/*"],
       "@core/*": ["app/core/*"],
       "@services/*": ["app/core/services/*"],
       "@models/*": ["app/core/models/*"],

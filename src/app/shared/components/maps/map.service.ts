@@ -1,26 +1,46 @@
 import { Injectable } from '@angular/core';
+import { Pantagruel } from '@core/models/pantagruel';
 import * as L from 'leaflet';
 import { Subject } from 'rxjs';
+import { BranchService } from './branch.service';
+import { BusService } from './bus.service';
 
 interface MapView {
   center: L.LatLng;
   zoom: number;
-  origin: 'top' | 'bottom';
+  origin: 'mapTop' | 'mapBottom';
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
-  //@TODO: analyze
-  private view = new Subject<MapView>();
-  viewChanged = this.view.asObservable();
+  constructor(
+    public _busService: BusService,
+    public _branchService: BranchService
+  ) {}
 
-  setView(center: L.LatLng, zoom: number, origin: any) {
-    this.view.next({ center, zoom, origin });
+  private _view$ = new Subject<MapView>();
+
+  public initMap(map: L.Map, origin: 'mapTop' | 'mapBottom'): void {
+    this._initBaseMap(map);
+
+    // Synchronize maps
+    map.on('move', () => {
+      this._view$.next({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+        origin: origin,
+      });
+    });
+    this._view$.subscribe((view) => {
+      if (view.origin !== origin) {
+        map.setView(view.center, view.zoom, { animate: false });
+      }
+    });
   }
 
-  public initMap(map: L.Map, mapName: string): void {
+  private _initBaseMap(map: L.Map) {
     L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
       {
@@ -30,43 +50,89 @@ export class MapService {
       }
     ).addTo(map);
 
-    //@TODO: analyze
+    // Hide other country
     fetch('assets/world_mask_without_switzerland.geojson')
-      .then((response) => {
-        if (!response.ok) {
-          // @todo: why? there is a catch under, check if usefull
-          throw new Error(
-            //@todo: not a network error, improve error management
-            'Network response was not ok ' + response.statusText
-          );
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const mask = L.geoJSON(data, {
+      .then((res) => res.json())
+      .then((json) => {
+        L.geoJSON(json, {
           style: {
             color: '#ffffff', // Color of the mask
             fillOpacity: 1, // Opacity of the mask
             weight: 0,
           },
         }).addTo(map);
-
-        //@todo: delete is useless
-        // Set the initial view to Switzerland after adding the mask
-        //map.setView([46.8182, 8.2275], 10);
-      })
-      .catch((error) => {
-        console.error('Error loading GeoJSON data:', error);
       });
+  }
 
-    map.on('move', () => {
-      this.setView(map.getCenter(), map.getZoom(), mapName);
+  public drawOnMap(map: L.Map, data: Pantagruel): void {
+    this.clearMap(map); // in case of loading new data
+    var formattedData = this._getFormattedPantagruelData(data);
+    this._branchService.drawBranch(map, formattedData);
+    this._busService.drawGen(map, formattedData);
+  }
+
+  public clearMap(map: L.Map): void {
+    map.eachLayer((layer) => {
+      layer.remove();
+    });
+    this._initBaseMap(map);
+  }
+
+  /**
+   * Complete data sata with value use in display
+   * branch: loadInjected, totalPowerMW, losses, from bus coordinates, to bus coordinates
+   * gen: bus coordinates
+   * load: bus coordinates, bus population
+   */
+  private _getFormattedPantagruelData(data: Pantagruel): Pantagruel {
+    // WARNING lat long reverse, so [1][0]
+    // Assign coord to know where to draw it
+    Object.keys(data.gen).forEach((g) => {
+      data.gen[g].coord = [
+        data.bus[data.gen[g].gen_bus].coord[1],
+        data.bus[data.gen[g].gen_bus].coord[0],
+      ];
     });
 
-    this.viewChanged.subscribe((view) => {
-      if (view.origin !== mapName) {
-        map.setView(view.center, view.zoom, { animate: false });
+    Object.keys(data.branch).forEach((br) => {
+      if (
+        data.bus[data.branch[br].f_bus] == undefined ||
+        data.bus[data.branch[br].t_bus] == undefined
+      ) {
+        console.log(
+          'Branch ' +
+            br +
+            ' is not show because fromBus ' +
+            data.branch[br].f_bus +
+            ' or/and toBus ' +
+            data.branch[br].t_bus +
+            ' not found in dataset'
+        );
+        delete data.branch[br];
+        return;
       }
+
+      // Define the direction of the branch depends on the value of pf (negative go other way)
+      if (data.branch[br].pf >= 0) {
+        data.branch[br].fromBus = data.bus[data.branch[br].f_bus];
+        data.branch[br].toBus = data.bus[data.branch[br].t_bus];
+      } else {
+        data.branch[br].fromBus = data.bus[data.branch[br].t_bus];
+        data.branch[br].toBus = data.bus[data.branch[br].f_bus];
+      }
+
+      if (
+        !data.branch[br].transformer && // by definition transformer connect 2 points in the same location
+        data.branch[br].fromBus.coord[0] == data.branch[br].toBus.coord[0] &&
+        data.branch[br].fromBus.coord[1] == data.branch[br].toBus.coord[1]
+      )
+        console.warn(
+          'The branch ' +
+            data.branch[br].index +
+            ' cannot be display. The FROM coordinates are the same as the TO coordinates'
+        );
     });
+
+    return data;
   }
 }

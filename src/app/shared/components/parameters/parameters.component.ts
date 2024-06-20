@@ -32,7 +32,6 @@ export class ParametersComponent {
   timeSlots = ['22-2h', '2-6h', '6-10h', '10-14h', '14-18h', '18-22h'];
   selectedData = { season: '', dayType: '', timeSlot: '' };
 
-  //It's possible to do a chips autocomplete form: https://material.angular.io/components/chips/overview#autocomplete
   targets = [
     'Cavergno',
     'Innertkirchen',
