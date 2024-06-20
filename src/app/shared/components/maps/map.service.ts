@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Pantagruel } from '@core/models/pantagruel';
+import {Injectable} from '@angular/core';
+import {Pantagruel} from '@core/models/pantagruel';
 import * as L from 'leaflet';
-import { Subject } from 'rxjs';
-import { BranchService } from './branch.service';
-import { BusService } from './bus.service';
+import {catchError, of, Subject} from 'rxjs';
+import {BranchService} from './branch.service';
+import {BusService} from './bus.service';
+import {HttpClient} from "@angular/common/http";
 
 interface MapView {
   center: L.LatLng;
@@ -17,8 +18,10 @@ interface MapView {
 export class MapService {
   constructor(
     public _busService: BusService,
-    public _branchService: BranchService
-  ) {}
+    public _branchService: BranchService,
+    private http: HttpClient
+  ) {
+  }
 
   private _view$ = new Subject<MapView>();
 
@@ -35,7 +38,7 @@ export class MapService {
     });
     this._view$.subscribe((view) => {
       if (view.origin !== origin) {
-        map.setView(view.center, view.zoom, { animate: false });
+        map.setView(view.center, view.zoom, {animate: false});
       }
     });
   }
@@ -50,17 +53,25 @@ export class MapService {
       }
     ).addTo(map);
 
-    // Hide other country
-    fetch('assets/world_mask_without_switzerland.geojson')
-      .then((res) => res.json())
-      .then((json) => {
-        L.geoJSON(json, {
-          style: {
-            color: '#ffffff', // Color of the mask
-            fillOpacity: 1, // Opacity of the mask
-            weight: 0,
-          },
-        }).addTo(map);
+    this.http.get<any>('assets/world_mask_without_switzerland.geojson')
+      .pipe(
+        catchError(error => {
+          console.error('Error loading GeoJSON data:', error);
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (data) {
+          const mask = L.geoJSON(data, {
+            style: {
+              color: '#ffffff', // Color of the mask
+              fillOpacity: 1, // Opacity of the mask
+              weight: 0,
+            },
+          }).addTo(map);
+        } else {
+          console.error('GeoJSON data is null, cannot add to map.');
+        }
       });
   }
 
@@ -101,12 +112,12 @@ export class MapService {
       ) {
         console.warn(
           'Branch ' +
-            br +
-            ' is not show because fromBus ' +
-            data.branch[br].f_bus +
-            ' or/and toBus ' +
-            data.branch[br].t_bus +
-            ' not found in dataset'
+          br +
+          ' is not show because fromBus ' +
+          data.branch[br].f_bus +
+          ' or/and toBus ' +
+          data.branch[br].t_bus +
+          ' not found in dataset'
         );
         delete data.branch[br];
         return;
@@ -128,8 +139,8 @@ export class MapService {
       )
         console.warn(
           'The branch ' +
-            data.branch[br].index +
-            ' cannot be display. The FROM coordinates are the same as the TO coordinates'
+          data.branch[br].index +
+          ' cannot be display. The FROM coordinates are the same as the TO coordinates'
         );
     });
 
