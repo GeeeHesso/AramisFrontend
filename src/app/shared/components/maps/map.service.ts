@@ -63,7 +63,6 @@ export class MapService {
         }).addTo(map);
       });
   }
-
   public drawOnMap(map: L.Map, data: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
     var formattedData = this._getFormattedPantagruelData(data);
