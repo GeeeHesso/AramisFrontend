@@ -1,36 +1,45 @@
 :host {
+  display: flex;
+  height: 100%;
+  flex-flow: column;
+
   mat-toolbar {
-    height: 4vh;
-    border: 1px solid black;
+    border-bottom: 1px solid black;
   }
 
   mat-sidenav-container {
-    height: 96vh;
-  }
+    height: 100%;
 
-  mat-sidenav {
-    padding: var(--space);
-    border-radius: 0;
-    border-right: 1px solid black;
-  }
+    .map-separator {
+      height: 2%;
+      margin: 0;
+      border: 0;
+      background-color: black;
+    }
 
-  .map-container {
-    flex: 1;
-    position: relative;
-  }
-  .map-label {
-    position: absolute;
-    top: 10px; /* Adjust this value to position the overlay inside the map */
-    left: 10px; /* Adjust this value to position the overlay inside the map */
-    padding: var(--space-smallest) var(--space);
-    color: white; /* Text color */
-    background-color: rgba(
-      128,
-      128,
-      128,
-      0.8
-    ); /* Gray background with some transparency */
-    font-size: 20px; /* Font size */
-    z-index: 1000; /* Ensure it is above the map content */
+    mat-sidenav {
+      padding: var(--space);
+      border-radius: 0;
+      border-right: 1px solid black;
+    }
+    .map-container {
+      flex: 1;
+      position: relative;
+    }
+    .map-label {
+      position: absolute;
+      top: 10px; /* Adjust this value to position the overlay inside the map */
+      left: 10px; /* Adjust this value to position the overlay inside the map */
+      padding: var(--space-smallest) var(--space);
+      color: white; /* Text color */
+      background-color: rgba(
+        128,
+        128,
+        128,
+        0.8
+      ); /* Gray background with some transparency */
+      font-size: 20px; /* Font size */
+      z-index: 1000; /* Ensure it is above the map content */
+    }
   }
 }

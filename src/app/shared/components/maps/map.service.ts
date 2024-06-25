@@ -16,8 +16,8 @@ interface MapView {
 })
 export class MapService {
   constructor(
-    public _busService: BusService,
-    public _branchService: BranchService
+    private _busService: BusService,
+    private _branchService: BranchService
   ) {}
 
   private _view$ = new Subject<MapView>();

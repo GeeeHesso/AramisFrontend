@@ -37,7 +37,6 @@ export class BranchService {
 
       // Style of line
       const weight = DEFAULT_WIDTH_BRANCH;
-
       const color =
         data.branch[b].br_status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR;
 

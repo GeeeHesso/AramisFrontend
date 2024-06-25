@@ -8,13 +8,12 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <div class="map-container">
-      <app-map-top></app-map-top>
-      <div class="map-label">Real data</div>
-    </div>
-    <div class="map-container">
-      <app-map-bottom></app-map-bottom>
-      <div class="map-label">Operator data</div>
-    </div>
+    <app-map-top class="map-container"></app-map-top>
+    <div class="map-label">Real data</div>
+
+    <hr class="map-separator" />
+
+    <app-map-bottom></app-map-bottom>
+    <div class="map-label">Operator data</div>
   </mat-sidenav-content>
 </mat-sidenav-container>
