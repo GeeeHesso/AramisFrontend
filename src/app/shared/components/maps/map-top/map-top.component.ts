@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
-import * as defaultData from '@assets/initial_grid.json';
 import { Pantagruel } from '@core/models/pantagruel';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -16,6 +15,8 @@ export class MapTopComponent extends MapComponent implements AfterViewInit {
   protected map!: L.Map;
 
   ngAfterViewInit(): void {
+
+
     //@todo: check if inheritance can be improve
     this.map = L.map('mapTop', {
       center: this.center,
@@ -25,9 +26,8 @@ export class MapTopComponent extends MapComponent implements AfterViewInit {
     });
 
     this._mapService.initMap(this.map, 'mapTop');
-
     // example how to load data on map
     //@todo: search how to remove "any"
-    this._mapService.drawOnMap(this.map, defaultData as Pantagruel | any);
+    this._mapService.drawOnMap(this.map);
   }
 }

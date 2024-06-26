@@ -10,7 +10,8 @@ export class ApiManagementService {
 
   constructor(private http: HttpClient) {
 
-}
+  }
+
   private baseUrl: string = environment.JULIA_BACKEND_BASE_URL;
 
   private _initialGridData = new Subject<any>();
@@ -20,23 +21,21 @@ export class ApiManagementService {
   algorithmResults$ = this._algorithmResults.asObservable();
   realNetworkData$ = this._realNetworkData.asObservable();
 
+//TODO called 2 times when webapp start, should be only once
   getInitialGrid(): void {
-    this.http.get<any>(`${this.baseUrl}/initial_network`).pipe(
-      catchError(this.handleError)
-    ).subscribe({
-      next: (data) => {
-        this._initialGridData.next(data);
-      },
-      error: (error) => {
-        this.handleError(error);
-      }
-    });
+    this.http.get<any>(`${this.baseUrl}/initial_network`)
+      .subscribe({
+        next: (data) => {
+          this._initialGridData.next(data);
+        },
+        error: (error) => {
+          this.handleError(error);
+        }
+      });
   }
 
   postAlgorithmResults(data: any): void {
-    this.http.post<any>(`${this.baseUrl}/algorithms`, data).pipe(
-      catchError(this.handleError)
-    ).subscribe({
+    this.http.post<any>(`${this.baseUrl}/algorithms`, data).subscribe({
       next: (response) => {
         this._algorithmResults.next(response);
       },
@@ -48,9 +47,7 @@ export class ApiManagementService {
 
 
   postRealNetwork(data: any): void {
-    this.http.post<any>(`${this.baseUrl}/real_network`, data).pipe(
-      catchError(this.handleError)
-    ).subscribe({
+    this.http.post<any>(`${this.baseUrl}/real_network`, data).subscribe({
       next: (response) => {
         this._realNetworkData.next(response);
       },

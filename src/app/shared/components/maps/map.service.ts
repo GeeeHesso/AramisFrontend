@@ -4,6 +4,7 @@ import * as L from 'leaflet';
 import { Subject } from 'rxjs';
 import { BranchService } from './branch.service';
 import { BusService } from './bus.service';
+import {ApiManagementService} from "@services/api/api-management.service";
 
 interface MapView {
   center: L.LatLng;
@@ -17,14 +18,18 @@ interface MapView {
 export class MapService {
   constructor(
     private _busService: BusService,
-    private _branchService: BranchService
+    private _branchService: BranchService,
+    private _apiManagementService: ApiManagementService
   ) {}
 
   private _view$ = new Subject<MapView>();
 
   public initMap(map: L.Map, origin: 'mapTop' | 'mapBottom'): void {
+    //TODO called twice because 2 maps, find a better way
+    this._apiManagementService.getInitialGrid()
     this._initBaseMap(map);
-
+    this._apiManagementService.initialGridData$.subscribe(value => {
+    })
     // Synchronize maps
     map.on('move', () => {
       this._view$.next({
@@ -63,11 +68,13 @@ export class MapService {
         }).addTo(map);
       });
   }
-  public drawOnMap(map: L.Map, data: Pantagruel): void {
+  public drawOnMap(map: L.Map): void {
     this.clearMap(map); // in case of loading new data
-    var formattedData = this._getFormattedPantagruelData(data);
-    this._branchService.drawBranch(map, formattedData);
-    this._busService.drawGen(map, formattedData);
+    this._apiManagementService.initialGridData$.subscribe(data => {
+      var formattedData = this._getFormattedPantagruelData(data);
+      this._branchService.drawBranch(map, formattedData);
+      this._busService.drawGen(map, formattedData);
+    })
   }
 
   public clearMap(map: L.Map): void {
