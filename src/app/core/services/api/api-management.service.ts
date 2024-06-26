@@ -23,6 +23,7 @@ export class ApiManagementService {
 
 //TODO called 2 times when webapp start, should be only once
   getInitialGrid(): void {
+    console.log("Called getInitialGrid")
     this.http.get<any>(`${this.baseUrl}/initial_network`)
       .subscribe({
         next: (data) => {

@@ -26,10 +26,7 @@ export class MapService {
 
   public initMap(map: L.Map, origin: 'mapTop' | 'mapBottom'): void {
     //TODO called twice because 2 maps, find a better way
-    this._apiManagementService.getInitialGrid()
     this._initBaseMap(map);
-    this._apiManagementService.initialGridData$.subscribe(value => {
-    })
     // Synchronize maps
     map.on('move', () => {
       this._view$.next({
