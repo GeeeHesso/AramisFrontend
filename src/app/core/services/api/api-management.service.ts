@@ -11,7 +11,8 @@ export class ApiManagementService {
   constructor(private http: HttpClient) {
 
 }
-  private baseUrl: string = environment.JULIA_BACKEND_BASE_URL;  // Replace with your Flask API's base URL
+  private baseUrl: string = environment.JULIA_BACKEND_BASE_URL;
+
   private _initialGridData = new Subject<any>();
   private _algorithmResults = new Subject<any>();
   private _realNetworkData = new Subject<any>();
@@ -31,7 +32,7 @@ export class ApiManagementService {
       }
     });
   }
-  // Method to post data to /algorithms
+
   postAlgorithmResults(data: any): void {
     this.http.post<any>(`${this.baseUrl}/algorithms`, data).pipe(
       catchError(this.handleError)
@@ -45,7 +46,7 @@ export class ApiManagementService {
     });
   }
 
-  // Method to post data to /real_network
+
   postRealNetwork(data: any): void {
     this.http.post<any>(`${this.baseUrl}/real_network`, data).pipe(
       catchError(this.handleError)
