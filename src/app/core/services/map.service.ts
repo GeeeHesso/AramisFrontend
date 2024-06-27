@@ -7,6 +7,7 @@ import { LatLng } from 'leaflet';
 import { Subject } from 'rxjs';
 import { BranchService } from './branch.service';
 import { BusService } from './bus.service';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,8 @@ export class MapService {
   private attributionControl = false; // Disable the attribution control
   constructor(
     private _busService: BusService,
-    private _branchService: BranchService
+    private _branchService: BranchService,
+    private _dataService: DataService
   ) {}
 
   private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject becasue, behaviorSubject need to be initialize
@@ -102,6 +104,7 @@ export class MapService {
    * load: bus coordinates, bus population
    */
   public getFormattedPantagruelData(data: Pantagruel): Pantagruel {
+    this._dataService.setConstOfDataSet(data);
     // WARNING lat long reverse, so [1][0]
     // Assign coord to know where to draw it
     Object.keys(data.gen).forEach((g) => {

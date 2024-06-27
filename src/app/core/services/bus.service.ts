@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
   DEFAULT_COLOR,
-  DEFAULT_SIZE_GEN,
   INACTIVE_COLOR,
+  MAX_SIZE,
+  MIN_SIZE,
 } from '@core/core.const';
 import L, { CircleMarker } from 'leaflet';
 
@@ -23,7 +24,12 @@ export class BusService {
     Object.keys(data.gen).forEach((g) => {
       // Style
       const color = data.gen[g].status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR;
-      const size = DEFAULT_SIZE_GEN + zoom;
+      const size =
+        this._getSizeProportionalMax(
+          data.gen[g].pmax,
+          data.GEN_MIN_MAX_PROD,
+          data.GEN_MAX_MAX_PROD
+        ) + zoom;
 
       let svgHtml = this._constructFullSquareSVG(size, color);
 
@@ -63,5 +69,31 @@ export class BusService {
       `"></rect>
         </svg>`
     );
+  }
+
+  /**
+   * Calculate the size of an element according to max
+   * @param val
+   * @param minValue
+   * @param maxValue
+   * @private
+   */
+  private _getSizeProportionalMax(
+    val: number,
+    minValue: number,
+    maxValue: number
+  ): number {
+    //@TODO: Gwen you can improve this
+    let size = (val / (maxValue - minValue)) * 50;
+    if (size < MIN_SIZE) {
+      console.log('too small: ' + size);
+      size = MIN_SIZE;
+    } else if (size > MAX_SIZE) {
+      console.log('too big: ' + size);
+      size = MAX_SIZE;
+    } else {
+      console.log(size);
+    }
+    return size;
   }
 }

@@ -14,6 +14,10 @@ export interface Pantagruel {
   load: { [key: string]: Load };
   date: { day: number; month: number; year: number; hour: number };
   country: { [key: string]: { pd: number; qd: number } };
+  // Added properties
+
+  GEN_MAX_MAX_PROD: number;
+  GEN_MIN_MAX_PROD: number;
 }
 
 export interface Bus {
