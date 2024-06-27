@@ -94,8 +94,7 @@ export class ParametersComponent {
     });
 
     // not working with post
-    this._apiService.postRealNetwork(formattedParameters);
-    this._apiService.realNetworkData$.subscribe({
+    this._apiService.postRealNetwork(formattedParameters).subscribe({
       next: (data) => {
         const formattedData = this._mapService.getFormattedPantagruelData(data);
         console.log(formattedData);
