@@ -82,20 +82,29 @@ export class ParametersComponent {
     };*/
 
     // example with get
-    this._apiService.getInitialGrid();
-    this._apiService.initialGridData$.subscribe((data) => {
-      const formattedData = this._mapService.getFormattedPantagruelData(data);
-      console.log(formattedData);
-      this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+    this._apiService.getInitialGrid().subscribe({
+      next: (data) => {
+        const formattedData = this._mapService.getFormattedPantagruelData(data);
+        console.log(formattedData);
+        this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+      },
+      error: (error) => {
+        //@todo
+      },
     });
 
     // not working with post
-    /*this._apiService.postRealNetwork(formattedParameters);
-    this._apiService.realNetworkData$.subscribe((data) => {
-      const formattedData = this._mapService.getFormattedPantagruelData(data);
-      console.log(formattedData);
-      this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
-    });*/
+    this._apiService.postRealNetwork(formattedParameters);
+    this._apiService.realNetworkData$.subscribe({
+      next: (data) => {
+        const formattedData = this._mapService.getFormattedPantagruelData(data);
+        console.log(formattedData);
+        this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+      },
+      error: (error) => {
+        //@todo
+      },
+    });
   }
 
   simulateAttack() {
