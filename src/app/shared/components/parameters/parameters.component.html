@@ -4,14 +4,12 @@
   <mat-chip-option *ngFor="let season of seasons">{{ season }}</mat-chip-option>
 </mat-chip-listbox>
 <h3>Day</h3>
-<mat-chip-listbox aria-label="Day type" [(ngModel)]="selectedData.dayType">
-  <mat-chip-option *ngFor="let dayType of dayTypes">{{
-    dayType
-  }}</mat-chip-option>
+<mat-chip-listbox aria-label="Day type" [(ngModel)]="selectedData.day">
+  <mat-chip-option *ngFor="let dayType of day">{{ dayType }}</mat-chip-option>
 </mat-chip-listbox>
 <h3>Time slot</h3>
-<mat-chip-listbox aria-label="Time slot" [(ngModel)]="selectedData.time">
-  <mat-chip-option *ngFor="let timeSlot of times | keyvalue">{{
+<mat-chip-listbox aria-label="Time slot" [(ngModel)]="selectedData.hour">
+  <mat-chip-option *ngFor="let timeSlot of hours | keyvalue">{{
     timeSlot.key
   }}</mat-chip-option>
 </mat-chip-listbox>

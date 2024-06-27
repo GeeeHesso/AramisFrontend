@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { ApiService } from '@core/services/api.service';
+import { MapService } from '@core/services/map.service';
 
 @Component({
   standalone: true,
@@ -28,8 +30,9 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class ParametersComponent {
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
-  dayTypes = ['Weekday', 'Weekend'];
-  times = new Map([
+  day = ['Weekday', 'Weekend'];
+  //  @TODO discuss with mark to adapt back to receive value not range (second value is useless for now)
+  hours = new Map([
     ['22-2h', 0],
     ['2-6h', 4],
     ['6-10h', 8],
@@ -38,7 +41,7 @@ export class ParametersComponent {
     ['18-22h', 20],
   ]);
 
-  selectedData = { season: '', dayType: '', time: '' };
+  selectedData = { season: '', day: '', hour: '' };
 
   targets = new Map([
     ['Cavergno', 16], //id bus: 163, id gen: 16
@@ -57,11 +60,42 @@ export class ParametersComponent {
   algorithmList = ['MLPR'];
   selectedAlgo = [];
 
-  //TODO: learn how to do http request: https://angular.dev/guide/http/setup
+  constructor(
+    private _mapService: MapService,
+    private _apiService: ApiService
+  ) {}
+
   loadData() {
-    console.log('selectedData', this.selectedData);
-    const time = this.times.get(this.selectedData.time);
-    console.log('time to send', time);
+    //@todo: made selectedData mandatory (courage c'est la plus compliqué les formulaires angular, fais pas du custom apprendre mnt c'est gagné beaucoup de temps ensuite)
+
+    var formattedParameters = {
+      ...this.selectedData,
+      season: this.selectedData.season.toLowerCase(),
+      day: this.selectedData.day.toLowerCase(),
+    };
+    // Example to get value from range, SEE TODO before hours line 34
+    /*const hourValue = this.hours.get(this.selectedData.hour);
+    var formattedParameters = {
+      season: this.selectedData.season.toLowerCase(),
+      day: this.selectedData.day.toLowerCase(),
+      hour: hourValue,
+    };*/
+
+    // example with get
+    this._apiService.getInitialGrid();
+    this._apiService.initialGridData$.subscribe((data) => {
+      const formattedData = this._mapService.getFormattedPantagruelData(data);
+      console.log(formattedData);
+      this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+    });
+
+    // not working with post
+    /*this._apiService.postRealNetwork(formattedParameters);
+    this._apiService.realNetworkData$.subscribe((data) => {
+      const formattedData = this._mapService.getFormattedPantagruelData(data);
+      console.log(formattedData);
+      this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+    });*/
   }
 
   simulateAttack() {

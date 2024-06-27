@@ -1,45 +1,53 @@
 import { Injectable } from '@angular/core';
 import { Pantagruel } from '@core/models/pantagruel';
+
 import * as L from 'leaflet';
+import { LatLng } from 'leaflet';
 import { Subject } from 'rxjs';
+import { ApiService } from './api.service';
 import { BranchService } from './branch.service';
 import { BusService } from './bus.service';
-import {ApiManagementService} from "@services/api/api-management.service";
 
 interface MapView {
   center: L.LatLng;
   zoom: number;
-  origin: 'mapTop' | 'mapBottom';
+  map: L.Map;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
+  public mapTop!: L.Map;
+  public mapBottom!: L.Map;
+  private center = new LatLng(46.8182, 8.2275); // Centered on Switzerland
+  private zoom = 8;
+  private zoomControl = false; // Disable the default zoom control
+  private attributionControl = false; // Disable the attribution control
   constructor(
     private _busService: BusService,
     private _branchService: BranchService,
-    private _apiManagementService: ApiManagementService
+    private _apiManagementService: ApiService
   ) {}
 
   private _view$ = new Subject<MapView>();
 
-  public initMap(map: L.Map, origin: 'mapTop' | 'mapBottom'): void {
-    //TODO called twice because 2 maps, find a better way
-    this._initBaseMap(map);
-    // Synchronize maps
-    map.on('move', () => {
-      this._view$.next({
-        center: map.getCenter(),
-        zoom: map.getZoom(),
-        origin: origin,
-      });
+  public initMaps(): void {
+    this.mapTop = L.map('mapTop', {
+      center: this.center,
+      zoom: this.zoom,
+      zoomControl: this.zoomControl, // Disable the default zoom control
+      attributionControl: this.attributionControl, // Disable the attribution control
     });
-    this._view$.subscribe((view) => {
-      if (view.origin !== origin) {
-        map.setView(view.center, view.zoom, { animate: false });
-      }
+    this.mapBottom = L.map('mapBottom', {
+      center: this.center,
+      zoom: this.zoom,
+      zoomControl: this.zoomControl, // Disable the default zoom control
+      attributionControl: this.attributionControl, // Disable the attribution control
     });
+
+    this._initBaseMap(this.mapTop);
+    this._initBaseMap(this.mapBottom);
   }
 
   private _initBaseMap(map: L.Map) {
@@ -64,14 +72,27 @@ export class MapService {
           },
         }).addTo(map);
       });
+
+    // Synchronize maps
+    map.on('move', () => {
+      this._view$.next({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+        map: map,
+      });
+    });
+    this._view$.subscribe((view) => {
+      if (view.map !== map) {
+        map.setView(view.center, view.zoom, { animate: false });
+      }
+    });
   }
-  public drawOnMap(map: L.Map): void {
+
+  public drawOnMap(map: L.Map, grid: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
-    this._apiManagementService.initialGridData$.subscribe(data => {
-      var formattedData = this._getFormattedPantagruelData(data);
-      this._branchService.drawBranch(map, formattedData);
-      this._busService.drawGen(map, formattedData);
-    })
+
+    this._branchService.drawBranch(map, grid);
+    this._busService.drawGen(map, grid);
   }
 
   public clearMap(map: L.Map): void {
@@ -87,7 +108,7 @@ export class MapService {
    * gen: bus coordinates
    * load: bus coordinates, bus population
    */
-  private _getFormattedPantagruelData(data: Pantagruel): Pantagruel {
+  public getFormattedPantagruelData(data: Pantagruel): Pantagruel {
     // WARNING lat long reverse, so [1][0]
     // Assign coord to know where to draw it
     Object.keys(data.gen).forEach((g) => {
