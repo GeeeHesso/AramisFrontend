@@ -3,50 +3,47 @@
   height: 100%;
   flex-flow: column;
 
-  mat-toolbar {
-    border-bottom: 1px solid black;
-  }
 
   mat-sidenav-container {
     height: 100%;
-
-    .map-separator {
-      height: 2%;
-      margin: 0;
-      border: 0;
-      background-color: black;
-    }
 
     mat-sidenav {
       padding: var(--space);
       border-radius: 0;
       border-right: 1px solid black;
+      border-top: 1px solid black;
     }
-    /*@TODO: CSS of map and label and line*/
-    .map-container {
-      flex: 1;
-      position: relative;
-      width: 100%;
-      height: 49%;
+
+    mat-sidenav-content{
+
+      .map-container {
+        position: relative; // for label
+        height: 50%;
+        box-sizing: border-box; // for border not going outside the container
+        border-top: 1px solid black;
+      }
+      .map {
+        width: 100%;
+        height: 100%;
+      }
+      .map-label {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: var(--space-smallest) var(--space);
+        color: white; /* Text color */
+        background-color: rgba(
+          128,
+          128,
+          128,
+          0.8
+        ); /* Gray background with some transparency */
+        font-size: 20px;
+        z-index: 1000;
+
+      }
     }
-    .map {
-      width: 100%;
-      height: 100%;
-    }
-    .map-label {
-      position: absolute;
-      top: 10px; /* Adjust this value to position the overlay inside the map */
-      left: 10px; /* Adjust this value to position the overlay inside the map */
-      padding: var(--space-smallest) var(--space);
-      color: white; /* Text color */
-      background-color: rgba(
-        128,
-        128,
-        128,
-        0.8
-      ); /* Gray background with some transparency */
-      font-size: 20px; /* Font size */
-      z-index: 1000; /* Ensure it is above the map content */
-    }
+
+
   }
 }
