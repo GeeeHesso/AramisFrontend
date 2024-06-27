@@ -7,7 +7,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { timeParameters } from '@core/models/parameters';
+import {
+  algorithmsParameters,
+  targetsParameters,
+  timeParameters,
+} from '@core/models/parameters';
 import { ApiService } from '@core/services/api.service';
 import { MapService } from '@core/services/map.service';
 
@@ -69,11 +73,8 @@ export class ParametersComponent {
   loadData() {
     //@todo: made selectedData mandatory (courage c'est la plus compliqué les formulaires angular, fais pas du custom apprendre mnt c'est gagné beaucoup de temps ensuite)
 
-    var formattedParameters: timeParameters = {
-      ...this.selectedData,
-      season: this.selectedData.season.toLowerCase(),
-      day: this.selectedData.day.toLowerCase(),
-    };
+    var formattedParameters = this._formatTimeParameters();
+    console.log('formattedParameters', formattedParameters);
     // Example to get value from range, SEE TODO before hours line 34
     /*const hourValue = this.hours.get(this.selectedData.hour);
     var formattedParameters = {
@@ -111,15 +112,42 @@ export class ParametersComponent {
     //@todo: send selectedDAta + selected target
     console.log('selectedTargets', this.selectedTargets);
 
-    var targetsId: any[] = [];
-    this.selectedTargets.forEach((t) => {
-      targetsId.push({ id: this.targets.get(t), name: t });
-    });
-    console.log('targets to send', targetsId);
+    var formattedParameters = this._formatTargetParameters();
+
+    console.log('formattedParameters', formattedParameters);
   }
 
   testAlgo() {
     //@todo: send selectedDAta + selected target + selected algo
     console.log('selectedAlgo', this.selectedAlgo);
+    var formattedParameters: algorithmsParameters =
+      this._formatAlgorithmsParameters();
+    console.log('formattedParameters', formattedParameters);
+  }
+
+  private _formatTimeParameters(): timeParameters {
+    return {
+      ...this.selectedData,
+      season: this.selectedData.season.toLowerCase(),
+      day: this.selectedData.day.toLowerCase(),
+    };
+  }
+
+  private _formatTargetParameters(): targetsParameters {
+    var targetsId: any[] = [];
+    this.selectedTargets.forEach((t) => {
+      targetsId.push(this.targets.get(t));
+    });
+    return {
+      ...this._formatTimeParameters(),
+      attacked_gens: targetsId,
+    };
+  }
+
+  private _formatAlgorithmsParameters(): algorithmsParameters {
+    return {
+      ...this._formatTargetParameters(),
+      algorithms: this.selectedAlgo,
+    };
   }
 }
