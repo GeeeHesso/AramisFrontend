@@ -1,18 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Pantagruel } from '@core/models/pantagruel';
 
+import { MapView } from '@core/models/map';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
 import { Subject } from 'rxjs';
-import { ApiService } from './api.service';
 import { BranchService } from './branch.service';
 import { BusService } from './bus.service';
-
-interface MapView {
-  center: L.LatLng;
-  zoom: number;
-  map: L.Map;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -26,11 +20,10 @@ export class MapService {
   private attributionControl = false; // Disable the attribution control
   constructor(
     private _busService: BusService,
-    private _branchService: BranchService,
-    private _apiManagementService: ApiService
+    private _branchService: BranchService
   ) {}
 
-  private _view$ = new Subject<MapView>();
+  private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject becasue, behaviorSubject need to be initialize
 
   public initMaps(): void {
     this.mapTop = L.map('mapTop', {

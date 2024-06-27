@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { timeParameters } from '@core/models/parameters';
 import { ApiService } from '@core/services/api.service';
 import { MapService } from '@core/services/map.service';
 
@@ -41,7 +42,7 @@ export class ParametersComponent {
     ['18-22h', 20],
   ]);
 
-  selectedData = { season: '', day: '', hour: '' };
+  selectedData: timeParameters = { season: '', day: '', hour: '' };
 
   targets = new Map([
     ['Cavergno', 16], //id bus: 163, id gen: 16
@@ -68,7 +69,7 @@ export class ParametersComponent {
   loadData() {
     //@todo: made selectedData mandatory (courage c'est la plus compliqué les formulaires angular, fais pas du custom apprendre mnt c'est gagné beaucoup de temps ensuite)
 
-    var formattedParameters = {
+    var formattedParameters: timeParameters = {
       ...this.selectedData,
       season: this.selectedData.season.toLowerCase(),
       day: this.selectedData.day.toLowerCase(),

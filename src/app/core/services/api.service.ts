@@ -1,5 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Pantagruel } from '@core/models/pantagruel';
+import {
+  algorithmsParameters,
+  targetsParameters,
+  timeParameters,
+} from '@core/models/parameters';
 import { environment } from 'app/environment';
 import { throwError } from 'rxjs';
 
@@ -14,19 +20,23 @@ export class ApiService {
 
   getInitialGrid() {
     console.log('Called getInitialGrid');
-    return this.http.get<any>(`${this.baseUrl}/initial_network`);
+    return this.http.get<Pantagruel>(`${this.baseUrl}/initial_network`);
+  }
+
+  postAttackedNetwork(data: targetsParameters) {
+    //@TODO /attacked_network
+  }
+
+  postRealNetwork(data: timeParameters) {
+    return this.http.post<Pantagruel>(`${this.baseUrl}/real_network`, data);
   }
 
   //@TODO: no any !! define interface in core models
-  postRealNetwork(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/real_network`, data);
-  }
-
-  //@TODO: no any !!
-  postAlgorithmResults(data: any) {
+  postAlgorithmResults(data: algorithmsParameters) {
     return this.http.post<any>(`${this.baseUrl}/algorithms`, data);
   }
 
+  //@TODO: check how to reuse this
   private handleError(error: HttpErrorResponse) {
     let errorMessage = '';
 
