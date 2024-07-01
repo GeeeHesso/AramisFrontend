@@ -31,6 +31,5 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.mapService.initMaps();
-    this.apiManagementService.getInitialGrid();
   }
 }

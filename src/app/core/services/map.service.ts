@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { BranchService } from './branch.service';
 import { BusService } from './bus.service';
 import { DataService } from './data.service';
+import {ApiService} from "@services/api.service";
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,8 @@ export class MapService {
   constructor(
     private _busService: BusService,
     private _branchService: BranchService,
-    private _dataService: DataService
+    private _dataService: DataService,
+    private _apiService: ApiService
   ) {}
 
   private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject becasue, behaviorSubject need to be initialize
@@ -43,6 +45,7 @@ export class MapService {
 
     this._initBaseMap(this.mapTop);
     this._initBaseMap(this.mapBottom);
+    this._defaultgrid(this.mapTop)
   }
 
   private _initBaseMap(map: L.Map) {
@@ -76,6 +79,8 @@ export class MapService {
         map: map,
       });
     });
+
+
     this._view$.subscribe((view) => {
       if (view.map !== map) {
         map.setView(view.center, view.zoom, { animate: false });
@@ -85,7 +90,6 @@ export class MapService {
 
   public drawOnMap(map: L.Map, grid: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
-
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(map, grid);
   }
@@ -154,5 +158,19 @@ export class MapService {
     });
 
     return data;
+  }
+
+  private _defaultgrid(mapTop: L.Map) {
+    // example with get
+    this._apiService.getInitialGrid().subscribe({
+      next: (data) => {
+        const formattedData = this.getFormattedPantagruelData(data);
+        console.log(formattedData);
+        this.drawOnMap(mapTop, formattedData);
+      },
+      error: (error) => {
+        //@todo
+      },
+    });
   }
 }
