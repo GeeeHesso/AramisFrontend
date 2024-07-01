@@ -84,14 +84,18 @@ export class ParametersComponent {
     };*/
 
     // example with get
-    this._apiService.getInitialGrid().subscribe({
+    console.log("called postRealNetwork ")
+    this._apiService.postRealNetwork(formattedParameters).subscribe({
       next: (data) => {
+        console.log("in data ")
         const formattedData = this._mapService.getFormattedPantagruelData(data);
+        console.log("formattedData");
         console.log(formattedData);
+        this._mapService.clearMap(this._mapService.mapTop)
         this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
       },
       error: (error) => {
-        //@todo
+        console.log(error)
       },
     });
 

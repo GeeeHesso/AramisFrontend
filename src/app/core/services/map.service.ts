@@ -45,7 +45,7 @@ export class MapService {
 
     this._initBaseMap(this.mapTop);
     this._initBaseMap(this.mapBottom);
-    this._defaultgrid(this.mapTop)
+    this._defaultgridInit(this.mapTop)
   }
 
   private _initBaseMap(map: L.Map) {
@@ -93,7 +93,7 @@ export class MapService {
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(map, grid);
   }
-
+//TODO remove only the grid layer ?
   public clearMap(map: L.Map): void {
     map.eachLayer((layer) => {
       layer.remove();
@@ -160,7 +160,7 @@ export class MapService {
     return data;
   }
 
-  private _defaultgrid(mapTop: L.Map) {
+  private _defaultgridInit(mapTop: L.Map) {
     // example with get
     this._apiService.getInitialGrid().subscribe({
       next: (data) => {
