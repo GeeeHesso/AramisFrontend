@@ -10,7 +10,7 @@ import { BusService } from './bus.service';
 import { DataService } from './data.service';
 import {ApiService} from "@services/api.service";
 import {FormGroup} from "@angular/forms";
-import {timeParameters} from "@models/parameters";
+import {targetsParameters, timeParameters} from "@models/parameters";
 
 @Injectable({
   providedIn: 'root',
@@ -176,23 +176,45 @@ export class MapService {
     });
   }
 
-  launchSimulation(data :FormGroup) {
-     const formValue = data.value;
-    const timeParams: timeParameters = {
+  launchSimulation(data: FormGroup) {
+    const formValue = data.value;
+    const commonParams = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
       hour: formValue.hour,
     };
+
+    const timeParams: timeParameters = { ...commonParams };
+    const attackParams: targetsParameters = {
+      ...commonParams,
+      attacked_gens: formValue.selectedTargets.map(String), // Ensure the values are strings if required
+    };
+
+    console.log("JSON TO SEND FOR ATTACK");
+    console.log(JSON.stringify(attackParams, null, 2)); // Pretty-print JSON for better readability
+
     this._apiService.postRealNetwork(timeParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         console.log(formattedData);
-        console.log("map top updated with real data")
+        console.log("map top updated with real data");
         this.drawOnMap(this.mapTop, formattedData);
       },
       error: (error) => {
         console.error('Error:', error);
-        // Your error handling logic
+      },
+    });
+
+    this._apiService.postAttackedNetwork(attackParams).subscribe({
+      next: (data) => {
+        const formattedData = this.getFormattedPantagruelData(data);
+        console.log(formattedData);
+        console.log("map bottom updated with attacked data");
+        this.drawOnMap(this.mapBottom, formattedData);
+      },
+      error: (error) => {
+        console.error(error)
+        console.log(attackParams);
       },
     });
   }

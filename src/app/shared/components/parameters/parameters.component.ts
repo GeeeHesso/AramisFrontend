@@ -1,15 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
-import { algorithmsParameters, targetsParameters, timeParameters } from '@core/models/parameters';
-import { ApiService } from '@core/services/api.service';
-import { MapService } from '@core/services/map.service';
+import {CommonModule} from '@angular/common';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatSelectModule} from '@angular/material/select';
+import {algorithmsParameters, targetsParameters, timeParameters} from '@core/models/parameters';
+import {ApiService} from '@core/services/api.service';
+import {MapService} from '@core/services/map.service';
 import * as L from "leaflet";
 
 @Component({
@@ -70,18 +70,15 @@ export class ParametersComponent {
   }
 
   launchSimulation(): void {
+    this.parametersForm = this._formatParameters(this.parametersForm)
+    console.log("after _formatParameters")
+    console.log(this.parametersForm.value)
     this._mapService.launchSimulation(this.parametersForm)
   }
 
-  private _formatParameters(): algorithmsParameters {
-    const formValue = this.parametersForm.value;
-    const targetsId: number[] = formValue.selectedTargets.map((t: string) => this.targets.get(t));
-    return {
-      season: formValue.season.toLowerCase(),
-      day: formValue.day.toLowerCase(),
-      hour: formValue.hour,
-      attacked_gens: targetsId,
-      algorithms: formValue.selectedAlgo
-    };
+  private _formatParameters(parametersForm: FormGroup): FormGroup {
+    const targetsId: number[] = this.parametersForm.value.selectedTargets.map((t: string) => this.targets.get(t));
+    this.parametersForm.value.selectedTargets = targetsId
+    return parametersForm;
   }
 }

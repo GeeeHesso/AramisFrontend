@@ -24,7 +24,7 @@ export class ApiService {
   }
 
   postAttackedNetwork(data: targetsParameters) {
-    //@TODO /attacked_network
+    return this.http.post<Pantagruel>(`${this.baseUrl}/attacked_network`, data);
   }
 
   postRealNetwork(data: timeParameters) {

@@ -86,13 +86,13 @@ export class BusService {
     //@TODO: Gwen you can improve this
     let size = (val / (maxValue - minValue)) * 50;
     if (size < MIN_SIZE) {
-      console.log('too small: ' + size);
+
       size = MIN_SIZE;
     } else if (size > MAX_SIZE) {
-      console.log('too big: ' + size);
+
       size = MAX_SIZE;
     } else {
-      console.log(size);
+
     }
     return size;
   }
