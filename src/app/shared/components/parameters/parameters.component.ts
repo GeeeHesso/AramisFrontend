@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,7 +30,7 @@ import { MapService } from '@core/services/map.service';
     MatInputModule,
     FormsModule,
     MatRadioModule,
-    MatChipsModule,
+    MatChipsModule,  ReactiveFormsModule
   ],
 })
 export class ParametersComponent {
@@ -45,8 +45,6 @@ export class ParametersComponent {
     ['14-18h', 16],
     ['18-22h', 20],
   ]);
-
-  selectedData: timeParameters = { season: '', day: '', hour: '' };
 
   targets = new Map([
     ['Cavergno', 16], //id bus: 163, id gen: 16
@@ -64,11 +62,17 @@ export class ParametersComponent {
 
   algorithmList = ['MLPR'];
   selectedAlgo = [];
-
-  constructor(
+  parametersForm: FormGroup;
+  constructor(private fb: FormBuilder,
     private _mapService: MapService,
     private _apiService: ApiService
-  ) {}
+  ) {
+    this.parametersForm = this.fb.group({
+      season: ['', Validators.required],
+      day: ['', Validators.required],
+      hour: ['', Validators.required]
+    });
+  }
 
   loadData() {
     //@todo: made selectedData mandatory (courage c'est la plus compliqué les formulaires angular, fais pas du custom apprendre mnt c'est gagné beaucoup de temps ensuite)
@@ -130,10 +134,11 @@ export class ParametersComponent {
   }
 
   private _formatTimeParameters(): timeParameters {
+    const formValue = this.parametersForm.value;
     return {
-      ...this.selectedData,
-      season: this.selectedData.season.toLowerCase(),
-      day: this.selectedData.day.toLowerCase(),
+      ...formValue,
+      season: formValue.season.toLowerCase(),
+      day: formValue.day.toLowerCase(),
     };
   }
 
@@ -154,4 +159,5 @@ export class ParametersComponent {
       algorithms: this.selectedAlgo,
     };
   }
+
 }
