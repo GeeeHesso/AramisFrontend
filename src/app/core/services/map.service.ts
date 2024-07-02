@@ -9,6 +9,8 @@ import { BranchService } from './branch.service';
 import { BusService } from './bus.service';
 import { DataService } from './data.service';
 import {ApiService} from "@services/api.service";
+import {FormGroup} from "@angular/forms";
+import {timeParameters} from "@models/parameters";
 
 @Injectable({
   providedIn: 'root',
@@ -170,6 +172,27 @@ export class MapService {
       },
       error: (error) => {
         //@todo
+      },
+    });
+  }
+
+  launchSimulation(data :FormGroup) {
+     const formValue = data.value;
+    const timeParams: timeParameters = {
+      season: formValue.season.toLowerCase(),
+      day: formValue.day.toLowerCase(),
+      hour: formValue.hour,
+    };
+    this._apiService.postRealNetwork(timeParams).subscribe({
+      next: (data) => {
+        const formattedData = this.getFormattedPantagruelData(data);
+        console.log(formattedData);
+        console.log("map top updated with real data")
+        this.drawOnMap(this.mapTop, formattedData);
+      },
+      error: (error) => {
+        console.error('Error:', error);
+        // Your error handling logic
       },
     });
   }

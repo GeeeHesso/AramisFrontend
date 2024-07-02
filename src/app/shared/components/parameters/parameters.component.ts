@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { algorithmsParameters, targetsParameters, timeParameters } from '@core/models/parameters';
 import { ApiService } from '@core/services/api.service';
 import { MapService } from '@core/services/map.service';
+import * as L from "leaflet";
 
 @Component({
   standalone: true,
@@ -29,7 +30,7 @@ import { MapService } from '@core/services/map.service';
     ReactiveFormsModule
   ],
 })
-export class ParametersComponent implements OnInit {
+export class ParametersComponent {
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   day = ['Weekday', 'Weekend'];
   hours = new Map([
@@ -68,15 +69,8 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.parametersForm.valueChanges.subscribe(value => {
-      console.log('Form changes', value);
-    });
-  }
-
   launchSimulation(): void {
-      const formattedParameters = this._formatParameters();
-      console.log('All parameters selected:', formattedParameters);
+    this._mapService.launchSimulation(this.parametersForm)
   }
 
   private _formatParameters(): algorithmsParameters {
@@ -89,9 +83,5 @@ export class ParametersComponent implements OnInit {
       attacked_gens: targetsId,
       algorithms: formValue.selectedAlgo
     };
-  }
-
-  printme() {
-    console.log('Form Values:', this.parametersForm.value);
   }
 }
