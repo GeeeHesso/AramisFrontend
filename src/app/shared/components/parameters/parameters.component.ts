@@ -43,6 +43,18 @@ export class ParametersComponent implements OnInit{
   ]);
 
   targets = new Map([
+    ['Cavergno', 908],
+    ['Innertkirchen', 910],
+    ['Löbbia', 912],
+    ['Pradella', 913],
+    ['Riddes', 915],
+    ['Rothenbrunnen', 916],
+    ['Sedrun', 917],
+    ['Sils', 920],
+    ['Stalden', 921],
+    ['Tavanasa', 923],
+  ]);
+  targetsTrue = new Map([
     ['Cavergno', 16],
     ['Innertkirchen', 15],
     ['Löbbia', 7],
@@ -54,7 +66,6 @@ export class ParametersComponent implements OnInit{
     ['Stalden', 6],
     ['Tavanasa', 24],
   ]);
-
   algorithmList = ['MLPR'];
 
   parametersForm: FormGroup;
@@ -75,9 +86,14 @@ export class ParametersComponent implements OnInit{
     });
   }
   onSelectedTargetsChange(value: any): void {
-    console.log("onSelectedTargetsChange",value);
-    // Call your desired method here
-    this._selectTheMarker("");
+    const listOfAllTargetsName = value
+    console.log("listOfAllTargetsName",listOfAllTargetsName)
+    const targetsId: number[] = listOfAllTargetsName.map((t: string) => this.targets.get(t));
+
+    targetsId.map(value => {
+      this._selectTheMarker(value.toString());
+    })
+
   }
   launchSimulation(): void {
     this.parametersForm = this._formatParameters(this.parametersForm)
@@ -90,8 +106,8 @@ export class ParametersComponent implements OnInit{
     return parametersForm;
   }
 
-  private _selectTheMarker($event: any) {
+  private _selectTheMarker(genId: string) {
     console.log("_selectTheMarker")
-    this._mapService.findMarkerByGenId(this._mapService.mapTop,"926")
+    this._mapService.findMarkerByGenId(this._mapService.mapTop,genId)
   }
 }

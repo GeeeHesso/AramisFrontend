@@ -213,18 +213,16 @@ export class MapService {
       },
     });
   }
+
   //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
+  //TODO return the marker not void
   findMarkerByGenId(map: L.Map, genIdToSearch: string): void {
     map.eachLayer((layer: L.Layer) => {
       if (layer instanceof CustomMarker) {
         const markerGenId = layer.getGenId();
         console.log(`Checking marker with genId: ${markerGenId} against ${genIdToSearch}`);
-
-        // Check if this marker has the genId we're searching for
         if (markerGenId == genIdToSearch) {
           console.log("Found the marker!");
-
-          // Create a new red icon
           const size = 25; // Adjust the size if needed
           let svgHtml = this._busService._constructFullSquareSVG(size, SELECT_GEN_COLOR);
           const redIcon = L.divIcon({
@@ -233,8 +231,6 @@ export class MapService {
             iconAnchor: [size / 2, size / 2],
             popupAnchor: [0, 0],
           });
-
-          // Set the new icon
           layer.setIcon(redIcon);
         }
       }
