@@ -6,6 +6,7 @@ import {
   MIN_SIZE,
 } from '@core/core.const';
 import L, { CircleMarker } from 'leaflet';
+import {CustomMarker} from "@models/CustomMarker";
 
 @Injectable({
   providedIn: 'root',
@@ -39,13 +40,15 @@ export class BusService {
         iconAnchor: [size / 2, size / 2],
         popupAnchor: [0, 0],
       });
-      const genIcon = L.marker(data.gen[g].coord, {
+      const genIcon = new CustomMarker(data.gen[g].coord, {
         icon: svgIcon,
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       });
-
+      genIcon.setGenId(data.gen[g].index)
+      console.log(genIcon)
       genIcon.addTo(map);
     });
+
   }
 
   /**
@@ -53,7 +56,7 @@ export class BusService {
    * @param gen
    * @private
    */
-  private _constructFullSquareSVG(size: number, color: string): string {
+   _constructFullSquareSVG(size: number, color: string): string {
     return (
       `<svg width="` +
       size +

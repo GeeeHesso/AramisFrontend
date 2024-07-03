@@ -71,8 +71,6 @@ export class ParametersComponent {
 
   launchSimulation(): void {
     this.parametersForm = this._formatParameters(this.parametersForm)
-    console.log("after _formatParameters")
-    console.log(this.parametersForm.value)
     this._mapService.launchSimulation(this.parametersForm)
   }
 
@@ -80,5 +78,10 @@ export class ParametersComponent {
     const targetsId: number[] = this.parametersForm.value.selectedTargets.map((t: string) => this.targets.get(t));
     this.parametersForm.value.selectedTargets = targetsId
     return parametersForm;
+  }
+
+  private _selectTheMarker($event: any) {
+    console.log("_selectTheMarker")
+    this._mapService.findMarkerByGenId(this._mapService.mapTop,"16")
   }
 }

@@ -17,7 +17,7 @@
   </mat-chip-listbox>
   <h2>Attack</h2>
   <mat-chip-listbox aria-label="Targets" multiple formControlName="selectedTargets">
-    <mat-chip-option *ngFor="let target of targets | keyvalue" [value]="target.key">{{ target.key }}</mat-chip-option>
+    <mat-chip-option *ngFor="let target of targets | keyvalue" [value]="target.key">{{ target.key }} </mat-chip-option>
   </mat-chip-listbox>
 
   <h2>Algorithms</h2>

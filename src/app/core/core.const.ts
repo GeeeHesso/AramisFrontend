@@ -4,4 +4,5 @@ export const MAX_SIZE = 10;
 export const MIN_SIZE = 2;
 
 export const DEFAULT_COLOR = '#000000';
+export const SELECT_GEN_COLOR = '#d21616';
 export const INACTIVE_COLOR = '#bfbfbf';
