@@ -11,6 +11,8 @@ import { DataService } from './data.service';
 import {ApiService} from "@services/api.service";
 import {FormGroup} from "@angular/forms";
 import {targetsParameters, timeParameters} from "@models/parameters";
+import {CustomMarker} from "@models/CustomMarker";
+import {SELECT_GEN_COLOR} from "@core/core.const";
 
 @Injectable({
   providedIn: 'root',
@@ -190,14 +192,9 @@ export class MapService {
       attacked_gens: formValue.selectedTargets.map(String), // Ensure the values are strings if required
     };
 
-    console.log("JSON TO SEND FOR ATTACK");
-    console.log(JSON.stringify(attackParams, null, 2)); // Pretty-print JSON for better readability
-
     this._apiService.postRealNetwork(timeParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
-        console.log(formattedData);
-        console.log("map top updated with real data");
         this.drawOnMap(this.mapTop, formattedData);
       },
       error: (error) => {
@@ -208,8 +205,6 @@ export class MapService {
     this._apiService.postAttackedNetwork(attackParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
-        console.log(formattedData);
-        console.log("map bottom updated with attacked data");
         this.drawOnMap(this.mapBottom, formattedData);
       },
       error: (error) => {
@@ -217,5 +212,33 @@ export class MapService {
         console.log(attackParams);
       },
     });
+  }
+  //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
+  findMarkerByGenId(map: L.Map, genIdToSearch: string): void {
+    map.eachLayer((layer: L.Layer) => {
+      if (layer instanceof CustomMarker) {
+        const markerGenId = layer.getGenId();
+        console.log(`Checking marker with genId: ${markerGenId} against ${genIdToSearch}`);
+
+        // Check if this marker has the genId we're searching for
+        if (markerGenId == genIdToSearch) {
+          console.log("Found the marker!");
+
+          // Create a new red icon
+          const size = 25; // Adjust the size if needed
+          let svgHtml = this._busService._constructFullSquareSVG(size, SELECT_GEN_COLOR);
+          const redIcon = L.divIcon({
+            html: svgHtml,
+            className: 'svg-icon',
+            iconAnchor: [size / 2, size / 2],
+            popupAnchor: [0, 0],
+          });
+
+          // Set the new icon
+          layer.setIcon(redIcon);
+        }
+      }
+    });
+
   }
 }

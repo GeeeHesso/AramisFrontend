@@ -30,7 +30,7 @@ import * as L from "leaflet";
     ReactiveFormsModule
   ],
 })
-export class ParametersComponent {
+export class ParametersComponent implements OnInit{
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   day = ['Weekday', 'Weekend'];
   hours = new Map([
@@ -68,7 +68,17 @@ export class ParametersComponent {
       selectedAlgo: [[], Validators.required],
     });
   }
-
+  ngOnInit(): void {
+    // Subscribe only to the selectedTargets form control value changes
+    this.parametersForm.get('selectedTargets')?.valueChanges.subscribe(value => {
+      this.onSelectedTargetsChange(value);
+    });
+  }
+  onSelectedTargetsChange(value: any): void {
+    console.log("onSelectedTargetsChange",value);
+    // Call your desired method here
+    this._selectTheMarker("");
+  }
   launchSimulation(): void {
     this.parametersForm = this._formatParameters(this.parametersForm)
     this._mapService.launchSimulation(this.parametersForm)
@@ -82,6 +92,6 @@ export class ParametersComponent {
 
   private _selectTheMarker($event: any) {
     console.log("_selectTheMarker")
-    this._mapService.findMarkerByGenId(this._mapService.mapTop,"16")
+    this._mapService.findMarkerByGenId(this._mapService.mapTop,"926")
   }
 }
