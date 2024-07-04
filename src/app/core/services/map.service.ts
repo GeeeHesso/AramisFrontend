@@ -247,12 +247,11 @@ export class MapService {
 
     if (Array.isArray(currentIconSize)) {
       size = currentIconSize[0];
-      console.log("if one")
+
     } else {
-      console.log("else")
       size = 25;
     }
-
+    console.log(size)
     let svgHtml = this._busService._constructFullSquareSVG(size, newColor);
     const newIcon = L.divIcon({
       html: svgHtml,

@@ -46,9 +46,10 @@ export class BusService {
       });
       genIcon.setGenId(data.gen[g].index)
       console.log(genIcon)
+      genIcon.on('click', () => this._onGenIconClick(genIcon));
+      console.log(genIcon)
       genIcon.addTo(map);
     });
-
   }
 
   /**
@@ -98,5 +99,9 @@ export class BusService {
 
     }
     return size;
+  }
+
+  private _onGenIconClick(genIcon: CustomMarker) {
+      console.log("marker clicked !")
   }
 }

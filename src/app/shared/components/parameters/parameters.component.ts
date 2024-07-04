@@ -33,7 +33,7 @@ import {BusService} from "@services/bus.service";
     ReactiveFormsModule
   ],
 })
-export class ParametersComponent implements OnInit{
+export class ParametersComponent implements OnInit {
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   day = ['Weekday', 'Weekend'];
   hours = new Map([
@@ -82,25 +82,28 @@ export class ParametersComponent implements OnInit{
       selectedAlgo: [[], Validators.required],
     });
   }
+
   ngOnInit(): void {
     this.parametersForm.get('selectedTargets')?.valueChanges.subscribe(value => {
       console.log("valueChanges")
       this.onSelectedTargetsChange(value);
     });
   }
+
   onSelectedTargetsChange(value: any): void {
     const listOfAllTargetsName = value
     const targetsId: number[] = listOfAllTargetsName.map((t: string) => this.targets.get(t));
 
-  //  targetsId.map(value => {
-  //    let foundMarker : CustomMarker | null = this._mapService.findMarkerByGenId(this._mapService.mapTop,value)
-  //    if (foundMarker) {
-  //      this._mapService.markMarkerAsSelectedOrUnselected(foundMarker);
-  //    }
-  //  })
-    this._updateSelectedMarkersOnMap(this._mapService.mapTop,targetsId)
+    //  targetsId.map(value => {
+    //    let foundMarker : CustomMarker | null = this._mapService.findMarkerByGenId(this._mapService.mapTop,value)
+    //    if (foundMarker) {
+    //      this._mapService.markMarkerAsSelectedOrUnselected(foundMarker);
+    //    }
+    //  })
+    this._updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId)
   }
-  _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[] ) {
+
+  _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
     map.eachLayer((marker: L.Layer) => {
       if (marker instanceof CustomMarker) {
         const markerGenId = marker.getGenId();
@@ -112,6 +115,7 @@ export class ParametersComponent implements OnInit{
       }
     });
   }
+
   launchSimulation(): void {
     this.parametersForm = this._formatParameters(this.parametersForm)
     this._mapService.launchSimulation(this.parametersForm)
@@ -124,17 +128,17 @@ export class ParametersComponent implements OnInit{
   }
 
   private setMarkerIcon(foundMarker: CustomMarker, SELECT_GEN_COLOR: string) {
-    const currentIconSize = foundMarker.getIcon().options.iconSize as L.PointExpression | undefined
+    const currentIconSize = foundMarker.getIcon().options.iconAnchor as L.PointExpression | undefined
     let size: number;
 
     if (Array.isArray(currentIconSize)) {
-      size = currentIconSize[0];
-      console.log("if one")
+      size = currentIconSize[0] * 2;
+
     } else {
-      console.log("else")
+
       size = 25;
     }
-
+    console.log(" if (Array.isArray(currentIconSize)) {", size)
     let svgHtml = this._busService._constructFullSquareSVG(size, SELECT_GEN_COLOR);
     const newIcon = L.divIcon({
       html: svgHtml,
