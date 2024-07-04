@@ -1,18 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Pantagruel } from '@core/models/pantagruel';
+import {Injectable} from '@angular/core';
+import {Pantagruel} from '@core/models/pantagruel';
 
-import { MapView } from '@core/models/map';
+import {MapView} from '@core/models/map';
 import * as L from 'leaflet';
-import { LatLng } from 'leaflet';
-import { Subject } from 'rxjs';
-import { BranchService } from './branch.service';
-import { BusService } from './bus.service';
-import { DataService } from './data.service';
+import {LatLng} from 'leaflet';
+import {Subject} from 'rxjs';
+import {BranchService} from './branch.service';
+import {BusService} from './bus.service';
+import {DataService} from './data.service';
 import {ApiService} from "@services/api.service";
 import {FormGroup} from "@angular/forms";
 import {targetsParameters, timeParameters} from "@models/parameters";
 import {CustomMarker} from "@models/CustomMarker";
-import {SELECT_GEN_COLOR} from "@core/core.const";
+import {INACTIVE_COLOR, SELECT_GEN_COLOR} from "@core/core.const";
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,8 @@ export class MapService {
     private _branchService: BranchService,
     private _dataService: DataService,
     private _apiService: ApiService
-  ) {}
+  ) {
+  }
 
   private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject becasue, behaviorSubject need to be initialize
 
@@ -87,7 +88,7 @@ export class MapService {
 
     this._view$.subscribe((view) => {
       if (view.map !== map) {
-        map.setView(view.center, view.zoom, { animate: false });
+        map.setView(view.center, view.zoom, {animate: false});
       }
     });
   }
@@ -97,6 +98,7 @@ export class MapService {
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(map, grid);
   }
+
 //TODO remove only the grid layer ?
   public clearMap(map: L.Map): void {
     map.eachLayer((layer) => {
@@ -129,12 +131,12 @@ export class MapService {
       ) {
         console.warn(
           'Branch ' +
-            br +
-            ' is not show because fromBus ' +
-            data.branch[br].f_bus +
-            ' or/and toBus ' +
-            data.branch[br].t_bus +
-            ' not found in dataset'
+          br +
+          ' is not show because fromBus ' +
+          data.branch[br].f_bus +
+          ' or/and toBus ' +
+          data.branch[br].t_bus +
+          ' not found in dataset'
         );
         delete data.branch[br];
         return;
@@ -156,8 +158,8 @@ export class MapService {
       )
         console.warn(
           'The branch ' +
-            data.branch[br].index +
-            ' cannot be display. The FROM coordinates are the same as the TO coordinates'
+          data.branch[br].index +
+          ' cannot be display. The FROM coordinates are the same as the TO coordinates'
         );
     });
 
@@ -186,7 +188,7 @@ export class MapService {
       hour: formValue.hour,
     };
 
-    const timeParams: timeParameters = { ...commonParams };
+    const timeParams: timeParameters = {...commonParams};
     const attackParams: targetsParameters = {
       ...commonParams,
       attacked_gens: formValue.selectedTargets.map(String), // Ensure the values are strings if required
@@ -216,25 +218,53 @@ export class MapService {
 
   //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
   //TODO return the marker not void
-  findMarkerByGenId(map: L.Map, genIdToSearch: string): void {
+  findMarkerByGenId(map: L.Map, genIdToSearch: number): CustomMarker | null {
+    let foundMarker: CustomMarker | null = null;
+
     map.eachLayer((layer: L.Layer) => {
       if (layer instanceof CustomMarker) {
         const markerGenId = layer.getGenId();
-        console.log(`Checking marker with genId: ${markerGenId} against ${genIdToSearch}`);
+        //console.log(`Checking marker with genId: ${markerGenId} against ${genIdToSearch}`);
         if (markerGenId == genIdToSearch) {
-          console.log("Found the marker!");
-          const size = 25; // Adjust the size if needed
-          let svgHtml = this._busService._constructFullSquareSVG(size, SELECT_GEN_COLOR);
-          const redIcon = L.divIcon({
-            html: svgHtml,
-            className: 'svg-icon',
-            iconAnchor: [size / 2, size / 2],
-            popupAnchor: [0, 0],
-          });
-          layer.setIcon(redIcon);
+         // console.log("Found the marker!");
+          foundMarker = layer;
         }
       }
     });
-
+    return foundMarker;
   }
+
+  markMarkerAsSelectedOrUnselected(foundMarker: CustomMarker) {
+
+    const currentIconHtml = foundMarker.getElement()?.querySelector('.svg-icon')?.innerHTML;
+    const currentIconSize = foundMarker.getIcon().options.iconSize as L.PointExpression | undefined
+    let size: number;
+
+    let newColor = SELECT_GEN_COLOR;
+    if (currentIconHtml?.includes(SELECT_GEN_COLOR)) {
+      newColor = INACTIVE_COLOR;
+    }
+
+    if (Array.isArray(currentIconSize)) {
+      size = currentIconSize[0];
+      console.log("if one")
+    } else {
+      console.log("else")
+      size = 25;
+    }
+
+    let svgHtml = this._busService._constructFullSquareSVG(size, newColor);
+    const newIcon = L.divIcon({
+      html: svgHtml,
+      className: 'svg-icon',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+      popupAnchor: [0, 0],
+    });
+
+
+    foundMarker.setIcon(newIcon);
+  }
+
+
 }

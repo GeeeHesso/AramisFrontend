@@ -33,7 +33,7 @@ export class BusService {
         ) + zoom;
 
       let svgHtml = this._constructFullSquareSVG(size, color);
-
+    console.log("size set : ",size )
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',

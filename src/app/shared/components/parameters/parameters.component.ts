@@ -11,6 +11,9 @@ import {algorithmsParameters, targetsParameters, timeParameters} from '@core/mod
 import {ApiService} from '@core/services/api.service';
 import {MapService} from '@core/services/map.service';
 import * as L from "leaflet";
+import {CustomMarker} from "@models/CustomMarker";
+import {INACTIVE_COLOR, SELECT_GEN_COLOR} from "@core/core.const";
+import {BusService} from "@services/bus.service";
 
 @Component({
   standalone: true,
@@ -70,7 +73,7 @@ export class ParametersComponent implements OnInit{
 
   parametersForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private _mapService: MapService, private _apiService: ApiService) {
+  constructor(private fb: FormBuilder, private _mapService: MapService, private _apiService: ApiService, private _busService: BusService) {
     this.parametersForm = this.fb.group({
       season: ['', Validators.required],
       day: ['', Validators.required],
@@ -80,20 +83,34 @@ export class ParametersComponent implements OnInit{
     });
   }
   ngOnInit(): void {
-    // Subscribe only to the selectedTargets form control value changes
     this.parametersForm.get('selectedTargets')?.valueChanges.subscribe(value => {
+      console.log("valueChanges")
       this.onSelectedTargetsChange(value);
     });
   }
   onSelectedTargetsChange(value: any): void {
     const listOfAllTargetsName = value
-    console.log("listOfAllTargetsName",listOfAllTargetsName)
     const targetsId: number[] = listOfAllTargetsName.map((t: string) => this.targets.get(t));
 
-    targetsId.map(value => {
-      this._selectTheMarker(value.toString());
-    })
-
+  //  targetsId.map(value => {
+  //    let foundMarker : CustomMarker | null = this._mapService.findMarkerByGenId(this._mapService.mapTop,value)
+  //    if (foundMarker) {
+  //      this._mapService.markMarkerAsSelectedOrUnselected(foundMarker);
+  //    }
+  //  })
+    this._updateSelectedMarkersOnMap(this._mapService.mapTop,targetsId)
+  }
+  _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[] ) {
+    map.eachLayer((marker: L.Layer) => {
+      if (marker instanceof CustomMarker) {
+        const markerGenId = marker.getGenId();
+        if (selectedTargets.includes(markerGenId)) {
+          this.setMarkerIcon(marker, SELECT_GEN_COLOR);
+        } else {
+          this.setMarkerIcon(marker, INACTIVE_COLOR);
+        }
+      }
+    });
   }
   launchSimulation(): void {
     this.parametersForm = this._formatParameters(this.parametersForm)
@@ -106,8 +123,26 @@ export class ParametersComponent implements OnInit{
     return parametersForm;
   }
 
-  private _selectTheMarker(genId: string) {
-    console.log("_selectTheMarker")
-    this._mapService.findMarkerByGenId(this._mapService.mapTop,genId)
+  private setMarkerIcon(foundMarker: CustomMarker, SELECT_GEN_COLOR: string) {
+    const currentIconSize = foundMarker.getIcon().options.iconSize as L.PointExpression | undefined
+    let size: number;
+
+    if (Array.isArray(currentIconSize)) {
+      size = currentIconSize[0];
+      console.log("if one")
+    } else {
+      console.log("else")
+      size = 25;
+    }
+
+    let svgHtml = this._busService._constructFullSquareSVG(size, SELECT_GEN_COLOR);
+    const newIcon = L.divIcon({
+      html: svgHtml,
+      className: 'svg-icon',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+      popupAnchor: [0, 0],
+    });
+    foundMarker.setIcon(newIcon);
   }
 }
