@@ -6,7 +6,7 @@ import {
   MIN_SIZE,
 } from '@core/core.const';
 import L, { CircleMarker } from 'leaflet';
-import {CustomMarker} from "@models/CustomMarker";
+import {CustomMarker,CustomMarkerV2} from "@models/CustomMarker";
 
 @Injectable({
   providedIn: 'root',
@@ -44,11 +44,21 @@ export class BusService {
         icon: svgIcon,
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       });
-      genIcon.setGenId(data.gen[g].index)
+
+      var customMarker = new CustomMarkerV2(data.gen[g].coord, {
+        icon: svgIcon,
+        pane: 'shadowPane', // important to force bus go over svg (to bind popup)
+      }).addTo(map);
+
+// Add click event listener
+      customMarker.on('click', () => console.log("marker clicked")).addTo(map);
+
+     // genIcon.setGenId(data.gen[g].index)
+      customMarker.setGenId(data.gen[g].index)
       console.log(genIcon)
       genIcon.on('click', () => this._onGenIconClick(genIcon));
       console.log(genIcon)
-      genIcon.addTo(map);
+     // genIcon.addTo(map);
     });
   }
 

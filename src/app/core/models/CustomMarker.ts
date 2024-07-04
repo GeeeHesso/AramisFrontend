@@ -16,3 +16,17 @@ export class CustomMarker extends L.Marker {
     this.genId = genId;
   }
 }
+
+export var CustomMarkerV2 = L.Marker.include({
+  options: {
+    genId: null,
+  },
+
+  getGenId: function() {
+    return this.options.genId;
+  },
+
+  setGenId: function(genId:any) {
+    this.options.genId = genId;
+  }
+});
