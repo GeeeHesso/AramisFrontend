@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   DEFAULT_COLOR,
   INACTIVE_COLOR,
   MAX_SIZE,
   MIN_SIZE,
 } from '@core/core.const';
-import L, { CircleMarker } from 'leaflet';
-import {CustomMarker,CustomMarkerV2} from "@models/CustomMarker";
+import L, {CircleMarker} from 'leaflet';
+import {CustomMarker} from "@models/CustomMarker";
 
 @Injectable({
   providedIn: 'root',
@@ -33,32 +33,21 @@ export class BusService {
         ) + zoom;
 
       let svgHtml = this._constructFullSquareSVG(size, color);
-    console.log("size set : ",size )
+      console.log("size set : ", size)
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
         iconAnchor: [size / 2, size / 2],
         popupAnchor: [0, 0],
       });
-      const genIcon = new CustomMarker(data.gen[g].coord, {
-        icon: svgIcon,
-        pane: 'shadowPane', // important to force bus go over svg (to bind popup)
-      });
 
-      var customMarker = new CustomMarkerV2(data.gen[g].coord, {
+      var customMarker = new CustomMarker(data.gen[g].coord, {
         icon: svgIcon,
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       }).addTo(map);
 
-// Add click event listener
-      customMarker.on('click', () => console.log("marker clicked")).addTo(map);
-
-     // genIcon.setGenId(data.gen[g].index)
       customMarker.setGenId(data.gen[g].index)
-      console.log(genIcon)
-      genIcon.on('click', () => this._onGenIconClick(genIcon));
-      console.log(genIcon)
-     // genIcon.addTo(map);
+      customMarker.on('click', () => console.log("marker clicked")).addTo(map);
     });
   }
 
@@ -67,7 +56,7 @@ export class BusService {
    * @param gen
    * @private
    */
-   _constructFullSquareSVG(size: number, color: string): string {
+  _constructFullSquareSVG(size: number, color: string): string {
     return (
       `<svg width="` +
       size +
@@ -111,7 +100,5 @@ export class BusService {
     return size;
   }
 
-  private _onGenIconClick(genIcon: CustomMarker) {
-      console.log("marker clicked !")
-  }
+
 }

@@ -218,8 +218,8 @@ export class MapService {
 
   //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
   //TODO return the marker not void
-  findMarkerByGenId(map: L.Map, genIdToSearch: number): CustomMarker | null {
-    let foundMarker: CustomMarker | null = null;
+  findMarkerByGenId(map: L.Map, genIdToSearch: number):  CustomMarker | null {
+    let foundMarker:  CustomMarker | null = null;
 
     map.eachLayer((layer: L.Layer) => {
       if (layer instanceof CustomMarker) {
