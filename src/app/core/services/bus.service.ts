@@ -106,9 +106,6 @@ export class BusService {
   }
 
   _addSelectedGenUsingTheMap(marker: CustomMarker) {
-    // Check if already added in the list
-    // If yes, remove it
-    // If no, add it
     this._parametersService.addOrRemoveSelectedTarget(marker.getGenId());
   }
 
