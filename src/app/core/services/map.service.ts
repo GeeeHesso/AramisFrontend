@@ -9,7 +9,7 @@ import {BranchService} from './branch.service';
 import {BusService} from './bus.service';
 import {DataService} from './data.service';
 import {ApiService} from "@services/api.service";
-import {FormGroup} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {targetsParameters, timeParameters} from "@models/parameters";
 import {CustomMarker} from "@models/CustomMarker";
 import {INACTIVE_COLOR, SELECT_GEN_COLOR} from "@core/core.const";
@@ -99,7 +99,6 @@ export class MapService {
     this._busService.drawGen(map, grid);
   }
 
-//TODO remove only the grid layer ?
   public clearMap(map: L.Map): void {
     map.eachLayer((layer) => {
       layer.remove();

@@ -149,4 +149,9 @@ export class ParametersComponent implements OnInit {
     });
     foundMarker.setIcon(newIcon);
   }
+   setSelectedTarget(target: any) {
+    const currentTargets = this.parametersForm.get('selectedTargets')?.value || [];
+    this.parametersForm.get('selectedTargets')?.setValue([...currentTargets, target]);
+  }
+
 }

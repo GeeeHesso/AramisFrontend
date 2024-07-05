@@ -47,7 +47,7 @@ export class BusService {
       }).addTo(map);
 
       customMarker.setGenId(data.gen[g].index)
-      customMarker.on('click', () => console.log("marker clicked")).addTo(map);
+      customMarker.on('click', () => this._addSelectedGenUsingTheMap(customMarker)).addTo(map);
     });
   }
 
@@ -98,6 +98,15 @@ export class BusService {
 
     }
     return size;
+  }
+
+
+  _addSelectedGenUsingTheMap(marker: CustomMarker) {
+    console.log('Marker clicked:', marker);
+    console.log('GenId:', marker.getGenId());
+    // get the genid of the marker
+    const genToSearch = marker.getGenId()
+    //add the new genId in the form
   }
 
 
