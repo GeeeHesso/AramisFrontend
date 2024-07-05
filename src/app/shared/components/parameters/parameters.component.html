@@ -1,6 +1,6 @@
 <h2>Data source</h2>
 
-<form [formGroup]="parametersForm">
+<form [formGroup]="this.parametersService.getForm()">
   <h3>Season</h3>
   <mat-chip-listbox aria-label="Season" formControlName="season">
     <mat-chip-option *ngFor="let season of seasons" [value]="season">{{ season }}</mat-chip-option>
@@ -28,4 +28,4 @@
 
 
 
-<button mat-flat-button color="primary" (click)="launchSimulation()" [disabled]="parametersForm.invalid">Launch simulation</button>
+<button mat-flat-button color="primary" (click)="launchSimulation()" [disabled]="this.parametersService.getForm()">Launch simulation</button>

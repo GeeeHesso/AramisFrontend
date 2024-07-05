@@ -1,19 +1,19 @@
-import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatRadioModule} from '@angular/material/radio';
-import {MatSelectModule} from '@angular/material/select';
-import {algorithmsParameters, targetsParameters, timeParameters} from '@core/models/parameters';
-import {ApiService} from '@core/services/api.service';
-import {MapService} from '@core/services/map.service';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import * as L from "leaflet";
-import {CustomMarker} from "@models/CustomMarker";
-import {INACTIVE_COLOR, SELECT_GEN_COLOR} from "@core/core.const";
-import {BusService} from "@services/bus.service";
+import { CustomMarker } from "@models/CustomMarker";
+import { INACTIVE_COLOR, SELECT_GEN_COLOR } from "@core/core.const";
+import { BusService } from "@services/bus.service";
+import { MapService } from '@core/services/map.service';
+import { ParametersService } from '@core/services/parameters.service';
+import {ApiService} from "@services/api.service";
 
 @Component({
   standalone: true,
@@ -71,36 +71,19 @@ export class ParametersComponent implements OnInit {
   ]);
   algorithmList = ['MLPR'];
 
-  parametersForm: FormGroup;
-
-  constructor(private fb: FormBuilder, private _mapService: MapService, private _apiService: ApiService, private _busService: BusService) {
-    this.parametersForm = this.fb.group({
-      season: ['', Validators.required],
-      day: ['', Validators.required],
-      hour: ['', Validators.required],
-      selectedTargets: [[], Validators.required],
-      selectedAlgo: [[], Validators.required],
-    });
-  }
+  constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public parametersService: ParametersService) {}
 
   ngOnInit(): void {
-    this.parametersForm.get('selectedTargets')?.valueChanges.subscribe(value => {
-      console.log("valueChanges")
+    this.parametersService.getForm().get('selectedTargets')?.valueChanges.subscribe(value => {
+      console.log("valueChanges");
       this.onSelectedTargetsChange(value);
+      console.log(this.parametersService.getForm().get('selectedTargets')?.value)
     });
   }
 
   onSelectedTargetsChange(value: any): void {
-    const listOfAllTargetsName = value
-    const targetsId: number[] = listOfAllTargetsName.map((t: string) => this.targets.get(t));
-
-    //  targetsId.map(value => {
-    //    let foundMarker : CustomMarker | null = this._mapService.findMarkerByGenId(this._mapService.mapTop,value)
-    //    if (foundMarker) {
-    //      this._mapService.markMarkerAsSelectedOrUnselected(foundMarker);
-    //    }
-    //  })
-    this._updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId)
+    const targetsId = this.parametersService.updateSelectedTargets(value, this.targets);
+    this._updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId);
   }
 
   _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
@@ -117,28 +100,26 @@ export class ParametersComponent implements OnInit {
   }
 
   launchSimulation(): void {
-    this.parametersForm = this._formatParameters(this.parametersForm)
-    this._mapService.launchSimulation(this.parametersForm)
+    const parametersForm = this.parametersService.getForm();
+    this._formatParameters(parametersForm);
+    this._mapService.launchSimulation(parametersForm);
   }
 
   private _formatParameters(parametersForm: FormGroup): FormGroup {
-    const targetsId: number[] = this.parametersForm.value.selectedTargets.map((t: string) => this.targets.get(t));
-    this.parametersForm.value.selectedTargets = targetsId
+    const targetsId: number[] = parametersForm.value.selectedTargets.map((t: string) => this.targets.get(t));
+    parametersForm.value.selectedTargets = targetsId;
     return parametersForm;
   }
 
   private setMarkerIcon(foundMarker: CustomMarker, SELECT_GEN_COLOR: string) {
-    const currentIconSize = foundMarker.getIcon().options.iconAnchor as L.PointExpression | undefined
+    const currentIconSize = foundMarker.getIcon().options.iconAnchor as L.PointExpression | undefined;
     let size: number;
 
     if (Array.isArray(currentIconSize)) {
       size = currentIconSize[0] * 2;
-
     } else {
-
       size = 25;
     }
-    console.log(" if (Array.isArray(currentIconSize)) {", size)
     let svgHtml = this._busService._constructFullSquareSVG(size, SELECT_GEN_COLOR);
     const newIcon = L.divIcon({
       html: svgHtml,
@@ -149,9 +130,4 @@ export class ParametersComponent implements OnInit {
     });
     foundMarker.setIcon(newIcon);
   }
-   setSelectedTarget(target: any) {
-    const currentTargets = this.parametersForm.get('selectedTargets')?.value || [];
-    this.parametersForm.get('selectedTargets')?.setValue([...currentTargets, target]);
-  }
-
 }

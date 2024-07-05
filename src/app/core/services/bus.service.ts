@@ -7,12 +7,16 @@ import {
 } from '@core/core.const';
 import L, {CircleMarker} from 'leaflet';
 import {CustomMarker} from "@models/CustomMarker";
+import {ParametersService} from "@services/parameters.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class BusService {
   public busMarkers: CircleMarker[] = [];
+
+  constructor(public _parametersService: ParametersService ) {
+  }
 
   /**
    * Draw generators (square) on the map
@@ -33,7 +37,6 @@ export class BusService {
         ) + zoom;
 
       let svgHtml = this._constructFullSquareSVG(size, color);
-      console.log("size set : ", size)
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
@@ -81,6 +84,8 @@ export class BusService {
    * @param maxValue
    * @private
    */
+
+
   private _getSizeProportionalMax(
     val: number,
     minValue: number,
@@ -100,13 +105,11 @@ export class BusService {
     return size;
   }
 
-
   _addSelectedGenUsingTheMap(marker: CustomMarker) {
-    console.log('Marker clicked:', marker);
-    console.log('GenId:', marker.getGenId());
-    // get the genid of the marker
-    const genToSearch = marker.getGenId()
-    //add the new genId in the form
+    // Check if already added in the list
+    // If yes, remove it
+    // If no, add it
+    this._parametersService.addOrRemoveSelectedTarget(marker.getGenId());
   }
 
 

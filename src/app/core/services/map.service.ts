@@ -170,7 +170,6 @@ export class MapService {
     this._apiService.getInitialGrid().subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
-        console.log(formattedData);
         this.drawOnMap(mapTop, formattedData);
       },
       error: (error) => {
@@ -210,7 +209,6 @@ export class MapService {
       },
       error: (error) => {
         console.error(error)
-        console.log(attackParams);
       },
     });
   }
@@ -223,9 +221,9 @@ export class MapService {
     map.eachLayer((layer: L.Layer) => {
       if (layer instanceof CustomMarker) {
         const markerGenId = layer.getGenId();
-        //console.log(`Checking marker with genId: ${markerGenId} against ${genIdToSearch}`);
+
         if (markerGenId == genIdToSearch) {
-         // console.log("Found the marker!");
+
           foundMarker = layer;
         }
       }
@@ -250,7 +248,7 @@ export class MapService {
     } else {
       size = 25;
     }
-    console.log(size)
+
     let svgHtml = this._busService._constructFullSquareSVG(size, newColor);
     const newIcon = L.divIcon({
       html: svgHtml,
