@@ -30,7 +30,7 @@ export class ParametersService {
     return this.parametersForm;
   }
 
-  updateSelectedTargets(targetsList: any[], targetsMap: Map<string, number>) :number[] {
+  getTargetsIdByNames(targetsList: any[], targetsMap: Map<string, number>) :number[] {
     return targetsList.map(target => {
       const targetId = targetsMap.get(target);
       return targetId !== undefined ? targetId : Number(target);

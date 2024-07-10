@@ -82,7 +82,7 @@ export class ParametersComponent implements OnInit {
   }
 
   onSelectedTargetsChange(value: any): void {
-    const targetsId = this.parametersService.updateSelectedTargets(value, this.targets);
+    const targetsId = this.parametersService.getTargetsIdByNames(value, this.targets);
     this._updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId);
   }
 
