@@ -189,9 +189,19 @@ export class MapService {
     const timeParams: timeParameters = {...commonParams};
     const attackParams: targetsParameters = {
       ...commonParams,
-      attacked_gens: formValue.selectedTargets.map(String), // Ensure the values are strings if required
+      attacked_gens: formValue.selectedTargets.map(String),
     };
 
+    console.log("attackParams",attackParams)
+    this._apiService.postAttackedNetwork(attackParams).subscribe({
+      next: (data) => {
+        const formattedData = this.getFormattedPantagruelData(data);
+        this.drawOnMap(this.mapBottom, formattedData);
+      },
+      error: (error) => {
+        console.error(error)
+      },
+    });
     this._apiService.postRealNetwork(timeParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
@@ -202,15 +212,7 @@ export class MapService {
       },
     });
 
-    this._apiService.postAttackedNetwork(attackParams).subscribe({
-      next: (data) => {
-        const formattedData = this.getFormattedPantagruelData(data);
-        this.drawOnMap(this.mapBottom, formattedData);
-      },
-      error: (error) => {
-        console.error(error)
-      },
-    });
+
   }
 
   //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker

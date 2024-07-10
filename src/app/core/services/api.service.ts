@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Pantagruel } from '@core/models/pantagruel';
 import {
@@ -24,11 +24,23 @@ export class ApiService {
   }
 
   postAttackedNetwork(data: targetsParameters) {
-    return this.http.post<Pantagruel>(`${this.baseUrl}/attacked_network`, data);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    });
+    console.log("postAttackedNetwork")
+    console.log(data)
+    return this.http.post<Pantagruel>(`${this.baseUrl}/attacked_network`, data, { headers });
   }
 
   postRealNetwork(data: timeParameters) {
-    return this.http.post<Pantagruel>(`${this.baseUrl}/real_network`, data);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    });
+    console.log("postRealNetwork")
+    console.log(data)
+    return this.http.post<Pantagruel>(`${this.baseUrl}/real_network`, data, { headers });
   }
 
   //@TODO: no any !! define interface in core models

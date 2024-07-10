@@ -42,10 +42,10 @@ export class ParametersService {
     const targetIndex = currentTargets.indexOf(targetId);
 
     if (targetIndex > -1) {
-      // Remove target if it exists
+
       currentTargets.splice(targetIndex, 1);
     } else {
-      // Add target if it doesn't exist
+
       currentTargets.push(targetId);
     }
 
