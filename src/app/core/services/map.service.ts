@@ -97,6 +97,7 @@ export class MapService {
     this.clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(map, grid);
+
   }
 
   public clearMap(map: L.Map): void {
@@ -191,7 +192,16 @@ export class MapService {
       ...commonParams,
       attacked_gens: formValue.selectedTargets.map(String),
     };
-
+    console.log("timeParams",timeParams)
+    this._apiService.postRealNetwork(timeParams).subscribe({
+      next: (data) => {
+        const formattedData = this.getFormattedPantagruelData(data);
+        this.drawOnMap(this.mapTop, formattedData);
+      },
+      error: (error) => {
+        console.error('Error:', error);
+      },
+    });
     console.log("attackParams",attackParams)
     this._apiService.postAttackedNetwork(attackParams).subscribe({
       next: (data) => {
@@ -202,16 +212,6 @@ export class MapService {
         console.error(error)
       },
     });
-    this._apiService.postRealNetwork(timeParams).subscribe({
-      next: (data) => {
-        const formattedData = this.getFormattedPantagruelData(data);
-        this.drawOnMap(this.mapTop, formattedData);
-      },
-      error: (error) => {
-        console.error('Error:', error);
-      },
-    });
-
 
   }
 

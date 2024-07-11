@@ -3,7 +3,7 @@ import {
   DEFAULT_COLOR,
   INACTIVE_COLOR,
   MAX_SIZE,
-  MIN_SIZE,
+  MIN_SIZE, SELECT_GEN_COLOR,
 } from '@core/core.const';
 import L, {CircleMarker} from 'leaflet';
 import {CustomMarker} from "@models/CustomMarker";
@@ -25,16 +25,19 @@ export class BusService {
    */
   public drawGen(map: L.Map, data: any): void {
     const zoom = map.getZoom();
+    const selectedTargets = this._parametersService.getForm().get('selectedTargets')?.value || [];
 
     Object.keys(data.gen).forEach((g) => {
+      // Check if the current generator index is in the selectedTargets array
+      const isSelected = selectedTargets.includes(data.gen[g].index);
+
       // Style
-      const color = data.gen[g].status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR;
-      const size =
-        this._getSizeProportionalMax(
-          data.gen[g].pmax,
-          data.GEN_MIN_MAX_PROD,
-          data.GEN_MAX_MAX_PROD
-        ) + zoom;
+      const color = isSelected ? SELECT_GEN_COLOR : (data.gen[g].status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR);
+      const size = this._getSizeProportionalMax(
+        data.gen[g].pmax,
+        data.GEN_MIN_MAX_PROD,
+        data.GEN_MAX_MAX_PROD
+      ) + zoom;
 
       let svgHtml = this._constructFullSquareSVG(size, color);
       const svgIcon = L.divIcon({
@@ -49,7 +52,7 @@ export class BusService {
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       }).addTo(map);
 
-      customMarker.setGenId(data.gen[g].index)
+      customMarker.setGenId(data.gen[g].index);
       customMarker.on('click', () => this._addSelectedGenUsingTheMap(customMarker)).addTo(map);
     });
   }
@@ -108,6 +111,7 @@ export class BusService {
   _addSelectedGenUsingTheMap(marker: CustomMarker) {
     this._parametersService.addOrRemoveSelectedTarget(marker.getGenId());
   }
+
 
 
 }
