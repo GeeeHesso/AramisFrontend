@@ -13,6 +13,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {targetsParameters, timeParameters} from "@models/parameters";
 import {CustomMarker} from "@models/CustomMarker";
 import {INACTIVE_COLOR, SELECT_GEN_COLOR} from "@core/core.const";
+import {ParametersService} from "@services/parameters.service";
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,7 @@ export class MapService {
   private zoomControl = false; // Disable the default zoom control
   private attributionControl = false; // Disable the attribution control
   constructor(
+    private _parametersService: ParametersService,
     private _busService: BusService,
     private _branchService: BranchService,
     private _dataService: DataService,
@@ -187,12 +189,21 @@ export class MapService {
       hour: formValue.hour,
     };
 
-    const timeParams: timeParameters = {...commonParams};
+    const timeParams: timeParameters = { ...commonParams };
+
+    const selectedTargets = this._parametersService.getForm().get('selectedTargets')?.value;
+
+    if (!Array.isArray(selectedTargets)) {
+      console.error("Selected targets are not an array:", selectedTargets);
+      return;
+    }
+
     const attackParams: targetsParameters = {
       ...commonParams,
-      attacked_gens: formValue.selectedTargets.map(String),
+      attacked_gens: selectedTargets.map(String), // Convert to array of strings
     };
-    console.log("timeParams",timeParams)
+
+    console.log("timeParams", timeParams);
     this._apiService.postRealNetwork(timeParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
@@ -202,17 +213,17 @@ export class MapService {
         console.error('Error:', error);
       },
     });
-    console.log("attackParams",attackParams)
+
+    console.log("attackParams", attackParams);
     this._apiService.postAttackedNetwork(attackParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(this.mapBottom, formattedData);
       },
       error: (error) => {
-        console.error(error)
+        console.error(error);
       },
     });
-
   }
 
   //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
