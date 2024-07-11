@@ -32,11 +32,19 @@ export class ParametersService {
     return this.parametersForm;
   }
 
-  getTargetsIdByNames(targetsList: any[], targetsMap: Map<string, number>) :number[] {
-    return targetsList.map(target => {
-      const targetId = targetsMap.get(target);
-      return targetId !== undefined ? targetId : Number(target);
+  getTargetsIdByNames(targetsList: any[], targetsMap: Map<number, string>): number[] {
+    const targetsId: number[] = [];
+
+    targetsList.forEach(target => {
+      const targetId = Array.from(targetsMap.entries()).find(([key, value]) => value === target)?.[0];
+      if (targetId !== undefined) {
+        targetsId.push(targetId);
+      } else {
+        targetsId.push(Number(target));
+      }
     });
+
+    return targetsId;
   }
 
   addOrRemoveSelectedTarget(targetId: number) {
@@ -73,7 +81,6 @@ export class ParametersService {
         }
       }
     });
-
     console.log("potentialTargets",this.potentialTargets)
   }
 }

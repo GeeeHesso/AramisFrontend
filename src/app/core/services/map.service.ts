@@ -169,7 +169,6 @@ export class MapService {
   }
 
   private _defaultgridInit(mapTop: L.Map) {
-    // example with get
     this._apiService.getInitialGrid().subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);

@@ -29,7 +29,7 @@ export class BusService {
 
     Object.keys(data.gen).forEach((g) => {
       // Check if the current generator index is in the selectedTargets array
-      const isSelected = selectedTargets.includes(data.gen[g].index);
+      const isSelected = selectedTargets.includes(data.gen[g].gen_bus);
 
       // Style
       const color = isSelected ? SELECT_GEN_COLOR : (data.gen[g].status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR);
@@ -52,7 +52,7 @@ export class BusService {
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       }).addTo(map);
 
-      customMarker.setGenId(data.gen[g].index);
+      customMarker.setGenId(data.gen[g].gen_bus);
       customMarker.on('click', () => this._addSelectedGenUsingTheMap(customMarker)).addTo(map);
     });
   }

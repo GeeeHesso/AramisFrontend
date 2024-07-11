@@ -48,18 +48,18 @@ export class ParametersComponent implements OnInit {
 
   algorithmList = ['MLPR'];
 
-  constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public parametersService: ParametersService) {}
+  constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public _parametersService: ParametersService) {}
 
   ngOnInit(): void {
-    this.parametersService.getForm().get('selectedTargets')?.valueChanges.subscribe(value => {
+    this._parametersService.getForm().get('selectedTargets')?.valueChanges.subscribe(value => {
       console.log("valueChanges");
       this.onSelectedTargetsChange(value);
-      console.log(this.parametersService.getForm().get('selectedTargets')?.value)
+      console.log(this._parametersService.getForm().get('selectedTargets')?.value)
     });
   }
 
   onSelectedTargetsChange(value: any): void {
-    const targetsId = this.parametersService.getTargetsIdByNames(value, this.targets);
+    const targetsId = this._parametersService.getTargetsIdByNames(value, this._parametersService.potentialTargets);
     this._updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId);
   }
 
@@ -77,14 +77,22 @@ export class ParametersComponent implements OnInit {
   }
 
   launchSimulation(): void {
-    const parametersForm = this.parametersService.getForm();
+    const parametersForm = this._parametersService.getForm();
     this._formatParameters(parametersForm);
     this._mapService.launchSimulation(parametersForm);
   }
 
   private _formatParameters(parametersForm: FormGroup): FormGroup {
-    const targetsId: number[] = parametersForm.value.selectedTargets.map((t: string) => this.targets.get(t));
-    parametersForm.value.selectedTargets = targetsId;
+    const targetsId: number[] = parametersForm.value.selectedTargets.map((t: string) => {
+      const targetId = Array.from(this._parametersService.potentialTargets.entries()).find(([key, value]) => value === t)?.[0];
+      if (targetId === undefined) {
+        throw new Error(`No potential target found for name: ${t}`);
+      }
+      return targetId;
+    });
+
+    // Use the patchValue method to update the form value without directly modifying the form object
+    parametersForm.patchValue({ selectedTargets: targetsId });
     return parametersForm;
   }
 
