@@ -174,6 +174,7 @@ export class MapService {
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(mapTop, formattedData);
+        this._parametersService.populatePotentialTargets(data)
       },
       error: (error) => {
         //@todo

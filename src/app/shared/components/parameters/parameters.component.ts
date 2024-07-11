@@ -45,30 +45,7 @@ export class ParametersComponent implements OnInit {
     ['18-22h', 20],
   ]);
 
-  targets = new Map([
-    ['Cavergno', 908],
-    ['Innertkirchen', 910],
-    ['Löbbia', 912],
-    ['Pradella', 913],
-    ['Riddes', 915],
-    ['Rothenbrunnen', 916],
-    ['Sedrun', 917],
-    ['Sils', 920],
-    ['Stalden', 921],
-    ['Tavanasa', 923],
-  ]);
-  targetsTrue = new Map([
-    ['Cavergno', 16],
-    ['Innertkirchen', 15],
-    ['Löbbia', 7],
-    ['Pradella', 29],
-    ['Riddes', 30],
-    ['Rothenbrunnen', 36],
-    ['Sedrun', 35],
-    ['Sils', 18],
-    ['Stalden', 6],
-    ['Tavanasa', 24],
-  ]);
+
   algorithmList = ['MLPR'];
 
   constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public parametersService: ParametersService) {}
