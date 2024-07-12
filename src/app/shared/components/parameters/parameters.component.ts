@@ -86,15 +86,16 @@ export class ParametersComponent implements OnInit {
 
   private _formatParameters(parametersForm: FormGroup): number[] {
     const targetsId: number[] = [];
-    const selectedTargets = parametersForm.value.selectedTargets;
+    const selectedTargets = parametersForm.value.selectedTargets as string[]; // Explicitly cast to string array
 
     if (Array.isArray(selectedTargets)) {
       selectedTargets.forEach((t: string) => {
-        console.log("selectedTargets.forEach", this._parametersService.potentialTargets);
+        console.log("FOR T ",t)
         const foundIndex = this._mapService.findMarkerIndexByGenId(this._mapService.mapTop, t);
-        if (foundIndex !== null) {
+        if (foundIndex != null && foundIndex != undefined) { // Ensure foundIndex is not null or undefined
           targetsId.push(foundIndex);
         } else {
+          console.log(foundIndex)
           throw new Error(`No genIndex found for genbusId: ${t}`);
         }
       });
