@@ -181,7 +181,7 @@ export class MapService {
     });
   }
 
-  launchSimulation(data: FormGroup) {
+  launchSimulation(data: FormGroup, formattedTargetsId: number[]) {
     const formValue = data.value;
     const commonParams = {
       season: formValue.season.toLowerCase(),
@@ -200,7 +200,7 @@ export class MapService {
 
     const attackParams: targetsParameters = {
       ...commonParams,
-      attacked_gens: selectedTargets.map(String), // Convert to array of strings
+      attacked_gens: formattedTargetsId.map(String), // Convert to array of strings
     };
 
     console.log("timeParams", timeParams);
@@ -228,20 +228,20 @@ export class MapService {
 
   //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
   //TODO return the marker not void
-  findMarkerByGenId(map: L.Map, genIdToSearch: number):  CustomMarker | null {
-    let foundMarker:  CustomMarker | null = null;
+  findMarkerIndexByGenId(map: L.Map, genIdToSearch: string): number | null {
+    let foundIndex: number | null = null;
 
     map.eachLayer((layer: L.Layer) => {
       if (layer instanceof CustomMarker) {
         const markerGenId = layer.getGenBusId();
 
         if (markerGenId == genIdToSearch) {
-
-          foundMarker = layer;
+          foundIndex = layer.getIndex();
         }
       }
     });
-    return foundMarker;
+
+    return foundIndex;
   }
 
   markMarkerAsSelectedOrUnselected(foundMarker: CustomMarker) {

@@ -80,26 +80,30 @@ export class ParametersComponent implements OnInit {
 
   launchSimulation(): void {
     let parametersForm = this._parametersService.getForm();
-    console.log("parametersForm",parametersForm)
-    parametersForm = this._formatParameters(parametersForm)
-    this._mapService.launchSimulation(parametersForm);
+    const formattedTargetsId= this._formatParameters(parametersForm)
+    this._mapService.launchSimulation(parametersForm,formattedTargetsId);
   }
 
-  private _formatParameters(parametersForm: FormGroup): FormGroup {
+  private _formatParameters(parametersForm: FormGroup): number[] {
     const targetsId: number[] = [];
     const selectedTargets = parametersForm.value.selectedTargets;
 
-    selectedTargets.forEach((t: string) => {
-      console.log("selectedTargets.forEach",this._parametersService.potentialTargets)
-      const targetId = Array.from(this._parametersService.potentialTargets.entries()).find(([key, value]) => value === t)?.[0];
-      if (targetId === undefined) {
-        throw new Error(`No potential target found for name: ${t}`);
-      }
-      targetsId.push(targetId);
-    });
+    if (Array.isArray(selectedTargets)) {
+      selectedTargets.forEach((t: string) => {
+        console.log("selectedTargets.forEach", this._parametersService.potentialTargets);
+        const foundIndex = this._mapService.findMarkerIndexByGenId(this._mapService.mapTop, t);
+        if (foundIndex !== null) {
+          targetsId.push(foundIndex);
+        } else {
+          throw new Error(`No genIndex found for genbusId: ${t}`);
+        }
+      });
+    } else {
+      throw new Error('selectedTargets is not an array');
+    }
 
-    parametersForm.patchValue({ selectedTargets: targetsId });
-    return parametersForm;
+    console.log("new selected targets", targetsId);
+    return targetsId;
   }
 
   private setMarkerIcon(foundMarker: CustomMarker, SELECT_GEN_COLOR: string) {
