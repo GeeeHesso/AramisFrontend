@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal, WritableSignal} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {Pantagruel} from "@models/pantagruel";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParametersService {
   parametersForm: FormGroup;
+  private _potentialTargets = signal<Map<number, string>>(new Map<number, string>());
 
-  potentialTargets = new Map<number, string>();
   constructor(private fb: FormBuilder) {
     this.parametersForm = this.fb.group({
       season: ['', Validators.required],
@@ -17,6 +18,14 @@ export class ParametersService {
       selectedTargets: [[], Validators.required],
       selectedAlgo: [[], Validators.required],
     });
+  }
+
+  get potentialTargets(): Map<number, string> {
+    return this._potentialTargets();
+  }
+
+  setPotentialTargets(newTargets: Map<number, string>): void {
+    this._potentialTargets.set(newTargets);
   }
 
   getSelectedTargets() {
@@ -52,22 +61,22 @@ export class ParametersService {
     const targetIndex = currentTargets.indexOf(targetId);
 
     if (targetIndex > -1) {
-
       currentTargets.splice(targetIndex, 1);
     } else {
-
       currentTargets.push(targetId);
     }
 
     this.parametersForm.get('selectedTargets')?.setValue(currentTargets);
   }
+
+
   populatePotentialTargets(data: Pantagruel) {
     const potentialTargetsFromBus = new Map<number, string>();
+    const potentialTargetsTemp = new Map<number, string>();
     console.log("populatePotentialTargets")
     console.log(data)
     Object.keys(data.bus).forEach(key => {
       const bus = data.bus[key];
-
       potentialTargetsFromBus.set(bus.index, bus.name);
     });
     console.log("potentialTargetsFromBus",potentialTargetsFromBus)
@@ -77,10 +86,11 @@ export class ParametersService {
         const name = potentialTargetsFromBus.get(gen.gen_bus);
         if (name) {
           console.log(`Found a match for name ${name}`);
-          this.potentialTargets.set(gen.gen_bus, name);
+          potentialTargetsTemp.set(gen.gen_bus, name);
         }
       }
     });
+    this._potentialTargets.set(potentialTargetsTemp)
     console.log("potentialTargets",this.potentialTargets)
   }
 }
