@@ -68,7 +68,7 @@ export class ParametersComponent implements OnInit {
   _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
     map.eachLayer((marker: L.Layer) => {
       if (marker instanceof CustomMarker) {
-        const markerGenId = marker.getGenId();
+        const markerGenId = marker.getGenBusId();
         if (selectedTargets.includes(markerGenId)) {
           this.setMarkerIcon(marker, SELECT_GEN_COLOR);
         } else {
@@ -79,21 +79,25 @@ export class ParametersComponent implements OnInit {
   }
 
   launchSimulation(): void {
-    const parametersForm = this._parametersService.getForm();
-    this._formatParameters(parametersForm);
+    let parametersForm = this._parametersService.getForm();
+    console.log("parametersForm",parametersForm)
+    parametersForm = this._formatParameters(parametersForm)
     this._mapService.launchSimulation(parametersForm);
   }
 
   private _formatParameters(parametersForm: FormGroup): FormGroup {
-    const targetsId: number[] = parametersForm.value.selectedTargets.map((t: string) => {
+    const targetsId: number[] = [];
+    const selectedTargets = parametersForm.value.selectedTargets;
+
+    selectedTargets.forEach((t: string) => {
+      console.log("selectedTargets.forEach",this._parametersService.potentialTargets)
       const targetId = Array.from(this._parametersService.potentialTargets.entries()).find(([key, value]) => value === t)?.[0];
       if (targetId === undefined) {
         throw new Error(`No potential target found for name: ${t}`);
       }
-      return targetId;
+      targetsId.push(targetId);
     });
 
-    // Use the patchValue method to update the form value without directly modifying the form object
     parametersForm.patchValue({ selectedTargets: targetsId });
     return parametersForm;
   }

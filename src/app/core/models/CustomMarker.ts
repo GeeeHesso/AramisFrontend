@@ -1,18 +1,27 @@
 
 import * as L from 'leaflet';
 export class CustomMarker extends L.Marker {
-  genId: any;
-
-  constructor(latLng: L.LatLngExpression, options: L.MarkerOptions & { genId?: any }) {
+  genBusId: any;
+  private _index: any;
+  constructor(latLng: L.LatLngExpression, options: L.MarkerOptions & { genBusId?: any,index?: any }) {
     super(latLng, options);
-    this.genId = options.genId || null;
+    this.genBusId = options.genBusId || null;
+    this._index = options.index || null;
   }
 
-  getGenId() {
-    return this.genId;
+  getIndex(): any {
+    return this._index;
   }
 
-  setGenId(genId: any) {
-    this.genId = genId;
+  setIndex(value: any) {
+    this._index = value;
+  }
+
+  getGenBusId() {
+    return this.genBusId;
+  }
+
+  setGenBusId(genId: any) {
+    this.genBusId = genId;
   }
 }

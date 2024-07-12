@@ -52,7 +52,8 @@ export class BusService {
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       }).addTo(map);
 
-      customMarker.setGenId(data.gen[g].gen_bus);
+      customMarker.setGenBusId(data.gen[g].gen_bus);
+      customMarker.setIndex(data.gen[g].index);
       customMarker.on('click', () => this._addSelectedGenUsingTheMap(customMarker)).addTo(map);
     });
   }
@@ -109,7 +110,7 @@ export class BusService {
   }
 
   _addSelectedGenUsingTheMap(marker: CustomMarker) {
-    this._parametersService.addOrRemoveSelectedTarget(marker.getGenId());
+    this._parametersService.addOrRemoveSelectedTarget(marker.getGenBusId());
   }
 
 

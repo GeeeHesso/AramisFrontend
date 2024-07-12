@@ -233,7 +233,7 @@ export class MapService {
 
     map.eachLayer((layer: L.Layer) => {
       if (layer instanceof CustomMarker) {
-        const markerGenId = layer.getGenId();
+        const markerGenId = layer.getGenBusId();
 
         if (markerGenId == genIdToSearch) {
 
