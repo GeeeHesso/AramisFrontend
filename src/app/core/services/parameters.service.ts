@@ -43,7 +43,6 @@ export class ParametersService {
 
   getTargetsIdByNames(targetsList: any[], targetsMap: Map<number, string>): number[] {
     const targetsId: number[] = [];
-
     targetsList.forEach(target => {
       const targetId = Array.from(targetsMap.entries()).find(([key, value]) => value === target)?.[0];
       if (targetId !== undefined) {
@@ -56,14 +55,14 @@ export class ParametersService {
     return targetsId;
   }
 
-  addOrRemoveSelectedTarget(targetId: number) {
+  addOrRemoveSelectedTarget(targetBusId: number) {
     const currentTargets = this.parametersForm.get('selectedTargets')?.value || [];
-    const targetIndex = currentTargets.indexOf(targetId);
+    const targetIndex = currentTargets.indexOf(targetBusId);
 
     if (targetIndex > -1) {
       currentTargets.splice(targetIndex, 1);
     } else {
-      currentTargets.push(targetId);
+      currentTargets.push(targetBusId);
     }
 
     this.parametersForm.get('selectedTargets')?.setValue(currentTargets);

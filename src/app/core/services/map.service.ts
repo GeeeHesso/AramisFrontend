@@ -10,7 +10,7 @@ import {BusService} from './bus.service';
 import {DataService} from './data.service';
 import {ApiService} from "@services/api.service";
 import {FormControl, FormGroup} from "@angular/forms";
-import {targetsParameters, timeParameters} from "@models/parameters";
+import {algorithmsParameters, targetsParameters, timeParameters} from "@models/parameters";
 import {CustomMarker} from "@models/CustomMarker";
 import {INACTIVE_COLOR, SELECT_GEN_COLOR} from "@core/core.const";
 import {ParametersService} from "@services/parameters.service";
@@ -202,7 +202,10 @@ export class MapService {
       ...commonParams,
       attacked_gens: formattedTargetsId.map(String), // Convert to array of strings
     };
-
+    const algorithmParams: algorithmsParameters = {
+      ...attackParams,
+      algorithms: formValue.selectedAlgo.map(String), // Convert to array of strings
+    };
     console.log("timeParams", timeParams);
     this._apiService.postRealNetwork(timeParams).subscribe({
       next: (data) => {
@@ -219,6 +222,15 @@ export class MapService {
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(this.mapBottom, formattedData);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+    this._apiService.postAlgorithmResults(algorithmParams).subscribe({
+      next: (data) => {
+       console.log("result of algo return")
+        console.log(data)
       },
       error: (error) => {
         console.error(error);

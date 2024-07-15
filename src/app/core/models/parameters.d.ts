@@ -14,6 +14,6 @@ export interface algorithmsParameters {
   season: string;
   day: string;
   hour: string;
-  attacked_gens: number[];
+  attacked_gens: string[];
   algorithms: string[];
 }

@@ -43,9 +43,8 @@ export class ApiService {
     return this.http.post<Pantagruel>(`${this.baseUrl}/real_network`, data, { headers });
   }
 
-  //@TODO: no any !! define interface in core models
   postAlgorithmResults(data: algorithmsParameters) {
-    return this.http.post<any>(`${this.baseUrl}/algorithms`, data);
+    return this.http.post<Pantagruel>(`${this.baseUrl}/algorithms`, data);
   }
 
   //@TODO: check how to reuse this
