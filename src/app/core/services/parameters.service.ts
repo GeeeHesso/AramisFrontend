@@ -11,7 +11,7 @@ export class ParametersService {
   private _potentialTargets = signal<Map<number, string>>(new Map<number, string>());
   private _listofBusIdAndName = new Map<number, string>();
   private _listOfIndexAndName = new Map<number, string>();
-  algorithmsResult = signal<Array<{ name: string, results: Array<{ indexName: string, result: boolean }> }>>([]);
+  private _algorithmsResult = signal<Array<{ name: string, results: Array<{ indexName: string, result: boolean }> }>>([]);
 
   constructor(private fb: FormBuilder) {
     this.parametersForm = this.fb.group({
@@ -23,6 +23,14 @@ export class ParametersService {
     });
   }
 
+
+  get algorithmsResult(): WritableSignal<Array<{ name: string; results: Array<{ indexName: string; result: boolean }> }>> {
+    return this._algorithmsResult;
+  }
+
+  set algorithmsResult(value: WritableSignal<Array<{ name: string; results: Array<{ indexName: string; result: boolean }> }>>) {
+    this._algorithmsResult = value;
+  }
 
   get listofBusIdAndName(): Map<number, string> {
     return this._listofBusIdAndName;
@@ -123,7 +131,7 @@ export class ParametersService {
       return { name: algorithmName, results: results };
     });
 
-    this.algorithmsResult.set(algorithmsResult);
-    console.log("algorithmsResult", this.algorithmsResult());
+    this._algorithmsResult.set(algorithmsResult);
+    console.log("algorithmsResult", this._algorithmsResult());
   }
 }

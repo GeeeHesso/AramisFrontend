@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   DEFAULT_COLOR,
   DEFAULT_WIDTH_BRANCH,
-  INACTIVE_COLOR,
+  INACTIVE_COLOR, LINE_220KV_COLOR, LINE_380KV_COLOR,
 } from '@core/core.const';
 import { Pantagruel } from '@core/models/pantagruel';
 import L, { Polyline } from 'leaflet';
@@ -24,7 +24,7 @@ export class BranchService {
 
     // Draw all the branches
     Object.keys(data.branch).forEach((b) => {
-      //Position: WARNING lat long reverse, so [1][0]
+      // Position: WARNING lat long reverse, so [1][0]
       const pointA = new L.LatLng(
         data.branch[b].fromBus.coord[1],
         data.branch[b].fromBus.coord[0]
@@ -35,10 +35,22 @@ export class BranchService {
       );
       const pointList = [pointA, pointB];
 
-      // Style of line
+
       const weight = DEFAULT_WIDTH_BRANCH;
-      const color =
-        data.branch[b].br_status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR;
+
+
+      let color: string;
+      switch (data.branch[b].fromBus.base_kv) {
+        case 220:
+          color = LINE_220KV_COLOR;
+          break;
+        case 380:
+          color = LINE_380KV_COLOR;
+          break;
+        default:
+          color = DEFAULT_COLOR;
+          break;
+      }
 
       // Define line
       const branch = new L.Polyline(pointList, {

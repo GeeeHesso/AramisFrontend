@@ -47,12 +47,9 @@ export class ParametersComponent implements OnInit {
     ['18-22h', 20],
   ]);
 
-  potentialTargets: Signal<Map<number, string>>;
-
   algorithmList = ['MLPR'];
 
   constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public _parametersService: ParametersService) {
-    this.potentialTargets = computed(() => this._parametersService.potentialTargets);
   }
 
   ngOnInit(): void {

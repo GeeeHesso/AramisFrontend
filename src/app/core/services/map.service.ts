@@ -172,9 +172,9 @@ export class MapService {
     this._apiService.getInitialGrid().subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
+        console.log(formattedData)
         this.drawOnMap(mapTop, formattedData);
         this._parametersService.populatePotentialTargets(data)
-
       },
       error: (error) => {
         //@todo
