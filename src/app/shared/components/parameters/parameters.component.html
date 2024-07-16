@@ -28,3 +28,24 @@
 </form>
 
 <button mat-flat-button color="primary" (click)="launchSimulation()" [disabled]="_parametersService.getForm().invalid">Launch simulation</button>
+
+<ng-container *ngIf="this._parametersService.algorithmsResult().length > 0">
+  <h2>Algorithm result</h2>
+  <div *ngFor="let algorithm of this._parametersService.algorithmsResult()">
+    <h3 class="algorithm-name">{{ algorithm.name }}</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>IndexName</th>
+        <th>Result</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let result of algorithm.results">
+        <td>{{ result.indexName }}</td>
+        <td>{{ result.result }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>

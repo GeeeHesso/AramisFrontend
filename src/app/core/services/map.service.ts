@@ -174,6 +174,7 @@ export class MapService {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(mapTop, formattedData);
         this._parametersService.populatePotentialTargets(data)
+
       },
       error: (error) => {
         //@todo
@@ -229,8 +230,7 @@ export class MapService {
     });
     this._apiService.postAlgorithmResults(algorithmParams).subscribe({
       next: (data) => {
-       console.log("result of algo return")
-        console.log(data)
+       this._parametersService.populateAlgorithmResult(data);
       },
       error: (error) => {
         console.error(error);

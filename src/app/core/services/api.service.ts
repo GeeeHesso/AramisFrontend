@@ -44,7 +44,7 @@ export class ApiService {
   }
 
   postAlgorithmResults(data: algorithmsParameters) {
-    return this.http.post<Pantagruel>(`${this.baseUrl}/algorithms`, data);
+    return this.http.post<any>(`${this.baseUrl}/algorithms`, data);
   }
 
   //@TODO: check how to reuse this

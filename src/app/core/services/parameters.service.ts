@@ -1,5 +1,5 @@
 import {Injectable, signal, WritableSignal} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Pantagruel} from "@models/pantagruel";
 import {BehaviorSubject, Observable} from "rxjs";
 
@@ -9,6 +9,9 @@ import {BehaviorSubject, Observable} from "rxjs";
 export class ParametersService {
   parametersForm: FormGroup;
   private _potentialTargets = signal<Map<number, string>>(new Map<number, string>());
+  private _listofBusIdAndName = new Map<number, string>();
+  private _listOfIndexAndName = new Map<number, string>();
+  algorithmsResult = signal<Array<{ name: string, results: Array<{ indexName: string, result: boolean }> }>>([]);
 
   constructor(private fb: FormBuilder) {
     this.parametersForm = this.fb.group({
@@ -18,6 +21,23 @@ export class ParametersService {
       selectedTargets: [[], Validators.required],
       selectedAlgo: [[], Validators.required],
     });
+  }
+
+
+  get listofBusIdAndName(): Map<number, string> {
+    return this._listofBusIdAndName;
+  }
+
+  set listofBusIdAndName(value: Map<number, string>) {
+    this._listofBusIdAndName = value;
+  }
+
+  get listOfIndexAndName(): Map<number, string> {
+    return this._listOfIndexAndName;
+  }
+
+  set listOfIndexAndName(value: Map<number, string>) {
+    this._listOfIndexAndName = value;
   }
 
   get potentialTargets(): Map<number, string> {
@@ -55,14 +75,14 @@ export class ParametersService {
     return targetsId;
   }
 
-  addOrRemoveSelectedTarget(targetBusId: number) {
+  addOrRemoveSelectedTarget(targetId: number) {
     const currentTargets = this.parametersForm.get('selectedTargets')?.value || [];
-    const targetIndex = currentTargets.indexOf(targetBusId);
+    const targetIndex = currentTargets.indexOf(targetId);
 
     if (targetIndex > -1) {
       currentTargets.splice(targetIndex, 1);
     } else {
-      currentTargets.push(targetBusId);
+      currentTargets.push(targetId);
     }
 
     this.parametersForm.get('selectedTargets')?.setValue(currentTargets);
@@ -70,26 +90,40 @@ export class ParametersService {
 
 
   populatePotentialTargets(data: Pantagruel) {
-    const potentialTargetsFromBus = new Map<number, string>();
     const potentialTargetsTemp = new Map<number, string>();
-    console.log("populatePotentialTargets")
-    console.log(data)
     Object.keys(data.bus).forEach(key => {
       const bus = data.bus[key];
-      potentialTargetsFromBus.set(bus.index, bus.name);
+      this._listofBusIdAndName.set(bus.index, bus.name);
+
     });
-    console.log("potentialTargetsFromBus",potentialTargetsFromBus)
     Object.keys(data.gen).forEach(key => {
       const gen = data.gen[key];
-      if (potentialTargetsFromBus.has(gen.gen_bus)) {
-        const name = potentialTargetsFromBus.get(gen.gen_bus);
+      if (this._listofBusIdAndName.has(gen.gen_bus)) {
+        const name = this._listofBusIdAndName.get(gen.gen_bus);
         if (name) {
-          console.log(`Found a match for name ${name}`);
           potentialTargetsTemp.set(gen.gen_bus, name);
+          this._listOfIndexAndName.set(gen.index, name)
         }
       }
     });
     this._potentialTargets.set(potentialTargetsTemp)
-    console.log("potentialTargets",this.potentialTargets)
+    console.log("potentialTargets", this.potentialTargets)
+    console.log("listOfBusGen", this._listOfIndexAndName)
+    console.log("listofBusIdAndName", this._listofBusIdAndName)
+  }
+
+  populateAlgorithmResult(data: any) {
+    console.log("populateAlgorithmResult", data);
+
+    const algorithmsResult = Object.keys(data).map(algorithmName => {
+      const results = Object.keys(data[algorithmName]).map(indexName => ({
+        indexName: indexName,
+        result: data[algorithmName][indexName]
+      }));
+      return { name: algorithmName, results: results };
+    });
+
+    this.algorithmsResult.set(algorithmsResult);
+    console.log("algorithmsResult", this.algorithmsResult());
   }
 }

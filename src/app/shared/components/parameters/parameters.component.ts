@@ -35,7 +35,9 @@ import {ApiService} from "@services/api.service";
 })
 export class ParametersComponent implements OnInit {
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
+
   day = ['Weekday', 'Weekend'];
+
   hours = new Map([
     ['22-2h', 0],
     ['2-6h', 4],
@@ -46,6 +48,7 @@ export class ParametersComponent implements OnInit {
   ]);
 
   potentialTargets: Signal<Map<number, string>>;
+
   algorithmList = ['MLPR'];
 
   constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public _parametersService: ParametersService) {
