@@ -20,6 +20,7 @@ export class BranchService {
   public branchMarker: Polyline[] = [];
 
   public drawBranch(map: L.Map, data: Pantagruel): void {
+    console.log("drawBranch")
     const zoom = map.getZoom();
 
     // Draw all the branches
@@ -35,11 +36,11 @@ export class BranchService {
       );
       const pointList = [pointA, pointB];
 
-
       const weight = DEFAULT_WIDTH_BRANCH;
 
-
+      // Determine initial color based on base_kv value
       let color: string;
+      let dashArray: string | undefined; // Default is undefined (solid line)
       switch (data.branch[b].fromBus.base_kv) {
         case 220:
           color = LINE_220KV_COLOR;
@@ -52,11 +53,28 @@ export class BranchService {
           break;
       }
 
+
+      const loadPercentage = Math.abs((data.branch[b].pt) / data.branch[b].rate_a) * 100;
+
+
+      console.log(`loadPercentage=${loadPercentage}`);
+
+
+      if (loadPercentage >= 100) {
+        color = 'black';
+        dashArray = '5, 5';
+        //console.log(`Branch ${b}: loadPercentage is >= 100%, color set to black, dashed line`);
+      } else if (loadPercentage >= 90) {
+        color = 'yellow';
+        //console.log(`Branch ${b}: loadPercentage is >= 90% and < 100%, color set to yellow`);
+      }
+
       // Define line
       const branch = new L.Polyline(pointList, {
         weight: weight + zoom / 3,
         color: color,
-        pane: 'shadowPane', // to go on the mask
+        pane: 'shadowPane',
+        dashArray: dashArray
       });
 
       // Add branch to the layer
