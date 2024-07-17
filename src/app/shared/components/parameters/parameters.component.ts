@@ -47,7 +47,7 @@ export class ParametersComponent implements OnInit {
     ['18-22h', 20],
   ]);
 
-  algorithmList = ['MLPR'];
+  algorithmList = ["NBC", "KNNC", "RFC", "SVC", "GBC","MLPC"];
 
   constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public _parametersService: ParametersService) {
   }
