@@ -48,9 +48,12 @@ export class ParametersComponent implements OnInit {
   ]);
 
   algorithmList = ["NBC","MLPR", "KNNC", "RFC", "SVC", "GBC","MLPC"];
+  //If you want to loop trough the real potentialTargets use in the html
+  // <mat-chip-option *ngFor="let target of this._parametersService.potentialTargets | keyvalue" [value]="target.key">{{ target.value }}</mat-chip-option>
 
   constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public _parametersService: ParametersService) {
   }
+
 
   ngOnInit(): void {
     this._parametersService.getForm().get('selectedTargets')?.valueChanges.subscribe(value => {

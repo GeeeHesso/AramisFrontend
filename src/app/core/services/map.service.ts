@@ -85,7 +85,6 @@ export class MapService {
     map.on('move', () => {
       const center = map.getCenter();
       const zoom = map.getZoom();
-      console.log(`Center: ${center.lat}, ${center.lng}, Zoom: ${zoom}`);
       this._view$.next({
         center: center,
         zoom: zoom,

@@ -98,26 +98,52 @@ export class ParametersService {
 
 
   populatePotentialTargets(data: Pantagruel) {
+
+    const onlyVisiblePowerplantsList = new Map([
+      [2239, 'Cavergno'],
+      [5540, 'Innertkirchen'],
+      [5594, 'Löbbia'],
+      [5612, 'Pradella'],
+      [2339, 'Riddes'],
+      [5591, 'Rothenbrunnen'],
+      [5573, 'Sedrun'],
+      [5589, 'Sils'],
+      [5518, 'Stalden'],
+      [5582, 'Tavanasa'],
+    ]);
     const potentialTargetsTemp = new Map<number, string>();
+
     Object.keys(data.bus).forEach(key => {
       const bus = data.bus[key];
       this._listofBusIdAndName.set(bus.index, bus.name);
-
     });
+
     Object.keys(data.gen).forEach(key => {
       const gen = data.gen[key];
       if (this._listofBusIdAndName.has(gen.gen_bus)) {
         const name = this._listofBusIdAndName.get(gen.gen_bus);
         if (name) {
           potentialTargetsTemp.set(gen.gen_bus, name);
-          this._listOfIndexAndName.set(gen.index, name)
+          this._listOfIndexAndName.set(gen.index, name);
         }
       }
     });
-    this._potentialTargets.set(potentialTargetsTemp)
-    console.log("potentialTargets", this.potentialTargets)
-    console.log("listOfBusGen", this._listOfIndexAndName)
-    console.log("listofBusIdAndName", this._listofBusIdAndName)
+
+    // Temporary filtering logic
+    {
+      const filteredTargets = new Map<number, string>();
+      potentialTargetsTemp.forEach((name, index) => {
+        if (onlyVisiblePowerplantsList.has(index)) {
+          filteredTargets.set(index, name);
+        }
+      });
+      this._potentialTargets.set(filteredTargets);
+    }
+    // End of temporary filtering logic
+
+    console.log("potentialTargets", this._potentialTargets);
+    console.log("listOfBusGen", this._listOfIndexAndName);
+    console.log("listofBusIdAndName", this._listofBusIdAndName);
   }
 
   populateAlgorithmResult(data: any) {
