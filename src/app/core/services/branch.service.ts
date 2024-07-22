@@ -20,7 +20,7 @@ export class BranchService {
   public branchMarker: Polyline[] = [];
 
   public drawBranch(map: L.Map, data: Pantagruel): void {
-    console.log("drawBranch")
+
     const zoom = map.getZoom();
 
     // Draw all the branches
@@ -57,14 +57,13 @@ export class BranchService {
       const loadPercentage = Math.abs((data.branch[b].pt) / data.branch[b].rate_a) * 100;
 
 
-      console.log(`loadPercentage=${loadPercentage}`);
 
 
-      if (loadPercentage >= 100) {
+      if (loadPercentage >= 40) {
         color = 'black';
         dashArray = '5, 5';
         //console.log(`Branch ${b}: loadPercentage is >= 100%, color set to black, dashed line`);
-      } else if (loadPercentage >= 90) {
+      } else if (loadPercentage >= 30) {
         color = 'yellow';
         //console.log(`Branch ${b}: loadPercentage is >= 90% and < 100%, color set to yellow`);
       }

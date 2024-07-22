@@ -228,6 +228,7 @@ export class MapService {
         console.error(error);
       },
     });
+    console.log("algorithmParams",algorithmParams)
     this._apiService.postAlgorithmResults(algorithmParams).subscribe({
       next: (data) => {
        this._parametersService.populateAlgorithmResult(data);

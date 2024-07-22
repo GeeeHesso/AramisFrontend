@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, OnInit, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -47,7 +47,7 @@ export class ParametersComponent implements OnInit {
     ['18-22h', 20],
   ]);
 
-  algorithmList = ["NBC", "KNNC", "RFC", "SVC", "GBC","MLPC"];
+  algorithmList = ["NBC","MLPR", "KNNC", "RFC", "SVC", "GBC","MLPC"];
 
   constructor(private _mapService: MapService, private _apiService: ApiService, private _busService: BusService, public _parametersService: ParametersService) {
   }

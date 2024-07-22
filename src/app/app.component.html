@@ -3,8 +3,12 @@
 </mat-toolbar>
 
 <mat-sidenav-container>
-  <mat-sidenav mode="side" opened>
-    <app-parameters></app-parameters>
+  <mat-sidenav mode="side" opened class="custom-sidenav">
+    <div class="scrollable-container">
+      <div class="content-container">
+        <app-parameters></app-parameters>
+      </div>
+    </div>
   </mat-sidenav>
 
   <mat-sidenav-content>
