@@ -42,12 +42,14 @@ export class MapService {
       zoom: this.zoom,
       zoomControl: this.zoomControl, // Disable the default zoom control
       attributionControl: this.attributionControl, // Disable the attribution control
+      zoomSnap: 0.1
     });
     this.mapBottom = L.map('mapBottom', {
       center: this.center,
       zoom: this.zoom,
       zoomControl: this.zoomControl, // Disable the default zoom control
       attributionControl: this.attributionControl, // Disable the attribution control
+      zoomSnap: 0.1
     });
 
     this._initBaseMap(this.mapTop);
@@ -62,6 +64,7 @@ export class MapService {
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
         maxZoom: 16,
         minZoom: 7,
+
       }
     ).addTo(map);
 

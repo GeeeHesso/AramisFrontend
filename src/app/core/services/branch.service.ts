@@ -53,17 +53,13 @@ export class BranchService {
           break;
       }
 
-
       const loadPercentage = Math.abs((data.branch[b].pt) / data.branch[b].rate_a) * 100;
 
-
-
-
-      if (loadPercentage >= 40) {
+      if (loadPercentage >= 100) {
         color = 'black';
         dashArray = '5, 5';
         //console.log(`Branch ${b}: loadPercentage is >= 100%, color set to black, dashed line`);
-      } else if (loadPercentage >= 30) {
+      } else if (loadPercentage >= 90) {
         color = 'yellow';
         //console.log(`Branch ${b}: loadPercentage is >= 90% and < 100%, color set to yellow`);
       }
