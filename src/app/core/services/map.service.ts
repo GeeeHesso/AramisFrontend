@@ -21,8 +21,8 @@ import {ParametersService} from "@services/parameters.service";
 export class MapService {
   public mapTop!: L.Map;
   public mapBottom!: L.Map;
-  private center = new LatLng(46.8182, 8.2275); // Centered on Switzerland
-  private zoom = 8;
+  private center = new LatLng(46.73233101286786, 10.387573242187502); // Centered on Switzerland
+  private zoom = 7;
   private zoomControl = false; // Disable the default zoom control
   private attributionControl = false; // Disable the attribution control
   constructor(
@@ -80,9 +80,12 @@ export class MapService {
 
     // Synchronize maps
     map.on('move', () => {
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      console.log(`Center: ${center.lat}, ${center.lng}, Zoom: ${zoom}`);
       this._view$.next({
-        center: map.getCenter(),
-        zoom: map.getZoom(),
+        center: center,
+        zoom: zoom,
         map: map,
       });
     });
