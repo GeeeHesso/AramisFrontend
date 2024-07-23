@@ -1,6 +1,8 @@
-<mat-toolbar>
+<div class="toolbar-container">
+  <mat-progress-bar [value]="apiLoading | async"></mat-progress-bar>
+
   <h1>Aramis</h1>
-</mat-toolbar>
+</div>
 
 <mat-sidenav-container>
   <mat-sidenav mode="side" opened disableClose>

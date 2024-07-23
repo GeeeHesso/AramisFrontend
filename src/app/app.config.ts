@@ -8,7 +8,11 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
-import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
+import {
+  ALGORITHMS_RESULT,
+  API_LOADING,
+  SELECTED_TARGETS,
+} from '@core/models/base.const';
 import { BehaviorSubject } from 'rxjs';
 import { routes } from './app.routes';
 
@@ -16,6 +20,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     { provide: ALGORITHMS_RESULT, useValue: new BehaviorSubject(null) },
     { provide: SELECTED_TARGETS, useValue: new BehaviorSubject([]) },
+    { provide: API_LOADING, useValue: new BehaviorSubject(0) },
 
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

@@ -3,12 +3,16 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  Inject,
 } from '@angular/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
+import { API_LOADING } from '@core/models/base.const';
+import { algorithmResult } from '@core/models/parameters';
 import { MapService } from '@core/services/map.service';
 import { ParametersComponent } from '@shared/components/parameters/parameters.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -21,15 +25,20 @@ import { ParametersComponent } from '@shared/components/parameters/parameters.co
     RouterOutlet,
 
     // Material
-    MatToolbarModule,
     MatSidenavModule,
+    MatProgressBarModule,
 
     // Component
     ParametersComponent,
   ],
 })
 export class AppComponent implements AfterViewInit {
-  constructor(public mapService: MapService) {}
+  constructor(
+    public mapService: MapService,
+
+    @Inject(API_LOADING)
+    public apiLoading: BehaviorSubject<algorithmResult>
+  ) {}
 
   ngAfterViewInit(): void {
     // Need map to be initialized before anything else
