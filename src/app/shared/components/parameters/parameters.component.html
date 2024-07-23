@@ -60,21 +60,7 @@
 
 <ng-container *ngIf="this.parametersService.algorithmsResult().length > 0">
   <h2>Algorithm result</h2>
-  <div *ngFor="let algorithm of this.parametersService.algorithmsResult()">
-    <h3>{{ algorithm.name }}</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>IndexName</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let result of algorithm.results">
-          <td>{{ result.indexName }}</td>
-          <td>{{ result.result }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <button mat-flat-button color="primary" (click)="handleButtonDetails()">
+    See details
+  </button>
 </ng-container>

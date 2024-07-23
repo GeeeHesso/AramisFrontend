@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
@@ -13,6 +14,7 @@ import { ParametersService } from '@core/services/parameters.service';
 import { CustomMarker } from '@models/CustomMarker';
 import { BusService } from '@services/bus.service';
 import * as L from 'leaflet';
+import { DialogResultComponent } from '../DialogResult/DialogResult.component';
 
 @Component({
   standalone: true,
@@ -34,9 +36,7 @@ import * as L from 'leaflet';
 })
 export class ParametersComponent implements OnInit {
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
-
   day = ['Weekday', 'Weekend'];
-
   hours = new Map([
     ['22-2h', 0],
     ['2-6h', 4],
@@ -45,7 +45,6 @@ export class ParametersComponent implements OnInit {
     ['14-18h', 16],
     ['18-22h', 20],
   ]);
-
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
   //If you want to loop trough the real potentialTargets use in the html
   // <mat-chip-option *ngFor="let target of this._parametersService.potentialTargets | keyvalue" [value]="target.key">{{ target.value }}</mat-chip-option>
@@ -53,7 +52,8 @@ export class ParametersComponent implements OnInit {
   constructor(
     private _mapService: MapService,
     private _busService: BusService,
-    public parametersService: ParametersService
+    public parametersService: ParametersService,
+    private _dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -66,22 +66,19 @@ export class ParametersComponent implements OnInit {
       });
   }
 
-  onSelectedTargetsChange(value: any): void {
-    const targetsId = this.parametersService.getTargetsIdByNames(
-      value,
-      this.parametersService.potentialTargets
-    );
-    this._updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId);
+  onSelectedTargetsChange(value: string[]): void {
+    const targetsId = this.parametersService.getTargetsIdByNames(value);
+    this.updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId);
   }
 
-  _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
+  updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
     map.eachLayer((marker: L.Layer) => {
       if (marker instanceof CustomMarker) {
         const markerGenId = marker.getGenBusId();
         if (selectedTargets.includes(markerGenId)) {
-          this.setMarkerIcon(marker, SELECT_GEN_COLOR);
+          this._setMarkerIcon(marker, SELECT_GEN_COLOR);
         } else {
-          this.setMarkerIcon(marker, INACTIVE_COLOR);
+          this._setMarkerIcon(marker, INACTIVE_COLOR);
         }
       }
     });
@@ -120,7 +117,11 @@ export class ParametersComponent implements OnInit {
     return targetsId;
   }
 
-  private setMarkerIcon(foundMarker: CustomMarker, SELECT_GEN_COLOR: string) {
+  handleButtonDetails() {
+    this._dialog.open(DialogResultComponent);
+  }
+
+  private _setMarkerIcon(foundMarker: CustomMarker, SELECT_GEN_COLOR: string) {
     const currentIconSize = foundMarker.getIcon().options.iconAnchor as
       | L.PointExpression
       | undefined;

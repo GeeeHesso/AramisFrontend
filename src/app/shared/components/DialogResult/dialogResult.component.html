@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Result</h1>
+<mat-dialog-content>
+  <div *ngFor="let algorithm of this.parametersService.algorithmsResult()">
+    <h3>{{ algorithm.name }}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>IndexName</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let result of algorithm.results">
+          <td>{{ result.indexName }}</td>
+          <td>{{ result.result }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</mat-dialog-content>
+
+<div mat-dialog-actions align="center">
+  <button mat-raised-button mat-dialog-close="true">Cancel</button>
+</div>

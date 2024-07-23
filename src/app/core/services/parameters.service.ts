@@ -11,7 +11,7 @@ export class ParametersService {
     new Map<number, string>()
   );
   private _listOfBusIdAndName = new Map<number, string>();
-  private _listOfIndexAndName = new Map<number, string>();
+  private _listOfIndexAndName = new Map<number, string>(); // of what ?
   private _algorithmsResult$ = signal<
     Array<{
       name: string;
@@ -89,13 +89,10 @@ export class ParametersService {
     return this.parametersForm;
   }
 
-  getTargetsIdByNames(
-    targetsList: any[],
-    targetsMap: Map<number, string>
-  ): number[] {
+  getTargetsIdByNames(targetsList: string[]): number[] {
     const targetsId: number[] = [];
     targetsList.forEach((target) => {
-      const targetId = Array.from(targetsMap.entries()).find(
+      const targetId = Array.from(this.potentialTargets.entries()).find(
         ([key, value]) => value === target
       )?.[0];
       if (targetId !== undefined) {
