@@ -34,13 +34,14 @@ export class MapService {
 
   private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject because, behaviorSubject need to be initialize
 
+  private _busService = Inject(BusService);
+  private _branchService = Inject(BranchService);
+
   constructor(
     @Inject(ALGORITHMS_RESULT)
     private _algorithmsResult: BehaviorSubject<algorithmResult>,
     @Inject(SELECTED_TARGETS)
     private _selectedTargets: BehaviorSubject<number[]>,
-    private _busService: BusService,
-    private _branchService: BranchService,
     private _dataService: DataService,
     private _apiService: ApiService
   ) {}
