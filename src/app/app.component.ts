@@ -1,5 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+} from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
@@ -15,17 +19,20 @@ import { ParametersComponent } from '@shared/components/parameters/parameters.co
   imports: [
     CommonModule,
     RouterOutlet,
-    //Material
+
+    // Material
     MatToolbarModule,
     MatSidenavModule,
+
     // Component
     ParametersComponent,
   ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements AfterViewInit {
   constructor(public mapService: MapService) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    // Need map to be initialized before anything else
     this.mapService.initMaps();
   }
 }

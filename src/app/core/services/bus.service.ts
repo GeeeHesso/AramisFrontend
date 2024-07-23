@@ -6,6 +6,7 @@ import {
   MIN_SIZE,
   SELECT_GEN_COLOR,
 } from '@core/core.const';
+import { constructFullSquareSVG } from '@core/models/helpers';
 import { CustomMarker } from '@models/CustomMarker';
 import L, { CircleMarker } from 'leaflet';
 import { ParametersService } from './parameters.service';
@@ -26,7 +27,7 @@ export class BusService {
   public drawGen(map: L.Map, data: any): void {
     const zoom = map.getZoom();
     const selectedTargets =
-      this.parametersService.getForm().get('selectedTargets')?.value || [];
+      this.parametersService.form.get('selectedTargets')?.value || [];
 
     Object.keys(data.gen).forEach((g) => {
       // Check if the current generator index is in the selectedTargets array
@@ -45,7 +46,7 @@ export class BusService {
           data.GEN_MAX_MAX_PROD
         ) + zoom;
 
-      let svgHtml = this.constructFullSquareSVG(size, color);
+      let svgHtml = constructFullSquareSVG(size, color);
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
@@ -64,29 +65,6 @@ export class BusService {
         .on('click', () => this._addSelectedGenUsingTheMap(customMarker))
         .addTo(map);
     });
-  }
-
-  /**
-   * Generator SVG object when it is more than 94
-   * @param gen
-   * @private
-   */
-  public constructFullSquareSVG(size: number, color: string): string {
-    return (
-      `<svg width="` +
-      size +
-      `" height="` +
-      size +
-      `" style="display: block">
-        <rect width="` +
-      size +
-      `" height="` +
-      size +
-      `" fill="` +
-      color +
-      `"></rect>
-        </svg>`
-    );
   }
 
   /**

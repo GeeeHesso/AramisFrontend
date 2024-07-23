@@ -1,6 +1,6 @@
 <h2>Data source</h2>
 
-<form [formGroup]="parametersService.getForm()">
+<form [formGroup]="parametersService.form">
   <h3>Season</h3>
   <mat-chip-listbox aria-label="Season" formControlName="season">
     <mat-chip-option *ngFor="let season of seasons" [value]="season">{{
@@ -31,7 +31,7 @@
     formControlName="selectedTargets"
   >
     <mat-chip-option
-      *ngFor="let target of this.parametersService.potentialTargets | keyvalue"
+      *ngFor="let target of this.potentialTargets | keyvalue"
       [value]="target.key"
       >{{ target.value }}</mat-chip-option
     >
@@ -53,12 +53,12 @@
   mat-flat-button
   color="primary"
   (click)="launchSimulation()"
-  [disabled]="parametersService.getForm().invalid"
+  [class.disabled]="parametersService.form.invalid"
 >
   Launch simulation
 </button>
 
-<ng-container *ngIf="this.parametersService.algorithmsResult().length > 0">
+<ng-container *ngIf="this.parametersService.algorithmsResult$().length > 0">
   <h2>Algorithm result</h2>
   <button mat-flat-button color="primary" (click)="handleButtonDetails()">
     See details

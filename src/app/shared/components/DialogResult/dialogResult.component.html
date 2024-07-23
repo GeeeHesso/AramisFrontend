@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Result</h1>
 <mat-dialog-content>
-  <div *ngFor="let algorithm of this.parametersService.algorithmsResult()">
+  <div *ngFor="let algorithm of this.parametersService.algorithmsResult$()">
     <h3>{{ algorithm.name }}</h3>
     <table>
       <thead>

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,10 +9,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
+import { constructFullSquareSVG } from '@core/models/helpers';
 import { MapService } from '@core/services/map.service';
 import { ParametersService } from '@core/services/parameters.service';
 import { CustomMarker } from '@models/CustomMarker';
-import { BusService } from '@services/bus.service';
 import * as L from 'leaflet';
 import { DialogResultComponent } from '../dialogResult/dialogResult.component';
 
@@ -45,33 +45,42 @@ export class ParametersComponent implements OnInit {
     ['14-18h', 16],
     ['18-22h', 20],
   ]);
+  potentialTargets = new Map([
+    [5540, 'Innertkirchen'],
+    [5594, 'Löbbia'],
+    [5612, 'Pradella'],
+    [2339, 'Riddes'],
+    [5591, 'Rothenbrunnen'],
+    [5573, 'Sedrun'],
+    [5589, 'Sils'],
+    [5518, 'Stalden'],
+    [5582, 'Tavanasa'],
+  ]);
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
-  //If you want to loop trough the real potentialTargets use in the html
-  // <mat-chip-option *ngFor="let target of this._parametersService.potentialTargets | keyvalue" [value]="target.key">{{ target.value }}</mat-chip-option>
 
   constructor(
     private _mapService: MapService,
-    private _busService: BusService,
     public parametersService: ParametersService,
     private _dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.parametersService
-      .getForm()
+    this.parametersService.form
       .get('selectedTargets')
       ?.valueChanges.subscribe((value) => {
-        //console.log( 'valueChanges', this._parametersService.getForm().get('selectedTargets')?.value);
-        this.onSelectedTargetsChange(value);
+        //console.log( 'valueChanges', this._parametersService.form.get('selectedTargets')?.value);
+
+        this._onSelectedTargetsChange(value as number[]);
       });
   }
 
-  onSelectedTargetsChange(value: string[]): void {
-    const targetsId = this.parametersService.getTargetsIdByNames(value);
-    this.updateSelectedMarkersOnMap(this._mapService.mapTop, targetsId);
+  private _onSelectedTargetsChange(value: number[]): void {
+    console.log(value);
+    // const targetsId = this.parametersService.getTargetsIdByNames(value);
+    this._updateSelectedMarkersOnMap(this._mapService.mapTop, value);
   }
 
-  updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
+  private _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
     map.eachLayer((marker: L.Layer) => {
       if (marker instanceof CustomMarker) {
         const markerGenId = marker.getGenBusId();
@@ -85,36 +94,14 @@ export class ParametersComponent implements OnInit {
   }
 
   launchSimulation(): void {
-    let parametersForm = this.parametersService.getForm();
-    const formattedTargetsId = this._formatParameters(parametersForm);
-    this._mapService.launchSimulation(parametersForm, formattedTargetsId);
-  }
-
-  private _formatParameters(parametersForm: FormGroup): number[] {
-    const targetsId: number[] = [];
-    const selectedTargets = parametersForm.value.selectedTargets as string[]; // Explicitly cast to string array
-
-    if (Array.isArray(selectedTargets)) {
-      selectedTargets.forEach((t: string) => {
-        //console.log('FOR T ', t);
-        const foundIndex = this._mapService.findMarkerIndexByGenId(
-          this._mapService.mapTop,
-          t
-        );
-        if (foundIndex != null && foundIndex != undefined) {
-          // Ensure foundIndex is not null or undefined
-          targetsId.push(foundIndex);
-        } else {
-          //console.log(foundIndex);
-          throw new Error(`No genIndex found for genbusId: ${t}`);
-        }
-      });
-    } else {
-      throw new Error('selectedTargets is not an array');
+    if (this.parametersService.form.invalid) {
+      this.parametersService.form.markAllAsTouched();
+      return;
     }
 
-    //console.log('new selected targets', targetsId);
-    return targetsId;
+    this._mapService.launchSimulation(
+      this.parametersService.form.getRawValue()
+    );
   }
 
   handleButtonDetails() {
@@ -132,10 +119,8 @@ export class ParametersComponent implements OnInit {
     } else {
       size = 25;
     }
-    let svgHtml = this._busService.constructFullSquareSVG(
-      size,
-      SELECT_GEN_COLOR
-    );
+    const svgHtml = constructFullSquareSVG(size, SELECT_GEN_COLOR);
+
     const newIcon = L.divIcon({
       html: svgHtml,
       className: 'svg-icon',

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
+import { constructFullSquareSVG } from '@core/models/helpers';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
 import { CustomMarker } from '@models/CustomMarker';
 import {
   algorithmsParameters,
+  algorithmsParametersForm,
   targetsParameters,
   timeParameters,
 } from '@models/parameters';
@@ -24,10 +25,14 @@ import { ParametersService } from './parameters.service';
 export class MapService {
   public mapTop!: L.Map;
   public mapBottom!: L.Map;
+
   private _center = new LatLng(46.73233101286786, 10.387573242187502); // Centered on Switzerland
   private _zoom = 7;
   private _zoomControl = false; // Disable the default zoom control
   private _attributionControl = false; // Disable the attribution control
+
+  private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject because, behaviorSubject need to be initialize
+
   constructor(
     private _parametersService: ParametersService,
     private _busService: BusService,
@@ -35,8 +40,6 @@ export class MapService {
     private _dataService: DataService,
     private _apiService: ApiService
   ) {}
-
-  private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject becasue, behaviorSubject need to be initialize
 
   initMaps(): void {
     this.mapTop = L.map('mapTop', {
@@ -166,35 +169,16 @@ export class MapService {
     return data;
   }
 
-  launchSimulation(data: FormGroup, formattedTargetsId: number[]) {
-    const formValue = data.value;
-    const commonParams = {
+  launchSimulation(formValue: algorithmsParametersForm) {
+    if (!formValue.season || !formValue.day || !formValue.hour) return;
+
+    const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
       hour: formValue.hour,
     };
 
-    const timeParams: timeParameters = { ...commonParams };
-
-    const selectedTargets = this._parametersService
-      .getForm()
-      .get('selectedTargets')?.value;
-
-    if (!Array.isArray(selectedTargets)) {
-      console.error('Selected targets are not an array:', selectedTargets);
-      return;
-    }
-
-    const attackParams: targetsParameters = {
-      ...commonParams,
-      attacked_gens: formattedTargetsId.map(String), // Convert to array of strings
-    };
-    const algorithmParams: algorithmsParameters = {
-      ...attackParams,
-      algorithms: formValue.selectedAlgo.map(String), // Convert to array of strings
-    };
-    //console.log('timeParams', timeParams);
-    this._apiService.postRealNetwork(timeParams).subscribe({
+    this._apiService.postRealNetwork({ ...commonParams }).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(this.mapTop, formattedData);
@@ -204,7 +188,16 @@ export class MapService {
       },
     });
 
-    //console.log('attackParams', attackParams);
+    const selectedTargets = formValue.selectedTargets;
+    if (!Array.isArray(selectedTargets)) {
+      console.error('Selected targets are not an array:', selectedTargets);
+      return;
+    }
+
+    const attackParams: targetsParameters = {
+      ...commonParams,
+      attacked_gens: selectedTargets.map(String),
+    };
     this._apiService.postAttackedNetwork(attackParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
@@ -214,7 +207,16 @@ export class MapService {
         console.error(error);
       },
     });
-    console.log('algorithmParams', algorithmParams);
+
+    const selectedAlgo = formValue.selectedAlgo;
+    if (!Array.isArray(selectedAlgo)) {
+      console.error('Selected targets are not an array:', selectedAlgo);
+      return;
+    }
+    const algorithmParams: algorithmsParameters = {
+      ...attackParams,
+      algorithms: selectedAlgo,
+    };
     this._apiService.postAlgorithmResults(algorithmParams).subscribe({
       next: (data) => {
         this._parametersService.populateAlgorithmResult(data);
@@ -263,7 +265,7 @@ export class MapService {
       size = 25;
     }
 
-    let svgHtml = this._busService.constructFullSquareSVG(size, newColor);
+    const svgHtml = constructFullSquareSVG(size, newColor);
     const newIcon = L.divIcon({
       html: svgHtml,
       className: 'svg-icon',
@@ -276,13 +278,15 @@ export class MapService {
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
+    console.log('initDefaultGrid');
     this._apiService.getInitialGrid().subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(mapTop, formattedData);
-        this._parametersService.populatePotentialTargets(data);
+        // this._parametersService.populatePotentialTargets(data);
       },
       error: (error) => {
+        console.warn('_initDefaultGrid: ', error);
         //@todo
       },
     });
