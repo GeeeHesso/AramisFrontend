@@ -19,7 +19,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { POTENTIALTARGETS } from '@core/core.const';
-import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
+import {
+  ALGORITHMS_RESULT,
+  API_LOADING,
+  SELECTED_TARGETS,
+} from '@core/models/base.const';
 import { algorithmResult } from '@core/models/parameters';
 import { MapService } from '@core/services/map/map.service';
 import { BehaviorSubject } from 'rxjs';
@@ -76,6 +80,8 @@ export class ParametersComponent implements OnInit {
     public algorithmsResult$: BehaviorSubject<algorithmResult>,
     @Inject(SELECTED_TARGETS)
     private _selectedTargets: BehaviorSubject<number[]>,
+    @Inject(API_LOADING)
+    private _apiLoading$: BehaviorSubject<boolean>,
     private _mapService: MapService,
     private _dialog: MatDialog,
     private _formBuilder: FormBuilder
@@ -98,8 +104,9 @@ export class ParametersComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-
+    this._apiLoading$.next(true);
     this._mapService.launchSimulation(this.form.getRawValue());
+    this._apiLoading$.next(false);
   }
 
   handleButtonDetails() {

@@ -1,7 +1,9 @@
 <div class="toolbar-container">
-  <mat-progress-bar [value]="apiLoading | async"></mat-progress-bar>
-
   <h1>Aramis</h1>
+</div>
+<div *ngIf="this.apiLoading$ | async">
+  <mat-spinner></mat-spinner>
+  <div class="overlay-container"></div>
 </div>
 
 <mat-sidenav-container>

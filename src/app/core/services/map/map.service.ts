@@ -36,9 +36,10 @@ export class MapService {
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
-    private _algorithmsResult: BehaviorSubject<algorithmResult>,
+    private _algorithmsResult$: BehaviorSubject<algorithmResult>,
     @Inject(SELECTED_TARGETS)
-    private _selectedTargets: BehaviorSubject<number[]>,
+    private _selectedTargets$: BehaviorSubject<number[]>,
+
     private _dataService: DataService,
     private _apiService: ApiService
   ) {}
@@ -106,7 +107,7 @@ export class MapService {
   drawOnMap(map: L.Map, grid: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
-    this._busService.drawGen(map, grid, this._selectedTargets);
+    this._busService.drawGen(map, grid, this._selectedTargets$);
   }
 
   clearMap(map: L.Map): void {
@@ -219,7 +220,7 @@ export class MapService {
     };
     this._apiService.postAlgorithmResults(algorithmParams).subscribe({
       next: (data) => {
-        this._algorithmsResult.next(data);
+        this._algorithmsResult$.next(data);
         this.populateAlgorithmResult(data);
       },
       error: (error) => {
@@ -228,7 +229,6 @@ export class MapService {
     });
   }
 
-  // @ToDo: See where to add this method
   populateAlgorithmResult(data: any) {
     // @ToDo: See how to format the code
 
@@ -242,7 +242,7 @@ export class MapService {
     //   return { name: algorithmName, results: results };
     // });
 
-    this._algorithmsResult.next(data);
+    this._algorithmsResult$.next(data);
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
@@ -252,11 +252,11 @@ export class MapService {
         this.drawOnMap(mapTop, formattedData);
 
         // Redraw gen when target selected
-        this._selectedTargets.subscribe((target) => {
+        this._selectedTargets$.subscribe(() => {
           this._busService.drawGen(
             this.mapTop,
             formattedData,
-            this._selectedTargets
+            this._selectedTargets$
           );
         });
       },
