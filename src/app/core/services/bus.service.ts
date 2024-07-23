@@ -67,10 +67,7 @@ export class BusService {
       customMarker.setIndex(data.gen[g].index);
       customMarker
         .on('click', () =>
-          this._toggleSelectedTarget(
-            customMarker.getGenBusId(),
-            this._selectedTargets
-          )
+          this._toggleSelectedTarget(customMarker.getGenBusId())
         )
         .addTo(map);
     });
@@ -100,11 +97,8 @@ export class BusService {
     return size;
   }
 
-  private _toggleSelectedTarget(
-    targetId: number,
-    selectedTargets: BehaviorSubject<number[]>
-  ) {
-    const currentTargets = selectedTargets.getValue();
+  private _toggleSelectedTarget(targetId: number) {
+    const currentTargets = this._selectedTargets.getValue();
     const targetIndex = currentTargets.indexOf(targetId);
 
     if (targetIndex > -1) {
@@ -113,6 +107,6 @@ export class BusService {
       currentTargets.push(targetId);
     }
 
-    selectedTargets.next(currentTargets);
+    this._selectedTargets.next(currentTargets);
   }
 }
