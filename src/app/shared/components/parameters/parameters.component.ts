@@ -22,7 +22,7 @@ import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
 import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { constructFullSquareSVG } from '@core/models/helpers';
 import { algorithmResult } from '@core/models/parameters';
-import { MapService } from '@core/services/map.service';
+import { MapService } from '@core/services/map/map.service';
 import { CustomMarker } from '@models/CustomMarker';
 import * as L from 'leaflet';
 import { BehaviorSubject } from 'rxjs';

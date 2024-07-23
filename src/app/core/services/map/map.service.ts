@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
-import { ALGORITHMS_RESULT } from '@core/models/base.const';
+import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { constructFullSquareSVG } from '@core/models/helpers';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
@@ -16,9 +16,9 @@ import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { BranchService } from './branch.service';
-import { BusService } from './bus.service';
-import { DataService } from './data.service';
+import { DataService } from '../data.service';
+import { BranchService } from './branch.class';
+import { BusService } from './bus.class';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +37,8 @@ export class MapService {
   constructor(
     @Inject(ALGORITHMS_RESULT)
     private _algorithmsResult: BehaviorSubject<algorithmResult>,
+    @Inject(SELECTED_TARGETS)
+    private _selectedTargets: BehaviorSubject<number[]>,
     private _busService: BusService,
     private _branchService: BranchService,
     private _dataService: DataService,
@@ -108,7 +110,7 @@ export class MapService {
   drawOnMap(map: L.Map, grid: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
-    this._busService.drawGen(map, grid);
+    this._busService.drawGen(map, grid, this._selectedTargets);
   }
 
   clearMap(map: L.Map): void {

@@ -1,4 +1,3 @@
-import { Inject, Injectable } from '@angular/core';
 import {
   DEFAULT_COLOR,
   INACTIVE_COLOR,
@@ -6,35 +5,29 @@ import {
   MIN_SIZE,
   SELECT_GEN_COLOR,
 } from '@core/core.const';
-import { SELECTED_TARGETS } from '@core/models/base.const';
 import { constructFullSquareSVG } from '@core/models/helpers';
 import { CustomMarker } from '@models/CustomMarker';
-import L, { CircleMarker } from 'leaflet';
+import L from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
 export class BusService {
-  public busMarkers: CircleMarker[] = [];
-
-  constructor(
-    @Inject(SELECTED_TARGETS)
-    private _selectedTargets: BehaviorSubject<number[]>
-  ) {}
-
   /**
-   * Draw generators (square) on the map
+   * Draw the generators on the map
    * @param map
-   * @param data Pantagruel reprocessed data
+   * @param data
+   * @param selectedTargets
    */
-  public drawGen(map: L.Map, data: any): void {
+  public drawGen(
+    map: L.Map,
+    data: any,
+    selectedTargets: BehaviorSubject<number[]>
+  ): void {
     const zoom = map.getZoom();
-    const selectedTargets = this._selectedTargets.getValue();
+    const targets = selectedTargets.getValue();
 
     Object.keys(data.gen).forEach((g) => {
       // Check if the current generator index is in the selectedTargets array
-      const isSelected = selectedTargets.includes(data.gen[g].gen_bus);
+      const isSelected = targets.includes(data.gen[g].gen_bus);
 
       // Style
       const color = isSelected
@@ -67,7 +60,10 @@ export class BusService {
       customMarker.setIndex(data.gen[g].index);
       customMarker
         .on('click', () =>
-          this._toggleSelectedTarget(customMarker.getGenBusId())
+          this._toggleSelectedTarget(
+            customMarker.getGenBusId(),
+            selectedTargets
+          )
         )
         .addTo(map);
     });
@@ -92,13 +88,16 @@ export class BusService {
       size = MIN_SIZE;
     } else if (size > MAX_SIZE) {
       size = MAX_SIZE;
-    } else {
     }
+
     return size;
   }
 
-  private _toggleSelectedTarget(targetId: number) {
-    const currentTargets = this._selectedTargets.getValue();
+  private _toggleSelectedTarget(
+    targetId: number,
+    selectedTargets: BehaviorSubject<number[]>
+  ): void {
+    const currentTargets = selectedTargets.getValue();
     const targetIndex = currentTargets.indexOf(targetId);
 
     if (targetIndex > -1) {
@@ -107,6 +106,6 @@ export class BusService {
       currentTargets.push(targetId);
     }
 
-    this._selectedTargets.next(currentTargets);
+    selectedTargets.next(currentTargets);
   }
 }

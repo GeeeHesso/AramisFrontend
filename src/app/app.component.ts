@@ -10,7 +10,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { API_LOADING } from '@core/models/base.const';
 import { algorithmResult } from '@core/models/parameters';
-import { MapService } from '@core/services/map.service';
+import { MapService } from '@core/services/map/map.service';
 import { ParametersComponent } from '@shared/components/parameters/parameters.component';
 import { BehaviorSubject } from 'rxjs';
 

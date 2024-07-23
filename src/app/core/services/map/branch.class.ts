@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import {
   DEFAULT_COLOR,
   DEFAULT_WIDTH_BRANCH,
@@ -8,9 +7,6 @@ import {
 import { Pantagruel } from '@core/models/pantagruel';
 import L, { Polyline } from 'leaflet';
 
-@Injectable({
-  providedIn: 'root',
-})
 export class BranchService {
   /**
    * Draw each branches/lines on the map
