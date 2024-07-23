@@ -63,15 +63,15 @@ export class ParametersComponent implements OnInit {
     ['18-22h', 20],
   ]);
   potentialTargets = new Map([
-    [5540, 'Innertkirchen'],
-    [5594, 'Löbbia'],
-    [5612, 'Pradella'],
-    [2339, 'Riddes'],
-    [5591, 'Rothenbrunnen'],
-    [5573, 'Sedrun'],
-    [5589, 'Sils'],
-    [5518, 'Stalden'],
-    [5582, 'Tavanasa'],
+    [918, 'Innertkirchen'],
+    [933, 'Löbbia'],
+    [934, 'Pradella'],
+    [173, 'Riddes'],
+    [932, 'Rothenbrunnen'],
+    [924, 'Sedrun'],
+    [931, 'Sils'],
+    [915, 'Stalden'],
+    [927, 'Tavanasa'],
   ]);
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
 
