@@ -14,7 +14,7 @@ import { ParametersService } from '@core/services/parameters.service';
 import { CustomMarker } from '@models/CustomMarker';
 import { BusService } from '@services/bus.service';
 import * as L from 'leaflet';
-import { DialogResultComponent } from '../DialogResult/DialogResult.component';
+import { DialogResultComponent } from '../dialogResult/dialogResult.component';
 
 @Component({
   standalone: true,
