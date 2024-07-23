@@ -21,7 +21,5 @@ export interface algorithmsParameters extends targetsParameters {
 }
 
 export interface algorithmResult {
-  [key: string]: {
-    [key: string]: boolean;
-  };
+  [key: string]: { [key: string]: boolean };
 }

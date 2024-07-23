@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+import { POTENTIALTARGETS } from '@core/core.const';
 import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
@@ -229,18 +230,24 @@ export class MapService {
     });
   }
 
-  populateAlgorithmResult(data: any) {
+  populateAlgorithmResult(data: algorithmResult) {
     // @ToDo: See how to format the code
 
-    //console.log('populateAlgorithmResult', data);
+    console.log('populateAlgorithmResult', data);
 
-    // const algorithmsResult = Object.keys(data).map((algorithmName) => {
-    //   const results = Object.keys(data[algorithmName]).map((indexName) => ({
-    //     indexName: indexName,
-    //     result: data[algorithmName][indexName],
-    //   }));
-    //   return { name: algorithmName, results: results };
-    // });
+    const simplifiedResult = Object.keys(data).map((algorithmName) => {
+      const results = Object.keys(data[algorithmName]).map((index) => ({
+        genIndex: index,
+        result: data[algorithmName][index],
+        name: POTENTIALTARGETS.get(parseInt(index)),
+      }));
+
+      return {
+        algoName: algorithmName,
+        results: results.filter((gen) => gen.result),
+      };
+    });
+    console.log(simplifiedResult);
 
     this._algorithmsResult$.next(data);
   }
