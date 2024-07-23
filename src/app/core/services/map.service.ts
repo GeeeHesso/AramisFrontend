@@ -1,19 +1,22 @@
-import {Injectable} from '@angular/core';
-import {Pantagruel} from '@core/models/pantagruel';
-
-import {MapView} from '@core/models/map';
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
+import { MapView } from '@core/models/map';
+import { Pantagruel } from '@core/models/pantagruel';
+import { CustomMarker } from '@models/CustomMarker';
+import {
+  algorithmsParameters,
+  targetsParameters,
+  timeParameters,
+} from '@models/parameters';
+import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
-import {LatLng} from 'leaflet';
-import {Subject} from 'rxjs';
-import {BranchService} from './branch.service';
-import {BusService} from './bus.service';
-import {DataService} from './data.service';
-import {ApiService} from "@services/api.service";
-import {FormControl, FormGroup} from "@angular/forms";
-import {algorithmsParameters, targetsParameters, timeParameters} from "@models/parameters";
-import {CustomMarker} from "@models/CustomMarker";
-import {INACTIVE_COLOR, SELECT_GEN_COLOR} from "@core/core.const";
-import {ParametersService} from "@services/parameters.service";
+import { LatLng } from 'leaflet';
+import { Subject } from 'rxjs';
+import { BranchService } from './branch.service';
+import { BusService } from './bus.service';
+import { DataService } from './data.service';
+import { ParametersService } from './parameters.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,40 +24,39 @@ import {ParametersService} from "@services/parameters.service";
 export class MapService {
   public mapTop!: L.Map;
   public mapBottom!: L.Map;
-  private center = new LatLng(46.73233101286786, 10.387573242187502); // Centered on Switzerland
-  private zoom = 7;
-  private zoomControl = false; // Disable the default zoom control
-  private attributionControl = false; // Disable the attribution control
+  private _center = new LatLng(46.73233101286786, 10.387573242187502); // Centered on Switzerland
+  private _zoom = 7;
+  private _zoomControl = false; // Disable the default zoom control
+  private _attributionControl = false; // Disable the attribution control
   constructor(
     private _parametersService: ParametersService,
     private _busService: BusService,
     private _branchService: BranchService,
     private _dataService: DataService,
     private _apiService: ApiService
-  ) {
-  }
+  ) {}
 
   private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject becasue, behaviorSubject need to be initialize
 
-  public initMaps(): void {
+  initMaps(): void {
     this.mapTop = L.map('mapTop', {
-      center: this.center,
-      zoom: this.zoom,
-      zoomControl: this.zoomControl, // Disable the default zoom control
-      attributionControl: this.attributionControl, // Disable the attribution control
-      zoomSnap: 0.1
+      center: this._center,
+      zoom: this._zoom,
+      zoomControl: this._zoomControl, // Disable the default zoom control
+      attributionControl: this._attributionControl, // Disable the attribution control
+      zoomSnap: 0.1,
     });
     this.mapBottom = L.map('mapBottom', {
-      center: this.center,
-      zoom: this.zoom,
-      zoomControl: this.zoomControl, // Disable the default zoom control
-      attributionControl: this.attributionControl, // Disable the attribution control
-      zoomSnap: 0.1
+      center: this._center,
+      zoom: this._zoom,
+      zoomControl: this._zoomControl, // Disable the default zoom control
+      attributionControl: this._attributionControl, // Disable the attribution control
+      zoomSnap: 0.1,
     });
 
     this._initBaseMap(this.mapTop);
     this._initBaseMap(this.mapBottom);
-    this._defaultgridInit(this.mapTop)
+    this._initDefaultGrid(this.mapTop);
   }
 
   private _initBaseMap(map: L.Map) {
@@ -64,7 +66,6 @@ export class MapService {
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
         maxZoom: 16,
         minZoom: 7,
-
       }
     ).addTo(map);
 
@@ -86,41 +87,33 @@ export class MapService {
       const center = map.getCenter();
       const zoom = map.getZoom();
       this._view$.next({
-        center: center,
-        zoom: zoom,
+        center: map.getCenter(),
+        zoom: map.getZoom(),
         map: map,
       });
     });
 
-
     this._view$.subscribe((view) => {
       if (view.map !== map) {
-        map.setView(view.center, view.zoom, {animate: false});
+        map.setView(view.center, view.zoom, { animate: false });
       }
     });
   }
 
-  public drawOnMap(map: L.Map, grid: Pantagruel): void {
+  drawOnMap(map: L.Map, grid: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(map, grid);
-
   }
 
-  public clearMap(map: L.Map): void {
+  clearMap(map: L.Map): void {
     map.eachLayer((layer) => {
       layer.remove();
     });
     this._initBaseMap(map);
   }
 
-  /**
-   * Complete data sata with value use in display
-   * branch: loadInjected, totalPowerMW, losses, from bus coordinates, to bus coordinates
-   * gen: bus coordinates
-   * load: bus coordinates, bus population
-   */
-  public getFormattedPantagruelData(data: Pantagruel): Pantagruel {
+  getFormattedPantagruelData(data: Pantagruel): Pantagruel {
     this._dataService.setConstOfDataSet(data);
     // WARNING lat long reverse, so [1][0]
     // Assign coord to know where to draw it
@@ -138,12 +131,12 @@ export class MapService {
       ) {
         console.warn(
           'Branch ' +
-          br +
-          ' is not show because fromBus ' +
-          data.branch[br].f_bus +
-          ' or/and toBus ' +
-          data.branch[br].t_bus +
-          ' not found in dataset'
+            br +
+            ' is not show because fromBus ' +
+            data.branch[br].f_bus +
+            ' or/and toBus ' +
+            data.branch[br].t_bus +
+            ' not found in dataset'
         );
         delete data.branch[br];
         return;
@@ -165,26 +158,12 @@ export class MapService {
       )
         console.warn(
           'The branch ' +
-          data.branch[br].index +
-          ' cannot be display. The FROM coordinates are the same as the TO coordinates'
+            data.branch[br].index +
+            ' cannot be display. The FROM coordinates are the same as the TO coordinates'
         );
     });
 
     return data;
-  }
-
-  private _defaultgridInit(mapTop: L.Map) {
-    this._apiService.getInitialGrid().subscribe({
-      next: (data) => {
-        const formattedData = this.getFormattedPantagruelData(data);
-        console.log(formattedData)
-        this.drawOnMap(mapTop, formattedData);
-        this._parametersService.populatePotentialTargets(data)
-      },
-      error: (error) => {
-        //@todo
-      },
-    });
   }
 
   launchSimulation(data: FormGroup, formattedTargetsId: number[]) {
@@ -197,10 +176,12 @@ export class MapService {
 
     const timeParams: timeParameters = { ...commonParams };
 
-    const selectedTargets = this._parametersService.getForm().get('selectedTargets')?.value;
+    const selectedTargets = this._parametersService
+      .getForm()
+      .get('selectedTargets')?.value;
 
     if (!Array.isArray(selectedTargets)) {
-      console.error("Selected targets are not an array:", selectedTargets);
+      console.error('Selected targets are not an array:', selectedTargets);
       return;
     }
 
@@ -212,7 +193,7 @@ export class MapService {
       ...attackParams,
       algorithms: formValue.selectedAlgo.map(String), // Convert to array of strings
     };
-    console.log("timeParams", timeParams);
+    //console.log('timeParams', timeParams);
     this._apiService.postRealNetwork(timeParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
@@ -223,7 +204,7 @@ export class MapService {
       },
     });
 
-    console.log("attackParams", attackParams);
+    //console.log('attackParams', attackParams);
     this._apiService.postAttackedNetwork(attackParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
@@ -233,10 +214,10 @@ export class MapService {
         console.error(error);
       },
     });
-    console.log("algorithmParams",algorithmParams)
+    console.log('algorithmParams', algorithmParams);
     this._apiService.postAlgorithmResults(algorithmParams).subscribe({
       next: (data) => {
-       this._parametersService.populateAlgorithmResult(data);
+        this._parametersService.populateAlgorithmResult(data);
       },
       error: (error) => {
         console.error(error);
@@ -263,9 +244,12 @@ export class MapService {
   }
 
   markMarkerAsSelectedOrUnselected(foundMarker: CustomMarker) {
-
-    const currentIconHtml = foundMarker.getElement()?.querySelector('.svg-icon')?.innerHTML;
-    const currentIconSize = foundMarker.getIcon().options.iconSize as L.PointExpression | undefined
+    const currentIconHtml = foundMarker
+      .getElement()
+      ?.querySelector('.svg-icon')?.innerHTML;
+    const currentIconSize = foundMarker.getIcon().options.iconSize as
+      | L.PointExpression
+      | undefined;
     let size: number;
 
     let newColor = SELECT_GEN_COLOR;
@@ -275,12 +259,11 @@ export class MapService {
 
     if (Array.isArray(currentIconSize)) {
       size = currentIconSize[0];
-
     } else {
       size = 25;
     }
 
-    let svgHtml = this._busService._constructFullSquareSVG(size, newColor);
+    let svgHtml = this._busService.constructFullSquareSVG(size, newColor);
     const newIcon = L.divIcon({
       html: svgHtml,
       className: 'svg-icon',
@@ -289,9 +272,19 @@ export class MapService {
       popupAnchor: [0, 0],
     });
 
-
     foundMarker.setIcon(newIcon);
   }
 
-
+  private _initDefaultGrid(mapTop: L.Map) {
+    this._apiService.getInitialGrid().subscribe({
+      next: (data) => {
+        const formattedData = this.getFormattedPantagruelData(data);
+        this.drawOnMap(mapTop, formattedData);
+        this._parametersService.populatePotentialTargets(data);
+      },
+      error: (error) => {
+        //@todo
+      },
+    });
+  }
 }

@@ -1,3 +1,6 @@
+@import "scss-opinionated/mixin";
+@import "scss-opinionated/utilities";
+//Doc: https://github.com/rbalet/scss-opinionated
 
 body,
 html {
@@ -15,5 +18,6 @@ h2 {
 
 h3 {
   font-size: 1rem !important;
+  font-weight: bold !important;
   line-height: 1rem !important;
 }

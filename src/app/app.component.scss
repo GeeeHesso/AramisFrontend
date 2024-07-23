@@ -2,72 +2,41 @@
   display: flex;
   height: 100%;
   flex-flow: column;
-}
 
-mat-sidenav-container {
-  height: 100%;
-}
-
-mat-sidenav.custom-sidenav {
-  padding: var(--space-small);
-  padding-top: 1px;
-  padding-bottom: 1px;
-  padding-right: 1px;
-  border-radius: 0;
-  border-right: 1px solid black;
-  border-top: 1px solid black;
-  overflow: hidden; /* Hide overflow to control the inner scrollable div */
-
-  .scrollable-container {
+  mat-sidenav-container {
     height: 100%;
-    padding-right: 5px;
-    overflow-y: auto; /* Make this div scrollable */
 
-    /* WebKit browsers */
-    ::-webkit-scrollbar {
-      width: 12px;
+    mat-sidenav {
+      border-radius: 0;
+      border-right: 1px solid black;
+      border-top: 1px solid black;
+
+      .content-container {
+        padding: var(--space-small);
+      }
     }
 
-    ::-webkit-scrollbar-thumb {
-      background-color: #696969;
-      border-radius: 6px;
-      border: none; /* Ensure no border */
+    mat-sidenav-content {
+      .map-container {
+        position: relative; // for label
+        height: 50%;
+        box-sizing: border-box; // for border not going outside the container (and be hidden)
+        border-top: 1px solid black;
+      }
+      .map {
+        width: 100%;
+        height: 100%;
+      }
+      .map-label {
+        position: absolute;
+        top: var(--space-smaller);
+        left: var(--space-smaller);
+        padding: var(--space-smallest) var(--space);
+        color: white;
+        background-color: rgba(128, 128, 128, 0.8);
+        font-size: 20px;
+        z-index: 1000;
+      }
     }
-
-    ::-webkit-scrollbar-track {
-      background-color: #EEE;
-    }
-
-    /* For Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: #757575 #EEE;
-  }
-
-  .content-container {
-    padding-top: var(--space-small);
-    padding-right: 12px; /* Add space to the right to avoid overlap with scrollbar */
-  }
-}
-
-mat-sidenav-content {
-  .map-container {
-    position: relative;
-    height: 50%;
-    box-sizing: border-box;
-    border-top: 1px solid black;
-  }
-  .map {
-    width: 100%;
-    height: 100%;
-  }
-  .map-label {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: var(--space-smallest) var(--space);
-    color: white;
-    background-color: rgba(128, 128, 128, 0.8);
-    font-size: 20px;
-    z-index: 1000;
   }
 }

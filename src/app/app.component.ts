@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { ApiService } from '@core/services/api.service';
 import { MapService } from '@core/services/map.service';
 import { ParametersComponent } from '@shared/components/parameters/parameters.component';
 
@@ -24,10 +23,7 @@ import { ParametersComponent } from '@shared/components/parameters/parameters.co
   ],
 })
 export class AppComponent implements OnInit {
-  constructor(
-    private apiManagementService: ApiService,
-    public mapService: MapService
-  ) {}
+  constructor(public mapService: MapService) {}
 
   ngOnInit(): void {
     this.mapService.initMaps();

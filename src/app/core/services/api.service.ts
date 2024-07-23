@@ -1,4 +1,8 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Pantagruel } from '@core/models/pantagruel';
 import {
@@ -14,41 +18,49 @@ import { throwError } from 'rxjs';
 })
 export class ApiService {
   //@TODO: no httpclient here ! https://angular.dev/guide/http/setup
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
 
-  private baseUrl: string = environment.JULIA_BACKEND_BASE_URL;
+  private _baseUrl: string = environment.JULIA_BACKEND_BASE_URL;
 
   getInitialGrid() {
-    console.log('Called getInitialGrid');
-    return this.http.get<Pantagruel>(`${this.baseUrl}/initial_network`);
+    //console.log('Called getInitialGrid');
+    return this._http.get<Pantagruel>(`${this._baseUrl}/initial_network`);
   }
 
   postAttackedNetwork(data: targetsParameters) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Accept': '*/*'
+      Accept: '*/*',
     });
-    console.log("postAttackedNetwork")
-    console.log(data)
-    return this.http.post<Pantagruel>(`${this.baseUrl}/attacked_network`, data, { headers });
+    //console.log("postAttackedNetwork")
+    //console.log(data)
+    return this._http.post<Pantagruel>(
+      `${this._baseUrl}/attacked_network`,
+      data,
+      { headers }
+    );
   }
 
   postRealNetwork(data: timeParameters) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Accept': '*/*'
+      Accept: '*/*',
     });
-    console.log("postRealNetwork")
-    console.log(data)
-    return this.http.post<Pantagruel>(`${this.baseUrl}/real_network`, data, { headers });
+    //console.log("postRealNetwork")
+    //console.log(data)
+    return this._http.post<Pantagruel>(`${this._baseUrl}/real_network`, data, {
+      headers,
+    });
   }
 
   postAlgorithmResults(data: algorithmsParameters) {
-    return this.http.post<any>(`${this.baseUrl}/algorithms`, data);
+    //console.log("postAlgorithmResults")
+    //console.log(data)
+    return this._http.post<any>(`${this._baseUrl}/algorithms`, data);
   }
 
   //@TODO: check how to reuse this
-  private handleError(error: HttpErrorResponse) {
+  private _handleError(error: HttpErrorResponse) {
     let errorMessage = '';
 
     if (error.error instanceof ErrorEvent) {

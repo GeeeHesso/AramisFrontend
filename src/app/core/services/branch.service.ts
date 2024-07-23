@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   DEFAULT_COLOR,
   DEFAULT_WIDTH_BRANCH,
-  INACTIVE_COLOR, LINE_220KV_COLOR, LINE_380KV_COLOR,
+  LINE_220KV_COLOR,
+  LINE_380KV_COLOR,
 } from '@core/core.const';
 import { Pantagruel } from '@core/models/pantagruel';
 import L, { Polyline } from 'leaflet';
@@ -20,7 +21,6 @@ export class BranchService {
   public branchMarker: Polyline[] = [];
 
   public drawBranch(map: L.Map, data: Pantagruel): void {
-
     const zoom = map.getZoom();
 
     // Draw all the branches
@@ -53,7 +53,8 @@ export class BranchService {
           break;
       }
 
-      const loadPercentage = Math.abs((data.branch[b].pt) / data.branch[b].rate_a) * 100;
+      const loadPercentage =
+        Math.abs(data.branch[b].pt / data.branch[b].rate_a) * 100;
 
       if (loadPercentage >= 100) {
         color = 'black';
@@ -69,7 +70,7 @@ export class BranchService {
         weight: weight + zoom / 3,
         color: color,
         pane: 'shadowPane',
-        dashArray: dashArray
+        dashArray: dashArray,
       });
 
       // Add branch to the layer

@@ -1,50 +1,79 @@
 <h2>Data source</h2>
 
-<form [formGroup]="_parametersService.getForm()">
+<form [formGroup]="parametersService.getForm()">
   <h3>Season</h3>
   <mat-chip-listbox aria-label="Season" formControlName="season">
-    <mat-chip-option *ngFor="let season of seasons" [value]="season">{{ season }}</mat-chip-option>
+    <mat-chip-option *ngFor="let season of seasons" [value]="season">{{
+      season
+    }}</mat-chip-option>
   </mat-chip-listbox>
 
   <h3>Day</h3>
   <mat-chip-listbox aria-label="Day type" formControlName="day">
-    <mat-chip-option *ngFor="let dayType of day" [value]="dayType">{{ dayType }}</mat-chip-option>
+    <mat-chip-option *ngFor="let dayType of day" [value]="dayType">{{
+      dayType
+    }}</mat-chip-option>
   </mat-chip-listbox>
 
   <h3>Time slot</h3>
   <mat-chip-listbox aria-label="Time slot" formControlName="hour">
-    <mat-chip-option *ngFor="let timeSlot of hours | keyvalue" [value]="timeSlot.key">{{ timeSlot.key }}</mat-chip-option>
+    <mat-chip-option
+      *ngFor="let timeSlot of hours | keyvalue"
+      [value]="timeSlot.key"
+      >{{ timeSlot.key }}</mat-chip-option
+    >
   </mat-chip-listbox>
 
   <h2>Attack</h2>
-  <mat-chip-listbox aria-label="Targets" multiple formControlName="selectedTargets">
-    <mat-chip-option *ngFor="let target of this._parametersService.potentialTargets | keyvalue" [value]="target.key">{{ target.value }}</mat-chip-option>
+  <mat-chip-listbox
+    aria-label="Targets"
+    multiple
+    formControlName="selectedTargets"
+  >
+    <mat-chip-option
+      *ngFor="let target of this.parametersService.potentialTargets | keyvalue"
+      [value]="target.key"
+      >{{ target.value }}</mat-chip-option
+    >
   </mat-chip-listbox>
 
   <h2>Algorithms</h2>
-  <mat-chip-listbox aria-label="Algorithms" multiple formControlName="selectedAlgo">
-    <mat-chip-option *ngFor="let algo of algorithmList" [value]="algo">{{ algo }}</mat-chip-option>
+  <mat-chip-listbox
+    aria-label="Algorithms"
+    multiple
+    formControlName="selectedAlgo"
+  >
+    <mat-chip-option *ngFor="let algo of algorithmList" [value]="algo">{{
+      algo
+    }}</mat-chip-option>
   </mat-chip-listbox>
 </form>
 
-<button mat-flat-button color="primary" (click)="launchSimulation()" [disabled]="_parametersService.getForm().invalid">Launch simulation</button>
+<button
+  mat-flat-button
+  color="primary"
+  (click)="launchSimulation()"
+  [disabled]="parametersService.getForm().invalid"
+>
+  Launch simulation
+</button>
 
-<ng-container *ngIf="this._parametersService.algorithmsResult().length > 0">
+<ng-container *ngIf="this.parametersService.algorithmsResult().length > 0">
   <h2>Algorithm result</h2>
-  <div *ngFor="let algorithm of this._parametersService.algorithmsResult()">
-    <h3 class="algorithm-name">{{ algorithm.name }}</h3>
+  <div *ngFor="let algorithm of this.parametersService.algorithmsResult()">
+    <h3>{{ algorithm.name }}</h3>
     <table>
       <thead>
-      <tr>
-        <th>IndexName</th>
-        <th>Result</th>
-      </tr>
+        <tr>
+          <th>IndexName</th>
+          <th>Result</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let result of algorithm.results">
-        <td>{{ result.indexName }}</td>
-        <td>{{ result.result }}</td>
-      </tr>
+        <tr *ngFor="let result of algorithm.results">
+          <td>{{ result.indexName }}</td>
+          <td>{{ result.result }}</td>
+        </tr>
       </tbody>
     </table>
   </div>

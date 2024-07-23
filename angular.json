@@ -33,8 +33,7 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/rose-red.css",
-              "src/scss/styles.scss",
-              "src/scss/variables.scss"
+              "src/scss/styles.scss"
             ],
             "scripts": []
           },
@@ -90,8 +89,7 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/rose-red.css",
-              "src/scss/styles.scss",
-              "src/scss/variables.scss"
+              "src/scss/styles.scss"
             ],
             "scripts": []
           }

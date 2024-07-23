@@ -1,26 +1,27 @@
 :host {
+  mat-chip-listbox {
+    padding-bottom: var(--space-smaller);
+  }
+
   button {
     width: 100%;
     margin: 10px 0;
   }
-}
-.algorithm-name {
-  font-weight: bold;
-  text-align: center;
-}
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
+  table {
+    width: 100%;
+    margin-bottom: var(--space);
+    border-collapse: collapse;
+  }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
+  th,
+  td {
+    padding: var(--space-smaller);
+    border: 1px solid #ddd;
+  }
 
-th {
-  background-color: #f2f2f2;
-  text-align: left;
+  th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
 }

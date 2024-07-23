@@ -1,13 +1,14 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   DEFAULT_COLOR,
   INACTIVE_COLOR,
   MAX_SIZE,
-  MIN_SIZE, SELECT_GEN_COLOR,
+  MIN_SIZE,
+  SELECT_GEN_COLOR,
 } from '@core/core.const';
-import L, {CircleMarker} from 'leaflet';
-import {CustomMarker} from "@models/CustomMarker";
-import {ParametersService} from "@services/parameters.service";
+import { CustomMarker } from '@models/CustomMarker';
+import L, { CircleMarker } from 'leaflet';
+import { ParametersService } from './parameters.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +16,7 @@ import {ParametersService} from "@services/parameters.service";
 export class BusService {
   public busMarkers: CircleMarker[] = [];
 
-  constructor(public _parametersService: ParametersService ) {
-  }
+  constructor(public parametersService: ParametersService) {}
 
   /**
    * Draw generators (square) on the map
@@ -25,21 +25,27 @@ export class BusService {
    */
   public drawGen(map: L.Map, data: any): void {
     const zoom = map.getZoom();
-    const selectedTargets = this._parametersService.getForm().get('selectedTargets')?.value || [];
+    const selectedTargets =
+      this.parametersService.getForm().get('selectedTargets')?.value || [];
 
     Object.keys(data.gen).forEach((g) => {
       // Check if the current generator index is in the selectedTargets array
       const isSelected = selectedTargets.includes(data.gen[g].gen_bus);
 
       // Style
-      const color = isSelected ? SELECT_GEN_COLOR : (data.gen[g].status == 1 ? DEFAULT_COLOR : INACTIVE_COLOR);
-      const size = this._getSizeProportionalMax(
-        data.gen[g].pmax,
-        data.GEN_MIN_MAX_PROD,
-        data.GEN_MAX_MAX_PROD
-      ) + zoom;
+      const color = isSelected
+        ? SELECT_GEN_COLOR
+        : data.gen[g].status == 1
+        ? DEFAULT_COLOR
+        : INACTIVE_COLOR;
+      const size =
+        this._getSizeProportionalMax(
+          data.gen[g].pmax,
+          data.GEN_MIN_MAX_PROD,
+          data.GEN_MAX_MAX_PROD
+        ) + zoom;
 
-      let svgHtml = this._constructFullSquareSVG(size, color);
+      let svgHtml = this.constructFullSquareSVG(size, color);
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
@@ -54,7 +60,9 @@ export class BusService {
 
       customMarker.setGenBusId(data.gen[g].gen_bus);
       customMarker.setIndex(data.gen[g].index);
-      customMarker.on('click', () => this._addSelectedGenUsingTheMap(customMarker)).addTo(map);
+      customMarker
+        .on('click', () => this._addSelectedGenUsingTheMap(customMarker))
+        .addTo(map);
     });
   }
 
@@ -63,7 +71,7 @@ export class BusService {
    * @param gen
    * @private
    */
-  _constructFullSquareSVG(size: number, color: string): string {
+  public constructFullSquareSVG(size: number, color: string): string {
     return (
       `<svg width="` +
       size +
@@ -89,7 +97,6 @@ export class BusService {
    * @private
    */
 
-
   private _getSizeProportionalMax(
     val: number,
     minValue: number,
@@ -98,20 +105,15 @@ export class BusService {
     //@TODO: Gwen you can improve this
     let size = (val / (maxValue - minValue)) * 50;
     if (size < MIN_SIZE) {
-
       size = MIN_SIZE;
     } else if (size > MAX_SIZE) {
-
       size = MAX_SIZE;
     } else {
-
     }
     return size;
   }
 
   _addSelectedGenUsingTheMap(marker: CustomMarker) {
-    this._parametersService.addOrRemoveSelectedTarget(marker.getGenBusId());
+    this.parametersService.addOrRemoveSelectedTarget(marker.getGenBusId());
   }
-
-
 }
