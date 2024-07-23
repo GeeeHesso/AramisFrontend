@@ -19,3 +19,9 @@ export interface targetsParameters extends timeParameters {
 export interface algorithmsParameters extends targetsParameters {
   algorithms: string[];
 }
+
+export interface algorithmResult {
+  [key: string]: {
+    [key: string]: boolean;
+  };
+}

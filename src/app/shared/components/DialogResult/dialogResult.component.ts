@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ParametersService } from '@core/services/parameters.service';
+import { ALGORITHMS_RESULT } from '@core/models/base.const';
+import { algorithmResult } from '@core/models/parameters';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-result',
@@ -13,5 +15,8 @@ import { ParametersService } from '@core/services/parameters.service';
 })
 export class DialogResultComponent {
   //todo: use @Inject(MAT_DIALOG_DATA) public data: any
-  constructor(public parametersService: ParametersService) {}
+  constructor(
+    @Inject(ALGORITHMS_RESULT)
+    public algorithmsResult: BehaviorSubject<algorithmResult>
+  ) {}
 }

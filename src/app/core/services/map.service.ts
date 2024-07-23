@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
+import { ALGORITHMS_RESULT } from '@core/models/base.const';
 import { constructFullSquareSVG } from '@core/models/helpers';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
 import { CustomMarker } from '@models/CustomMarker';
 import {
+  algorithmResult,
   algorithmsParameters,
   algorithmsParametersForm,
   targetsParameters,
@@ -13,11 +15,10 @@ import {
 import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { BranchService } from './branch.service';
 import { BusService } from './bus.service';
 import { DataService } from './data.service';
-import { ParametersService } from './parameters.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,8 @@ export class MapService {
   private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject because, behaviorSubject need to be initialize
 
   constructor(
-    private _parametersService: ParametersService,
+    @Inject(ALGORITHMS_RESULT)
+    private _algorithmsResult: BehaviorSubject<algorithmResult>,
     private _busService: BusService,
     private _branchService: BranchService,
     private _dataService: DataService,
@@ -219,12 +221,30 @@ export class MapService {
     };
     this._apiService.postAlgorithmResults(algorithmParams).subscribe({
       next: (data) => {
-        this._parametersService.populateAlgorithmResult(data);
+        this._algorithmsResult.next(data);
+        this.populateAlgorithmResult(data);
       },
       error: (error) => {
         console.error(error);
       },
     });
+  }
+
+  // @ToDo: See where to add this method
+  populateAlgorithmResult(data: any) {
+    // @ToDo: See how to format the code
+
+    //console.log('populateAlgorithmResult', data);
+
+    // const algorithmsResult = Object.keys(data).map((algorithmName) => {
+    //   const results = Object.keys(data[algorithmName]).map((indexName) => ({
+    //     indexName: indexName,
+    //     result: data[algorithmName][indexName],
+    //   }));
+    //   return { name: algorithmName, results: results };
+    // });
+
+    this._algorithmsResult.next(data);
   }
 
   //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
@@ -278,12 +298,10 @@ export class MapService {
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
-    console.log('initDefaultGrid');
     this._apiService.getInitialGrid().subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(mapTop, formattedData);
-        // this._parametersService.populatePotentialTargets(data);
       },
       error: (error) => {
         console.warn('_initDefaultGrid: ', error);

@@ -1,7 +1,8 @@
 <h1 mat-dialog-title>Result</h1>
 <mat-dialog-content>
-  <div *ngFor="let algorithm of this.parametersService.algorithmsResult$()">
-    <h3>{{ algorithm.name }}</h3>
+  <!-- @TODO: Sync with the type : algorithmResult ? -->
+  <!-- <div *ngFor="let algorithm of algorithmsResult | async | keyvalue">
+    <h3>{{ algorithm.key }}</h3>
     <table>
       <thead>
         <tr>
@@ -10,13 +11,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let result of algorithm.results">
+        <tr *ngFor="let result of algorithm.value">
           <td>{{ result.indexName }}</td>
           <td>{{ result.result }}</td>
         </tr>
       </tbody>
     </table>
-  </div>
+  </div> -->
 </mat-dialog-content>
 
 <div mat-dialog-actions align="center">

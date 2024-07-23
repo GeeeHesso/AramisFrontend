@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   DEFAULT_COLOR,
   INACTIVE_COLOR,
@@ -6,10 +6,11 @@ import {
   MIN_SIZE,
   SELECT_GEN_COLOR,
 } from '@core/core.const';
+import { SELECTED_TARGETS } from '@core/models/base.const';
 import { constructFullSquareSVG } from '@core/models/helpers';
 import { CustomMarker } from '@models/CustomMarker';
 import L, { CircleMarker } from 'leaflet';
-import { ParametersService } from './parameters.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,10 @@ import { ParametersService } from './parameters.service';
 export class BusService {
   public busMarkers: CircleMarker[] = [];
 
-  constructor(public parametersService: ParametersService) {}
+  constructor(
+    @Inject(SELECTED_TARGETS)
+    private _selectedTargets: BehaviorSubject<number[]>
+  ) {}
 
   /**
    * Draw generators (square) on the map
@@ -26,8 +30,7 @@ export class BusService {
    */
   public drawGen(map: L.Map, data: any): void {
     const zoom = map.getZoom();
-    const selectedTargets =
-      this.parametersService.form.get('selectedTargets')?.value || [];
+    const selectedTargets = this._selectedTargets.getValue();
 
     Object.keys(data.gen).forEach((g) => {
       // Check if the current generator index is in the selectedTargets array
@@ -39,6 +42,7 @@ export class BusService {
         : data.gen[g].status == 1
         ? DEFAULT_COLOR
         : INACTIVE_COLOR;
+
       const size =
         this._getSizeProportionalMax(
           data.gen[g].pmax,
@@ -46,7 +50,7 @@ export class BusService {
           data.GEN_MAX_MAX_PROD
         ) + zoom;
 
-      let svgHtml = constructFullSquareSVG(size, color);
+      const svgHtml = constructFullSquareSVG(size, color);
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
@@ -54,7 +58,7 @@ export class BusService {
         popupAnchor: [0, 0],
       });
 
-      var customMarker = new CustomMarker(data.gen[g].coord, {
+      const customMarker = new CustomMarker(data.gen[g].coord, {
         icon: svgIcon,
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       }).addTo(map);
@@ -62,7 +66,12 @@ export class BusService {
       customMarker.setGenBusId(data.gen[g].gen_bus);
       customMarker.setIndex(data.gen[g].index);
       customMarker
-        .on('click', () => this._addSelectedGenUsingTheMap(customMarker))
+        .on('click', () =>
+          this._toggleSelectedTarget(
+            customMarker.getGenBusId(),
+            this._selectedTargets
+          )
+        )
         .addTo(map);
     });
   }
@@ -91,7 +100,19 @@ export class BusService {
     return size;
   }
 
-  _addSelectedGenUsingTheMap(marker: CustomMarker) {
-    this.parametersService.addOrRemoveSelectedTarget(marker.getGenBusId());
+  private _toggleSelectedTarget(
+    targetId: number,
+    selectedTargets: BehaviorSubject<number[]>
+  ) {
+    const currentTargets = selectedTargets.getValue();
+    const targetIndex = currentTargets.indexOf(targetId);
+
+    if (targetIndex > -1) {
+      currentTargets.splice(targetIndex, 1);
+    } else {
+      currentTargets.push(targetId);
+    }
+
+    selectedTargets.next(currentTargets);
   }
 }

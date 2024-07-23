@@ -17,7 +17,6 @@ import { throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  //@TODO: no httpclient here ! https://angular.dev/guide/http/setup
   constructor(private _http: HttpClient) {}
 
   private _baseUrl: string = environment.JULIA_BACKEND_BASE_URL;
