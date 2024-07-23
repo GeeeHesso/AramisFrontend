@@ -18,15 +18,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
+import { POTENTIALTARGETS } from '@core/core.const';
 import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
-import { constructFullSquareSVG } from '@core/models/helpers';
 import { algorithmResult } from '@core/models/parameters';
 import { MapService } from '@core/services/map/map.service';
-import { CustomMarker } from '@models/CustomMarker';
-import * as L from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
-import { DialogResultComponent } from '../dialogResult/dialogResult.component';
+import { DialogResultComponent } from '../DialogResult/dialogResult.component';
 
 @Component({
   standalone: true,
@@ -62,17 +59,8 @@ export class ParametersComponent implements OnInit {
     ['14-18h', 16],
     ['18-22h', 20],
   ]);
-  potentialTargets = new Map([
-    [918, 'Innertkirchen'],
-    [933, 'Löbbia'],
-    [934, 'Pradella'],
-    [173, 'Riddes'],
-    [932, 'Rothenbrunnen'],
-    [924, 'Sedrun'],
-    [931, 'Sils'],
-    [915, 'Stalden'],
-    [927, 'Tavanasa'],
-  ]);
+  potentialTargets = POTENTIALTARGETS;
+
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
 
   form = this._formBuilder.group({
@@ -95,25 +83,13 @@ export class ParametersComponent implements OnInit {
 
   ngOnInit(): void {
     this.form.get('selectedTargets')?.valueChanges.subscribe((value) => {
-      this._updateSelectedMarkersOnMap(
-        this._mapService.mapTop,
-        value as number[]
-      );
-
       this._selectedTargets.next(value as number[]);
     });
-  }
 
-  private _updateSelectedMarkersOnMap(map: L.Map, selectedTargets: number[]) {
-    map.eachLayer((marker: L.Layer) => {
-      if (marker instanceof CustomMarker) {
-        const markerGenId = marker.getGenBusId();
-        if (selectedTargets.includes(markerGenId)) {
-          this._setMarkerIcon(marker, SELECT_GEN_COLOR);
-        } else {
-          this._setMarkerIcon(marker, INACTIVE_COLOR);
-        }
-      }
+    this._selectedTargets.subscribe((targets) => {
+      this.form.controls['selectedTargets'].patchValue(targets, {
+        emitEvent: false,
+      });
     });
   }
 
@@ -128,28 +104,5 @@ export class ParametersComponent implements OnInit {
 
   handleButtonDetails() {
     this._dialog.open(DialogResultComponent);
-  }
-
-  private _setMarkerIcon(foundMarker: CustomMarker, SELECT_GEN_COLOR: string) {
-    const currentIconSize = foundMarker.getIcon().options.iconAnchor as
-      | L.PointExpression
-      | undefined;
-    let size: number;
-
-    if (Array.isArray(currentIconSize)) {
-      size = currentIconSize[0] * 2;
-    } else {
-      size = 25;
-    }
-    const svgHtml = constructFullSquareSVG(size, SELECT_GEN_COLOR);
-
-    const newIcon = L.divIcon({
-      html: svgHtml,
-      className: 'svg-icon',
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size / 2],
-      popupAnchor: [0, 0],
-    });
-    foundMarker.setIcon(newIcon);
   }
 }

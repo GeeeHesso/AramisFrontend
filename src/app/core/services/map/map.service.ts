@@ -1,10 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
-import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
 import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
-import { constructFullSquareSVG } from '@core/models/helpers';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
-import { CustomMarker } from '@models/CustomMarker';
 import {
   algorithmResult,
   algorithmsParameters,
@@ -27,15 +24,15 @@ export class MapService {
   public mapTop!: L.Map;
   public mapBottom!: L.Map;
 
-  private _center = new LatLng(46.73233101286786, 10.387573242187502); // Centered on Switzerland
+  private _center = new LatLng(46.8, 8); // Centered on Switzerland
   private _zoom = 7;
   private _zoomControl = false; // Disable the default zoom control
   private _attributionControl = false; // Disable the attribution control
 
   private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject because, behaviorSubject need to be initialize
 
-  private _busService = Inject(BusService);
-  private _branchService = Inject(BranchService);
+  private _busService = new BusService();
+  private _branchService = new BranchService();
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
@@ -92,8 +89,6 @@ export class MapService {
 
     // Synchronize maps
     map.on('move', () => {
-      const center = map.getCenter();
-      const zoom = map.getZoom();
       this._view$.next({
         center: map.getCenter(),
         zoom: map.getZoom(),
@@ -250,61 +245,20 @@ export class MapService {
     this._algorithmsResult.next(data);
   }
 
-  //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
-  //TODO return the marker not void
-  findMarkerIndexByGenId(map: L.Map, genIdToSearch: string): number | null {
-    let foundIndex: number | null = null;
-
-    map.eachLayer((layer: L.Layer) => {
-      if (layer instanceof CustomMarker) {
-        const markerGenId = layer.getGenBusId();
-
-        if (markerGenId == genIdToSearch) {
-          foundIndex = layer.getIndex();
-        }
-      }
-    });
-
-    return foundIndex;
-  }
-
-  markMarkerAsSelectedOrUnselected(foundMarker: CustomMarker) {
-    const currentIconHtml = foundMarker
-      .getElement()
-      ?.querySelector('.svg-icon')?.innerHTML;
-    const currentIconSize = foundMarker.getIcon().options.iconSize as
-      | L.PointExpression
-      | undefined;
-    let size: number;
-
-    let newColor = SELECT_GEN_COLOR;
-    if (currentIconHtml?.includes(SELECT_GEN_COLOR)) {
-      newColor = INACTIVE_COLOR;
-    }
-
-    if (Array.isArray(currentIconSize)) {
-      size = currentIconSize[0];
-    } else {
-      size = 25;
-    }
-
-    const svgHtml = constructFullSquareSVG(size, newColor);
-    const newIcon = L.divIcon({
-      html: svgHtml,
-      className: 'svg-icon',
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size / 2],
-      popupAnchor: [0, 0],
-    });
-
-    foundMarker.setIcon(newIcon);
-  }
-
   private _initDefaultGrid(mapTop: L.Map) {
     this._apiService.getInitialGrid().subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(mapTop, formattedData);
+
+        // Redraw gen when target selected
+        this._selectedTargets.subscribe((target) => {
+          this._busService.drawGen(
+            this.mapTop,
+            formattedData,
+            this._selectedTargets
+          );
+        });
       },
       error: (error) => {
         console.warn('_initDefaultGrid: ', error);

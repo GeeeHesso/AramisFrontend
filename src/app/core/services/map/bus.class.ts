@@ -3,31 +3,30 @@ import {
   INACTIVE_COLOR,
   MAX_SIZE,
   MIN_SIZE,
+  POTENTIALTARGETS,
   SELECT_GEN_COLOR,
 } from '@core/core.const';
-import { constructFullSquareSVG } from '@core/models/helpers';
-import { CustomMarker } from '@models/CustomMarker';
-import L from 'leaflet';
+import L, { Marker } from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
 
 export class BusService {
-  /**
-   * Draw the generators on the map
-   * @param map
-   * @param data
-   * @param selectedTargets
-   */
+  public genMarkers: Marker[] = [];
+
   public drawGen(
     map: L.Map,
     data: any,
     selectedTargets: BehaviorSubject<number[]>
   ): void {
+    this.genMarkers.forEach((marker) => {
+      map.removeLayer(marker);
+    });
+
     const zoom = map.getZoom();
     const targets = selectedTargets.getValue();
 
     Object.keys(data.gen).forEach((g) => {
       // Check if the current generator index is in the selectedTargets array
-      const isSelected = targets.includes(data.gen[g].gen_bus);
+      const isSelected = targets.includes(data.gen[g].index);
 
       // Style
       const color = isSelected
@@ -43,7 +42,7 @@ export class BusService {
           data.GEN_MAX_MAX_PROD
         ) + zoom;
 
-      const svgHtml = constructFullSquareSVG(size, color);
+      const svgHtml = this._constructFullSquareSVG(size, color);
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
@@ -51,31 +50,20 @@ export class BusService {
         popupAnchor: [0, 0],
       });
 
-      const customMarker = new CustomMarker(data.gen[g].coord, {
+      const genIcon = L.marker(data.gen[g].coord, {
         icon: svgIcon,
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
-      }).addTo(map);
+      });
 
-      customMarker.setGenBusId(data.gen[g].gen_bus);
-      customMarker.setIndex(data.gen[g].index);
-      customMarker
-        .on('click', () =>
-          this._toggleSelectedTarget(
-            customMarker.getGenBusId(),
-            selectedTargets
-          )
-        )
-        .addTo(map);
+      if (POTENTIALTARGETS.has(data.gen[g].index)) {
+        genIcon.on('click', () => {
+          this._toggleSelectedTarget(data.gen[g].index, selectedTargets);
+        });
+      }
+
+      this.genMarkers[data.gen[g].gen_bus] = genIcon.addTo(map);
     });
   }
-
-  /**
-   * Calculate the size of an element according to max
-   * @param val
-   * @param minValue
-   * @param maxValue
-   * @private
-   */
 
   private _getSizeProportionalMax(
     val: number,
@@ -98,14 +86,20 @@ export class BusService {
     selectedTargets: BehaviorSubject<number[]>
   ): void {
     const currentTargets = selectedTargets.getValue();
-    const targetIndex = currentTargets.indexOf(targetId);
+    const targetIdFound = currentTargets.indexOf(targetId);
 
-    if (targetIndex > -1) {
-      currentTargets.splice(targetIndex, 1);
+    if (targetIdFound > -1) {
+      currentTargets.splice(targetIdFound, 1);
     } else {
       currentTargets.push(targetId);
     }
 
     selectedTargets.next(currentTargets);
+  }
+
+  private _constructFullSquareSVG(size: number, color: string): string {
+    return `<svg width="${size}" height="${size}" style="display: block">
+        <rect width="${size}" height="${size}" fill="${color}"></rect>
+        </svg>`;
   }
 }
