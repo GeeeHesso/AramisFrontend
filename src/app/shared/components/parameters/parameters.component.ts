@@ -25,8 +25,9 @@ import {
   SELECTED_TARGETS,
 } from '@core/models/base.const';
 import {
-  algorithmResult,
   algorithmsParameters,
+  algorithmsResult,
+  algorithmsResultAPI,
   targetsParameters,
   timeParameters,
 } from '@core/models/parameters';
@@ -81,9 +82,11 @@ export class ParametersComponent implements OnInit {
     selectedAlgo: [[] as string[], Validators.required],
   });
 
+  positiveResult: any[] = [];
+
   constructor(
     @Inject(ALGORITHMS_RESULT)
-    public algorithmsResult$: BehaviorSubject<algorithmResult>,
+    public algorithmsResult$: BehaviorSubject<algorithmsResult>,
     @Inject(SELECTED_TARGETS)
     private _selectedTargets: BehaviorSubject<number[]>,
     @Inject(API_LOADING)
@@ -186,25 +189,47 @@ export class ParametersComponent implements OnInit {
     this._dialog.open(DialogResultComponent);
   }
 
-  private _populateAlgorithmResult(data: algorithmResult) {
-    // @ToDo: See how to format the code
-
+  private _populateAlgorithmResult(data: algorithmsResultAPI) {
     console.log('populateAlgorithmResult', data);
 
-    const simplifiedResult = Object.keys(data).map((algorithmName) => {
-      const results = Object.keys(data[algorithmName]).map((index) => ({
-        genIndex: index,
-        result: data[algorithmName][index],
-        name: POTENTIALTARGETS.get(parseInt(index)),
-      }));
+    let selectedAlgo = Object.keys(data);
+    let positiveResultsAlgo: {
+      algoName: string;
+      targetsDetected: (string | undefined)[];
+    }[] = [];
+    let detectedTarget: any = []; // Why cannot use type algorithmsResult?
+    //@TODO: improve this, need help
+    Object.keys(data).forEach((algo, index) => {
+      let positiveResult: (string | undefined)[] = [];
+      if (index == 0) {
+        Object.keys(data[algo]).forEach((result) => {
+          detectedTarget.push({
+            genIndex: parseInt(result),
+            genName: this.potentialTargets.get(parseInt(result)),
+            algoList: selectedAlgo, //@TODO: stored in each line, not optimal
+          });
+        });
+      }
+      Object.keys(data[algo]).forEach((result) => {
+        let targetIndexInArray = detectedTarget.findIndex(
+          (target: { genIndex: number }) => target.genIndex == parseInt(result)
+        );
+        detectedTarget[targetIndexInArray] = {
+          ...detectedTarget[targetIndexInArray],
+          [algo]: data[algo][result],
+        };
 
-      return {
-        algoName: algorithmName,
-        results: results.filter((gen) => gen.result),
-      };
+        if (data[algo][result]) {
+          positiveResult.push(this.potentialTargets.get(parseInt(result)));
+        }
+      });
+      positiveResultsAlgo.push({
+        algoName: algo,
+        targetsDetected: positiveResult,
+      });
     });
-    console.log(simplifiedResult);
+    this.positiveResult = positiveResultsAlgo;
 
-    this.algorithmsResult$.next(data);
+    this.algorithmsResult$.next(detectedTarget);
   }
 }

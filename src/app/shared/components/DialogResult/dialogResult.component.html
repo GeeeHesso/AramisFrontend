@@ -1,23 +1,26 @@
 <h1 mat-dialog-title>Result</h1>
 <mat-dialog-content>
-  <!-- @TODO: Sync with the type : algorithmResult ? -->
-  <!-- <div *ngFor="let algorithm of algorithmsResult | async | keyvalue">
-    <h3>{{ algorithm.key }}</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>IndexName</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let result of algorithm.value">
-          <td>{{ result.indexName }}</td>
-          <td>{{ result.result }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
+  <table matSort>
+    <tr>
+      <th></th>
+      @for (algorithm of algorithmsResult[0].algoList ; track $index) {
+      <th [mat-sort-header]="algorithm">{{ algorithm }}</th>
+      }
+    </tr>
+    @for (result of algorithmsResult; track result) {
+    <tr>
+      <!-- @Todo: improve to get automatically all the algorithms-->
+      <th>{{ result.genName }}</th>
+      <td>{{ result.MLPR }}</td>
+      <td>{{ result.NBC }}</td>
+      <td>{{ result.KNNC }}</td>
+      <td>{{ result.RFC }}</td>
+      <td>{{ result.SVC }}</td>
+      <td>{{ result.GBC }}</td>
+      <td>{{ result.MLPC }}</td>
+    </tr>
+    }
+  </table>
 </mat-dialog-content>
 
 <div mat-dialog-actions align="center">
