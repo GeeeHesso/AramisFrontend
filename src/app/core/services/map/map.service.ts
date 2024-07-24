@@ -1,15 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
-import { POTENTIALTARGETS } from '@core/core.const';
 import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
-import {
-  algorithmResult,
-  algorithmsParameters,
-  algorithmsParametersForm,
-  targetsParameters,
-  timeParameters,
-} from '@models/parameters';
+import { algorithmResult } from '@models/parameters';
 import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
@@ -66,56 +59,10 @@ export class MapService {
     this._initDefaultGrid(this.mapTop);
   }
 
-  private _initBaseMap(map: L.Map) {
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-      {
-        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-        maxZoom: 16,
-        minZoom: 7,
-      }
-    ).addTo(map);
-
-    // Hide other country
-    fetch('assets/world_mask_without_switzerland.geojson')
-      .then((res) => res.json())
-      .then((json) => {
-        L.geoJSON(json, {
-          style: {
-            color: '#ffffff', // Color of the mask
-            fillOpacity: 1, // Opacity of the mask
-            weight: 0,
-          },
-        }).addTo(map);
-      });
-
-    // Synchronize maps
-    map.on('move', () => {
-      this._view$.next({
-        center: map.getCenter(),
-        zoom: map.getZoom(),
-        map: map,
-      });
-    });
-
-    this._view$.subscribe((view) => {
-      if (view.map !== map) {
-        map.setView(view.center, view.zoom, { animate: false });
-      }
-    });
-  }
-
   drawOnMap(map: L.Map, grid: Pantagruel): void {
-    this.clearMap(map); // in case of loading new data
+    this._clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(map, grid, this._selectedTargets$);
-  }
-
-  clearMap(map: L.Map): void {
-    map.eachLayer((layer) => {
-      layer.remove();
-    });
-    this._initBaseMap(map);
   }
 
   getFormattedPantagruelData(data: Pantagruel): Pantagruel {
@@ -171,85 +118,43 @@ export class MapService {
     return data;
   }
 
-  launchSimulation(formValue: algorithmsParametersForm) {
-    if (!formValue.season || !formValue.day || !formValue.hour) return;
+  private _initBaseMap(map: L.Map) {
+    L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        maxZoom: 16,
+        minZoom: 7,
+      }
+    ).addTo(map);
 
-    const commonParams: timeParameters = {
-      season: formValue.season.toLowerCase(),
-      day: formValue.day.toLowerCase(),
-      hour: formValue.hour,
-    };
+    // Hide other country
+    fetch('assets/world_mask_without_switzerland.geojson')
+      .then((res) => res.json())
+      .then((json) => {
+        L.geoJSON(json, {
+          style: {
+            color: '#ffffff', // Color of the mask
+            fillOpacity: 1, // Opacity of the mask
+            weight: 0,
+          },
+        }).addTo(map);
+      });
 
-    this._apiService.postRealNetwork({ ...commonParams }).subscribe({
-      next: (data) => {
-        const formattedData = this.getFormattedPantagruelData(data);
-        this.drawOnMap(this.mapTop, formattedData);
-      },
-      error: (error) => {
-        console.error('Error:', error);
-      },
+    // Synchronize maps
+    map.on('move', () => {
+      this._view$.next({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+        map: map,
+      });
     });
 
-    const selectedTargets = formValue.selectedTargets;
-    if (!Array.isArray(selectedTargets)) {
-      console.error('Selected targets are not an array:', selectedTargets);
-      return;
-    }
-
-    const attackParams: targetsParameters = {
-      ...commonParams,
-      attacked_gens: selectedTargets.map(String),
-    };
-    this._apiService.postAttackedNetwork(attackParams).subscribe({
-      next: (data) => {
-        const formattedData = this.getFormattedPantagruelData(data);
-        this.drawOnMap(this.mapBottom, formattedData);
-      },
-      error: (error) => {
-        console.error(error);
-      },
+    this._view$.subscribe((view) => {
+      if (view.map !== map) {
+        map.setView(view.center, view.zoom, { animate: false });
+      }
     });
-
-    const selectedAlgo = formValue.selectedAlgo;
-    if (!Array.isArray(selectedAlgo)) {
-      console.error('Selected targets are not an array:', selectedAlgo);
-      return;
-    }
-    const algorithmParams: algorithmsParameters = {
-      ...attackParams,
-      algorithms: selectedAlgo,
-    };
-    this._apiService.postAlgorithmResults(algorithmParams).subscribe({
-      next: (data) => {
-        this._algorithmsResult$.next(data);
-        this.populateAlgorithmResult(data);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
-  }
-
-  populateAlgorithmResult(data: algorithmResult) {
-    // @ToDo: See how to format the code
-
-    console.log('populateAlgorithmResult', data);
-
-    const simplifiedResult = Object.keys(data).map((algorithmName) => {
-      const results = Object.keys(data[algorithmName]).map((index) => ({
-        genIndex: index,
-        result: data[algorithmName][index],
-        name: POTENTIALTARGETS.get(parseInt(index)),
-      }));
-
-      return {
-        algoName: algorithmName,
-        results: results.filter((gen) => gen.result),
-      };
-    });
-    console.log(simplifiedResult);
-
-    this._algorithmsResult$.next(data);
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
@@ -272,5 +177,12 @@ export class MapService {
         //@todo
       },
     });
+  }
+
+  private _clearMap(map: L.Map): void {
+    map.eachLayer((layer) => {
+      layer.remove();
+    });
+    this._initBaseMap(map);
   }
 }
