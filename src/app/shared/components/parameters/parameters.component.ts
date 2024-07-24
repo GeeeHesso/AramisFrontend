@@ -24,10 +24,16 @@ import {
   API_LOADING,
   SELECTED_TARGETS,
 } from '@core/models/base.const';
-import { algorithmResult } from '@core/models/parameters';
+import {
+  algorithmResult,
+  algorithmsParameters,
+  targetsParameters,
+  timeParameters,
+} from '@core/models/parameters';
+import { ApiService } from '@core/services/api.service';
 import { MapService } from '@core/services/map/map.service';
 import { BehaviorSubject } from 'rxjs';
-import { DialogResultComponent } from '../DialogResult/dialogResult.component';
+import { DialogResultComponent } from '../dialogResult/dialogResult.component';
 
 @Component({
   standalone: true,
@@ -83,6 +89,7 @@ export class ParametersComponent implements OnInit {
     @Inject(API_LOADING)
     private _apiLoading$: BehaviorSubject<boolean>,
     private _mapService: MapService,
+    private _apiService: ApiService,
     private _dialog: MatDialog,
     private _formBuilder: FormBuilder
   ) {}
@@ -99,17 +106,105 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  launchSimulation(): void {
+  handleButtonLaunchSimulation(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      //@TODO: show message to user
       return;
     }
     this._apiLoading$.next(true);
-    this._mapService.launchSimulation(this.form.getRawValue());
+
+    const formValue = this.form.getRawValue();
+
+    // Update "Real data" map
+    if (!formValue.season || !formValue.day || !formValue.hour) return;
+
+    const commonParams: timeParameters = {
+      season: formValue.season.toLowerCase(),
+      day: formValue.day.toLowerCase(),
+      hour: formValue.hour,
+    };
+
+    this._apiService.postRealNetwork({ ...commonParams }).subscribe({
+      next: (data) => {
+        const formattedData = this._mapService.getFormattedPantagruelData(data);
+        this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+      },
+      error: (error) => {
+        //@TODO: show snackbar
+        console.error('Error:', error);
+      },
+    });
+
+    // Complete "Operator data" map
+    const selectedTargets = formValue.selectedTargets;
+    if (!Array.isArray(selectedTargets)) {
+      console.error('Selected targets are not an array:', selectedTargets);
+      return;
+    }
+
+    const attackParams: targetsParameters = {
+      ...commonParams,
+      attacked_gens: selectedTargets.map(String),
+    };
+    this._apiService.postAttackedNetwork(attackParams).subscribe({
+      next: (data) => {
+        const formattedData = this._mapService.getFormattedPantagruelData(data);
+        this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
+      },
+      error: (error) => {
+        //@TODO: show snackbar if none before
+        console.error(error);
+      },
+    });
+
+    // Calculate algo
+    const selectedAlgo = formValue.selectedAlgo;
+    if (!Array.isArray(selectedAlgo)) {
+      console.error('Selected targets are not an array:', selectedAlgo);
+      return;
+    }
+    const algorithmParams: algorithmsParameters = {
+      ...attackParams,
+      algorithms: selectedAlgo,
+    };
+    this._apiService.postAlgorithmResults(algorithmParams).subscribe({
+      next: (data) => {
+        this.algorithmsResult$.next(data);
+        this._populateAlgorithmResult(data);
+      },
+      error: (error) => {
+        //@TODO: show snackbar if none before
+        console.error(error);
+      },
+    });
+
     this._apiLoading$.next(false); //@todo: not working, to fast async ?
   }
 
   handleButtonDetails() {
     this._dialog.open(DialogResultComponent);
+  }
+
+  private _populateAlgorithmResult(data: algorithmResult) {
+    // @ToDo: See how to format the code
+
+    console.log('populateAlgorithmResult', data);
+
+    const simplifiedResult = Object.keys(data).map((algorithmName) => {
+      const results = Object.keys(data[algorithmName]).map((index) => ({
+        genIndex: index,
+        result: data[algorithmName][index],
+        name: POTENTIALTARGETS.get(parseInt(index)),
+      }));
+
+      return {
+        algoName: algorithmName,
+        results: results.filter((gen) => gen.result),
+      };
+    });
+    console.log(simplifiedResult);
+
+    this.algorithmsResult$.next(data);
   }
 }
