@@ -32,10 +32,13 @@
               }
             ],
             "styles": [
+              "./node_modules/leaflet/dist/leaflet.css",
               "@angular/material/prebuilt-themes/rose-red.css",
               "src/scss/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/leaflet/dist/leaflet.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -88,10 +91,13 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/leaflet/dist/leaflet.css",
               "@angular/material/prebuilt-themes/rose-red.css",
               "src/scss/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/leaflet/dist/leaflet.js"
+            ]
           }
         }
       }

@@ -1,10 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+} from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
-import { MapService } from '@core/services/map.service';
+import { API_LOADING } from '@core/models/base.const';
+import { MapService } from '@core/services/map/map.service';
 import { ParametersComponent } from '@shared/components/parameters/parameters.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -15,17 +22,29 @@ import { ParametersComponent } from '@shared/components/parameters/parameters.co
   imports: [
     CommonModule,
     RouterOutlet,
-    //Material
-    MatToolbarModule,
+
+    // Material
     MatSidenavModule,
+    MatProgressSpinner,
+
     // Component
     ParametersComponent,
   ],
 })
-export class AppComponent implements OnInit {
-  constructor(public mapService: MapService) {}
+export class AppComponent implements AfterViewInit {
+  constructor(
+    public mapService: MapService,
 
-  ngOnInit(): void {
+    @Inject(API_LOADING)
+    public apiLoading$: BehaviorSubject<boolean>
+  ) {
+    this.apiLoading$.next(true);
+  }
+
+  ngAfterViewInit(): void {
+    // Need map to be initialized before anything else
     this.mapService.initMaps();
+
+    this.apiLoading$.next(false);
   }
 }

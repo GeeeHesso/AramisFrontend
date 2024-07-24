@@ -1,27 +1,25 @@
 <h2>Data source</h2>
 
-<form [formGroup]="parametersService.getForm()">
+<form [formGroup]="form">
   <h3>Season</h3>
   <mat-chip-listbox aria-label="Season" formControlName="season">
-    <mat-chip-option *ngFor="let season of seasons" [value]="season">{{
-      season
-    }}</mat-chip-option>
+    @for (season of seasons; track $index) {
+    <mat-chip-option [value]="season">{{ season }}</mat-chip-option>
+    }
   </mat-chip-listbox>
 
   <h3>Day</h3>
   <mat-chip-listbox aria-label="Day type" formControlName="day">
-    <mat-chip-option *ngFor="let dayType of day" [value]="dayType">{{
-      dayType
-    }}</mat-chip-option>
+    @for (day of days; track $index) {
+    <mat-chip-option [value]="day">{{ day }}</mat-chip-option>
+    }
   </mat-chip-listbox>
 
   <h3>Time slot</h3>
   <mat-chip-listbox aria-label="Time slot" formControlName="hour">
-    <mat-chip-option
-      *ngFor="let timeSlot of hours | keyvalue"
-      [value]="timeSlot.key"
-      >{{ timeSlot.key }}</mat-chip-option
-    >
+    @for (timeSlot of hours | keyvalue; track $index) {
+    <mat-chip-option [value]="timeSlot.key">{{ timeSlot.key }}</mat-chip-option>
+    }
   </mat-chip-listbox>
 
   <h2>Attack</h2>
@@ -30,11 +28,9 @@
     multiple
     formControlName="selectedTargets"
   >
-    <mat-chip-option
-      *ngFor="let target of this.parametersService.potentialTargets | keyvalue"
-      [value]="target.key"
-      >{{ target.value }}</mat-chip-option
-    >
+    @for (target of potentialTargets | keyvalue; track $index) {
+    <mat-chip-option [value]="target.key">{{ target.value }}</mat-chip-option>
+    }
   </mat-chip-listbox>
 
   <h2>Algorithms</h2>
@@ -43,9 +39,9 @@
     multiple
     formControlName="selectedAlgo"
   >
-    <mat-chip-option *ngFor="let algo of algorithmList" [value]="algo">{{
-      algo
-    }}</mat-chip-option>
+    @for (algo of algorithmList; track $index) {
+    <mat-chip-option [value]="algo">{{ algo }}</mat-chip-option>
+    }
   </mat-chip-listbox>
 </form>
 
@@ -53,14 +49,14 @@
   mat-flat-button
   color="primary"
   (click)="launchSimulation()"
-  [disabled]="parametersService.getForm().invalid"
+  [disabled]="form.invalid"
 >
   Launch simulation
 </button>
 
-<ng-container *ngIf="this.parametersService.algorithmsResult().length > 0">
-  <h2>Algorithm result</h2>
-  <button mat-flat-button color="primary" (click)="handleButtonDetails()">
-    See details
-  </button>
-</ng-container>
+@if(algorithmsResult$ | async) {
+<h2>Algorithm result</h2>
+<button mat-flat-button color="primary" (click)="handleButtonDetails()">
+  See details
+</button>
+}

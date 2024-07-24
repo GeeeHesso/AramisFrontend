@@ -24,4 +24,10 @@
     background-color: #f2f2f2;
     text-align: left;
   }
+
+  .mat-mdc-unelevated-button[disabled],
+  .mat-mdc-unelevated-button.mat-mdc-button-disabled {
+    pointer-events: all;
+    cursor: pointer;
+  }
 }

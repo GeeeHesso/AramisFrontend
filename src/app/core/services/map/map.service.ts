@@ -1,22 +1,22 @@
-import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { INACTIVE_COLOR, SELECT_GEN_COLOR } from '@core/core.const';
+import { Inject, Injectable } from '@angular/core';
+import { POTENTIALTARGETS } from '@core/core.const';
+import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
-import { CustomMarker } from '@models/CustomMarker';
 import {
+  algorithmResult,
   algorithmsParameters,
+  algorithmsParametersForm,
   targetsParameters,
   timeParameters,
 } from '@models/parameters';
 import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
-import { Subject } from 'rxjs';
-import { BranchService } from './branch.service';
-import { BusService } from './bus.service';
-import { DataService } from './data.service';
-import { ParametersService } from './parameters.service';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { DataService } from '../data.service';
+import { BranchService } from './branch.class';
+import { BusService } from './bus.class';
 
 @Injectable({
   providedIn: 'root',
@@ -24,19 +24,26 @@ import { ParametersService } from './parameters.service';
 export class MapService {
   public mapTop!: L.Map;
   public mapBottom!: L.Map;
-  private _center = new LatLng(46.73233101286786, 10.387573242187502); // Centered on Switzerland
+
+  private _center = new LatLng(46.8, 8); // Centered on Switzerland
   private _zoom = 7;
   private _zoomControl = false; // Disable the default zoom control
   private _attributionControl = false; // Disable the attribution control
+
+  private _view$ = new Subject<MapView>(); // Correct : not a behavior subject because, behaviorSubject need to be initialize
+
+  private _busService = new BusService();
+  private _branchService = new BranchService();
+
   constructor(
-    private _parametersService: ParametersService,
-    private _busService: BusService,
-    private _branchService: BranchService,
+    @Inject(ALGORITHMS_RESULT)
+    private _algorithmsResult$: BehaviorSubject<algorithmResult>,
+    @Inject(SELECTED_TARGETS)
+    private _selectedTargets$: BehaviorSubject<number[]>,
+
     private _dataService: DataService,
     private _apiService: ApiService
   ) {}
-
-  private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject becasue, behaviorSubject need to be initialize
 
   initMaps(): void {
     this.mapTop = L.map('mapTop', {
@@ -84,8 +91,6 @@ export class MapService {
 
     // Synchronize maps
     map.on('move', () => {
-      const center = map.getCenter();
-      const zoom = map.getZoom();
       this._view$.next({
         center: map.getCenter(),
         zoom: map.getZoom(),
@@ -103,7 +108,7 @@ export class MapService {
   drawOnMap(map: L.Map, grid: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
-    this._busService.drawGen(map, grid);
+    this._busService.drawGen(map, grid, this._selectedTargets$);
   }
 
   clearMap(map: L.Map): void {
@@ -166,35 +171,16 @@ export class MapService {
     return data;
   }
 
-  launchSimulation(data: FormGroup, formattedTargetsId: number[]) {
-    const formValue = data.value;
-    const commonParams = {
+  launchSimulation(formValue: algorithmsParametersForm) {
+    if (!formValue.season || !formValue.day || !formValue.hour) return;
+
+    const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
       hour: formValue.hour,
     };
 
-    const timeParams: timeParameters = { ...commonParams };
-
-    const selectedTargets = this._parametersService
-      .getForm()
-      .get('selectedTargets')?.value;
-
-    if (!Array.isArray(selectedTargets)) {
-      console.error('Selected targets are not an array:', selectedTargets);
-      return;
-    }
-
-    const attackParams: targetsParameters = {
-      ...commonParams,
-      attacked_gens: formattedTargetsId.map(String), // Convert to array of strings
-    };
-    const algorithmParams: algorithmsParameters = {
-      ...attackParams,
-      algorithms: formValue.selectedAlgo.map(String), // Convert to array of strings
-    };
-    //console.log('timeParams', timeParams);
-    this._apiService.postRealNetwork(timeParams).subscribe({
+    this._apiService.postRealNetwork({ ...commonParams }).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(this.mapTop, formattedData);
@@ -204,7 +190,16 @@ export class MapService {
       },
     });
 
-    //console.log('attackParams', attackParams);
+    const selectedTargets = formValue.selectedTargets;
+    if (!Array.isArray(selectedTargets)) {
+      console.error('Selected targets are not an array:', selectedTargets);
+      return;
+    }
+
+    const attackParams: targetsParameters = {
+      ...commonParams,
+      attacked_gens: selectedTargets.map(String),
+    };
     this._apiService.postAttackedNetwork(attackParams).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
@@ -214,10 +209,20 @@ export class MapService {
         console.error(error);
       },
     });
-    console.log('algorithmParams', algorithmParams);
+
+    const selectedAlgo = formValue.selectedAlgo;
+    if (!Array.isArray(selectedAlgo)) {
+      console.error('Selected targets are not an array:', selectedAlgo);
+      return;
+    }
+    const algorithmParams: algorithmsParameters = {
+      ...attackParams,
+      algorithms: selectedAlgo,
+    };
     this._apiService.postAlgorithmResults(algorithmParams).subscribe({
       next: (data) => {
-        this._parametersService.populateAlgorithmResult(data);
+        this._algorithmsResult$.next(data);
+        this.populateAlgorithmResult(data);
       },
       error: (error) => {
         console.error(error);
@@ -225,54 +230,26 @@ export class MapService {
     });
   }
 
-  //TODO dissociate the selection for the "finding", create method selectmMarker & deselectMarker that turn into red the marker
-  //TODO return the marker not void
-  findMarkerIndexByGenId(map: L.Map, genIdToSearch: string): number | null {
-    let foundIndex: number | null = null;
+  populateAlgorithmResult(data: algorithmResult) {
+    // @ToDo: See how to format the code
 
-    map.eachLayer((layer: L.Layer) => {
-      if (layer instanceof CustomMarker) {
-        const markerGenId = layer.getGenBusId();
+    console.log('populateAlgorithmResult', data);
 
-        if (markerGenId == genIdToSearch) {
-          foundIndex = layer.getIndex();
-        }
-      }
+    const simplifiedResult = Object.keys(data).map((algorithmName) => {
+      const results = Object.keys(data[algorithmName]).map((index) => ({
+        genIndex: index,
+        result: data[algorithmName][index],
+        name: POTENTIALTARGETS.get(parseInt(index)),
+      }));
+
+      return {
+        algoName: algorithmName,
+        results: results.filter((gen) => gen.result),
+      };
     });
+    console.log(simplifiedResult);
 
-    return foundIndex;
-  }
-
-  markMarkerAsSelectedOrUnselected(foundMarker: CustomMarker) {
-    const currentIconHtml = foundMarker
-      .getElement()
-      ?.querySelector('.svg-icon')?.innerHTML;
-    const currentIconSize = foundMarker.getIcon().options.iconSize as
-      | L.PointExpression
-      | undefined;
-    let size: number;
-
-    let newColor = SELECT_GEN_COLOR;
-    if (currentIconHtml?.includes(SELECT_GEN_COLOR)) {
-      newColor = INACTIVE_COLOR;
-    }
-
-    if (Array.isArray(currentIconSize)) {
-      size = currentIconSize[0];
-    } else {
-      size = 25;
-    }
-
-    let svgHtml = this._busService.constructFullSquareSVG(size, newColor);
-    const newIcon = L.divIcon({
-      html: svgHtml,
-      className: 'svg-icon',
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size / 2],
-      popupAnchor: [0, 0],
-    });
-
-    foundMarker.setIcon(newIcon);
+    this._algorithmsResult$.next(data);
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
@@ -280,9 +257,18 @@ export class MapService {
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(mapTop, formattedData);
-        this._parametersService.populatePotentialTargets(data);
+
+        // Redraw gen when target selected
+        this._selectedTargets$.subscribe(() => {
+          this._busService.drawGen(
+            this.mapTop,
+            formattedData,
+            this._selectedTargets$
+          );
+        });
       },
       error: (error) => {
+        console.warn('_initDefaultGrid: ', error);
         //@todo
       },
     });
