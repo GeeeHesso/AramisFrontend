@@ -30,7 +30,7 @@ export class MapService {
   private _zoomControl = false; // Disable the default zoom control
   private _attributionControl = false; // Disable the attribution control
 
-  private _view$ = new Subject<MapView>(); // Correct that it is not a behavior subject because, behaviorSubject need to be initialize
+  private _view$ = new Subject<MapView>(); // Correct : not a behavior subject because, behaviorSubject need to be initialize
 
   private _busService = new BusService();
   private _branchService = new BranchService();

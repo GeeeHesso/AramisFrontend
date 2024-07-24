@@ -14,7 +14,6 @@ import { BehaviorSubject } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogResultComponent {
-  //todo: use @Inject(MAT_DIALOG_DATA) public data: any
   constructor(
     @Inject(ALGORITHMS_RESULT)
     public algorithmsResult: BehaviorSubject<algorithmResult>

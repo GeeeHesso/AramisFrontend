@@ -106,7 +106,7 @@ export class ParametersComponent implements OnInit {
     }
     this._apiLoading$.next(true);
     this._mapService.launchSimulation(this.form.getRawValue());
-    this._apiLoading$.next(false);
+    this._apiLoading$.next(false); //@todo: not working, to fast async ?
   }
 
   handleButtonDetails() {
