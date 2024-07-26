@@ -33,7 +33,7 @@ import {
 } from '@core/models/parameters';
 import { ApiService } from '@core/services/api.service';
 import { MapService } from '@core/services/map/map.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, finalize } from 'rxjs';
 import { DialogResultComponent } from '../dialogResult/dialogResult.component';
 
 @Component({
@@ -171,18 +171,23 @@ export class ParametersComponent implements OnInit {
       ...attackParams,
       algorithms: selectedAlgo,
     };
-    this._apiService.postAlgorithmResults(algorithmParams).subscribe({
-      next: (data) => {
-        this.algorithmsResult$.next(data);
-        this._populateAlgorithmResult(data);
-      },
-      error: (error) => {
-        //@TODO: show snackbar if none before
-        console.error(error);
-      },
-    });
-
-    this._apiLoading$.next(false); //@todo: not working, to fast async ?
+    this._apiService
+      .postAlgorithmResults(algorithmParams)
+      .pipe(
+        finalize(() => {
+          this._apiLoading$.next(false);
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.algorithmsResult$.next(data);
+          this._populateAlgorithmResult(data);
+        },
+        error: (error) => {
+          //@TODO: show snackbar if none before
+          console.error(error);
+        },
+      });
   }
 
   handleButtonDetails() {

@@ -21,6 +21,7 @@ export class BusService {
     this.genMarkers.forEach((marker) => {
       map.removeLayer(marker);
     });
+    this.genMarkers = [];
 
     const zoom = map.getZoom();
     const targets = selectedTargets.getValue();
@@ -62,7 +63,7 @@ export class BusService {
         });
       }
 
-      this.genMarkers[data.gen[g].gen_bus] = genIcon.addTo(map);
+      this.genMarkers.push(genIcon.addTo(map));
     });
   }
 
