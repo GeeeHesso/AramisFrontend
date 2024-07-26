@@ -1,23 +1,24 @@
 <h1 mat-dialog-title>Result</h1>
 <mat-dialog-content>
-  <!-- @TODO: Sync with the type : algorithmResult ? -->
-  <!-- <div *ngFor="let algorithm of algorithmsResult | async | keyvalue">
-    <h3>{{ algorithm.key }}</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>IndexName</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let result of algorithm.value">
-          <td>{{ result.indexName }}</td>
-          <td>{{ result.result }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
+  <table mat-table matSort matSortDisabled [dataSource]="dataSource">
+    @for (column of displayedColumns; track $index) {
+    <ng-container [matColumnDef]="column">
+      <th
+        mat-header-cell
+        [mat-sort-header]="column"
+        [mat-sort-header]="column"
+        *matHeaderCellDef
+      >
+        @if(column !== 'genName'){
+        {{ column }}
+        }
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+    </ng-container>
+    }
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
 </mat-dialog-content>
 
 <div mat-dialog-actions align="center">

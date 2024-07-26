@@ -20,6 +20,11 @@ export interface algorithmsParameters extends targetsParameters {
   algorithms: string[];
 }
 
-export interface algorithmResult {
+export interface algorithmsResultAPI {
   [key: string]: { [key: string]: boolean };
+}
+
+export interface algorithmResult {
+  columns: string[];
+  data: { [key: string]: any }[];
 }

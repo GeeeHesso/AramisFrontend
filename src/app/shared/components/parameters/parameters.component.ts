@@ -27,6 +27,7 @@ import {
 import {
   algorithmResult,
   algorithmsParameters,
+  algorithmsResultAPI,
   targetsParameters,
   timeParameters,
 } from '@core/models/parameters';
@@ -80,6 +81,8 @@ export class ParametersComponent implements OnInit {
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgo: [[] as string[], Validators.required],
   });
+
+  positiveResult: any[] = [];
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
@@ -177,7 +180,6 @@ export class ParametersComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.algorithmsResult$.next(data);
           this._populateAlgorithmResult(data);
         },
         error: (error) => {
@@ -191,25 +193,49 @@ export class ParametersComponent implements OnInit {
     this._dialog.open(DialogResultComponent);
   }
 
-  private _populateAlgorithmResult(data: algorithmResult) {
-    // @ToDo: See how to format the code
-
+  private _populateAlgorithmResult(data: algorithmsResultAPI) {
     console.log('populateAlgorithmResult', data);
 
-    const simplifiedResult = Object.keys(data).map((algorithmName) => {
-      const results = Object.keys(data[algorithmName]).map((index) => ({
-        genIndex: index,
-        result: data[algorithmName][index],
-        name: POTENTIALTARGETS.get(parseInt(index)),
-      }));
+    let positiveResultsAlgo: {
+      algoName: string;
+      targetsDetected: (string | undefined)[];
+    }[] = [];
 
-      return {
-        algoName: algorithmName,
-        results: results.filter((gen) => gen.result),
-      };
-    });
-    console.log(simplifiedResult);
+    let detectedTarget: algorithmResult = {
+      columns: ['genName', ...Object.keys(data)],
+      data: [],
+    };
 
-    this.algorithmsResult$.next(data);
+    for (const [algoName, algoResults] of Object.entries(data)) {
+      let positiveResult: (string | undefined)[] = [];
+
+      for (const [genIndex, genValue] of Object.entries(algoResults)) {
+        const genName = this.potentialTargets.get(+genIndex) || genIndex;
+
+        const targetData = detectedTarget.data.find(
+          (d) => genName === d['genName']
+        );
+
+        if (targetData) {
+          targetData[algoName] = genValue;
+        } else {
+          detectedTarget.data.push({
+            genName: genName,
+            [algoName]: genValue,
+          });
+        }
+
+        if (data[algoName][genIndex]) {
+          positiveResult.push(this.potentialTargets.get(parseInt(genIndex)));
+        }
+      }
+      positiveResultsAlgo.push({
+        algoName: algoName,
+        targetsDetected: positiveResult,
+      });
+    }
+    this.positiveResult = positiveResultsAlgo;
+
+    this.algorithmsResult$.next(detectedTarget);
   }
 }

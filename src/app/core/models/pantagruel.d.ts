@@ -81,6 +81,11 @@ export interface Gen {
   gen_status: number; // ! status (0: out of service, 1: in service)
   type: string; // ! type of generator (Hydro, Nuclear, etc)
 
+  aggregated_type: string;
+  cost: number[];
+  country: string;
+  entsoe_names: string[];
+
   // Currently not used in frontend
   mbase: number; //  base power of generator (should be the same as baseMVA) // ! baseMVA used instead
   vg: number; // voltage of generator

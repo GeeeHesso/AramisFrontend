@@ -19,4 +19,5 @@ export const POTENTIALTARGETS = new Map([
   [931, 'Sils'],
   [915, 'Stalden'],
   [927, 'Tavanasa'],
+  [923, 'Cavergno'],
 ]);
