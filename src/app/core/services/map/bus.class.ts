@@ -57,7 +57,10 @@ export class BusService {
         pane: 'shadowPane', // important to force bus go over svg (to bind popup)
       });
 
-      if (POTENTIALTARGETS.has(data.gen[g].index)) {
+      if (
+        POTENTIALTARGETS.has(data.gen[g].index) &&
+        map.getContainer().id !== 'mapBottom'
+      ) {
         genIcon.on('click', () => {
           this._toggleSelectedTarget(data.gen[g].index, selectedTargets);
         });
