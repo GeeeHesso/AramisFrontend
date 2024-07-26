@@ -205,7 +205,7 @@ export class ParametersComponent implements OnInit {
         },
         error: (error) => {
           this._notificationService.openSnackBar(
-            'Algorithms result cannot be loaded',
+            'Algorithms results cannot be loaded',
             'Close'
           );
           console.error(error);
@@ -228,7 +228,9 @@ export class ParametersComponent implements OnInit {
   }
 
   handleButtonDetails() {
-    this._dialog.open(DialogResultComponent);
+    this._dialog.open(DialogResultComponent, {
+      maxWidth: '80vw',
+    });
   }
 
   private _populateAlgorithmResult(data: algorithmsResultAPI) {

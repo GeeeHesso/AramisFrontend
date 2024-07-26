@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
-import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
+import { SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
-import { algorithmResult, timeParameters } from '@models/parameters';
+import { timeParameters } from '@models/parameters';
 import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
@@ -30,8 +30,6 @@ export class MapService {
   private _branchService = new BranchService();
 
   constructor(
-    @Inject(ALGORITHMS_RESULT)
-    private _algorithmsResult$: BehaviorSubject<algorithmResult>,
     @Inject(SELECTED_TARGETS)
     private _selectedTargets$: BehaviorSubject<number[]>,
 
