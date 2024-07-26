@@ -24,9 +24,7 @@ export interface algorithmsResultAPI {
   [key: string]: { [key: string]: boolean };
 }
 
-export interface algorithmsResult extends Array<algorithmResult> {}
-interface algorithmResult {
-  [key: string]: string;
-  genIndex: number;
-  genName: string | undefined;
+export interface algorithmResult {
+  columns: string[];
+  data: { [key: string]: any }[];
 }

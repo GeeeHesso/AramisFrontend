@@ -25,8 +25,8 @@ import {
   SELECTED_TARGETS,
 } from '@core/models/base.const';
 import {
+  algorithmResult,
   algorithmsParameters,
-  algorithmsResult,
   algorithmsResultAPI,
   targetsParameters,
   timeParameters,
@@ -86,7 +86,7 @@ export class ParametersComponent implements OnInit {
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
-    public algorithmsResult$: BehaviorSubject<algorithmsResult>,
+    public algorithmsResult$: BehaviorSubject<algorithmResult>,
     @Inject(SELECTED_TARGETS)
     private _selectedTargets: BehaviorSubject<number[]>,
     @Inject(API_LOADING)
@@ -180,7 +180,6 @@ export class ParametersComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.algorithmsResult$.next(data);
           this._populateAlgorithmResult(data);
         },
         error: (error) => {
@@ -197,42 +196,44 @@ export class ParametersComponent implements OnInit {
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
     console.log('populateAlgorithmResult', data);
 
-    let selectedAlgo = Object.keys(data);
     let positiveResultsAlgo: {
       algoName: string;
       targetsDetected: (string | undefined)[];
     }[] = [];
-    let detectedTarget: any = []; // Why cannot use type algorithmsResult?
-    //@TODO: improve this, need help
-    Object.keys(data).forEach((algo, index) => {
-      let positiveResult: (string | undefined)[] = [];
-      if (index == 0) {
-        Object.keys(data[algo]).forEach((result) => {
-          detectedTarget.push({
-            genIndex: parseInt(result),
-            genName: this.potentialTargets.get(parseInt(result)),
-            algoList: selectedAlgo, //@TODO: stored in each line, not optimal
-          });
-        });
-      }
-      Object.keys(data[algo]).forEach((result) => {
-        let targetIndexInArray = detectedTarget.findIndex(
-          (target: { genIndex: number }) => target.genIndex == parseInt(result)
-        );
-        detectedTarget[targetIndexInArray] = {
-          ...detectedTarget[targetIndexInArray],
-          [algo]: data[algo][result],
-        };
 
-        if (data[algo][result]) {
-          positiveResult.push(this.potentialTargets.get(parseInt(result)));
+    let detectedTarget: algorithmResult = {
+      columns: ['genName', ...Object.keys(data)],
+      data: [],
+    };
+
+    for (const [algoName, algoResults] of Object.entries(data)) {
+      let positiveResult: (string | undefined)[] = [];
+
+      for (const [genIndex, genValue] of Object.entries(algoResults)) {
+        const genName = this.potentialTargets.get(+genIndex) || genIndex;
+
+        const targetData = detectedTarget.data.find(
+          (d) => genName === d['genName']
+        );
+
+        if (targetData) {
+          targetData[algoName] = genValue;
+        } else {
+          detectedTarget.data.push({
+            genName: genName,
+            [algoName]: genValue,
+          });
         }
-      });
+
+        if (data[algoName][genIndex]) {
+          positiveResult.push(this.potentialTargets.get(parseInt(genIndex)));
+        }
+      }
       positiveResultsAlgo.push({
-        algoName: algo,
+        algoName: algoName,
         targetsDetected: positiveResult,
       });
-    });
+    }
     this.positiveResult = positiveResultsAlgo;
 
     this.algorithmsResult$.next(detectedTarget);

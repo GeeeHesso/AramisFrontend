@@ -1,25 +1,23 @@
 <h1 mat-dialog-title>Result</h1>
 <mat-dialog-content>
-  <table matSort matSortDisabled>
-    <tr>
-      <th></th>
-      @for (algorithm of algorithmsResult[0].algoList ; track $index) {
-      <th [mat-sort-header]="algorithm">{{ algorithm }}</th>
-      }
-    </tr>
-    @for (result of algorithmsResult; track result) {
-    <tr>
-      <!-- @Todo: improve to get automatically all the algorithms-->
-      <th>{{ result.genName }}</th>
-      <td>{{ result.MLPR }}</td>
-      <td>{{ result.NBC }}</td>
-      <td>{{ result.KNNC }}</td>
-      <td>{{ result.RFC }}</td>
-      <td>{{ result.SVC }}</td>
-      <td>{{ result.GBC }}</td>
-      <td>{{ result.MLPC }}</td>
-    </tr>
+  <table mat-table matSort matSortDisabled [dataSource]="dataSource">
+    @for (column of displayedColumns; track $index) {
+    <ng-container [matColumnDef]="column">
+      <th
+        mat-header-cell
+        [mat-sort-header]="column"
+        [mat-sort-header]="column"
+        *matHeaderCellDef
+      >
+        @if(column !== 'genName'){
+        {{ column }}
+        }
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+    </ng-container>
     }
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 </mat-dialog-content>
 

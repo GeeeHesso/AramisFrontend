@@ -1,9 +1,9 @@
 import { InjectionToken } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { algorithmsResult } from './parameters';
+import { algorithmResult } from './parameters';
 
 export const ALGORITHMS_RESULT = new InjectionToken<
-  BehaviorSubject<algorithmsResult>
+  BehaviorSubject<algorithmResult>
 >('aramis.algorithms.result');
 
 export const SELECTED_TARGETS = new InjectionToken<BehaviorSubject<number[]>>(
