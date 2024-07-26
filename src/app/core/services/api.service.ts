@@ -22,22 +22,7 @@ export class ApiService {
   private _baseUrl: string = environment.JULIA_BACKEND_BASE_URL;
 
   getInitialGrid() {
-    //console.log('Called getInitialGrid');
     return this._http.get<Pantagruel>(`${this._baseUrl}/initial_network`);
-  }
-
-  postAttackedNetwork(data: targetsParameters) {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: '*/*',
-    });
-    //console.log("postAttackedNetwork")
-    //console.log(data)
-    return this._http.post<Pantagruel>(
-      `${this._baseUrl}/attacked_network`,
-      data,
-      { headers }
-    );
   }
 
   postRealNetwork(data: timeParameters) {
@@ -50,9 +35,19 @@ export class ApiService {
     });
   }
 
+  postAttackedNetwork(data: targetsParameters) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: '*/*',
+    });
+    return this._http.post<Pantagruel>(
+      `${this._baseUrl}/attacked_network`,
+      data,
+      { headers }
+    );
+  }
+
   postAlgorithmResults(data: algorithmsParameters) {
-    //console.log("postAlgorithmResults")
-    //console.log(data)
     return this._http.post<any>(`${this._baseUrl}/algorithms`, data);
   }
 

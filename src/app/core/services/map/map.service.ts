@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DataService } from '../data.service';
+import { NotificationService } from '../notification.service';
 import { BranchService } from './branch.class';
 import { BusService } from './bus.class';
 
@@ -35,7 +36,8 @@ export class MapService {
     private _selectedTargets$: BehaviorSubject<number[]>,
 
     private _dataService: DataService,
-    private _apiService: ApiService
+    private _apiService: ApiService,
+    private _notificationService: NotificationService
   ) {}
 
   initMaps(): void {
@@ -60,7 +62,7 @@ export class MapService {
   }
 
   drawOnMap(map: L.Map, grid: Pantagruel): void {
-    this._clearMap(map); // in case of loading new data
+    this.clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(map, grid, this._selectedTargets$);
   }
@@ -180,12 +182,15 @@ export class MapService {
       },
       error: (error) => {
         console.warn('_initDefaultGrid: ', error);
-        //@todo
+        this._notificationService.openSnackBar(
+          'API failure, try again later',
+          'Close'
+        );
       },
     });
   }
 
-  private _clearMap(map: L.Map): void {
+  clearMap(map: L.Map): void {
     map.eachLayer((layer) => {
       layer.remove();
     });

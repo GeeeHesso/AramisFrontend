@@ -18,7 +18,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { POTENTIALTARGETS } from '@core/core.const';
 import {
   ALGORITHMS_RESULT,
@@ -34,6 +33,7 @@ import {
 } from '@core/models/parameters';
 import { ApiService } from '@core/services/api.service';
 import { MapService } from '@core/services/map/map.service';
+import { NotificationService } from '@core/services/notification.service';
 import { BehaviorSubject, finalize } from 'rxjs';
 import { DialogResultComponent } from '../dialogResult/dialogResult.component';
 
@@ -58,7 +58,6 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
     MatInputModule,
     MatRadioModule,
     MatChipsModule,
-    MatSnackBarModule,
   ],
 })
 export class ParametersComponent implements OnInit {
@@ -84,7 +83,9 @@ export class ParametersComponent implements OnInit {
     selectedAlgo: [[] as string[], Validators.required],
   });
 
-  positiveResult: any[] = [];
+  positiveResult$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+
+  showResult$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
@@ -95,9 +96,9 @@ export class ParametersComponent implements OnInit {
     private _apiLoading$: BehaviorSubject<boolean>,
     private _mapService: MapService,
     private _apiService: ApiService,
+    private _notificationService: NotificationService,
     private _dialog: MatDialog,
-    private _formBuilder: FormBuilder,
-    private _snackBar: MatSnackBar
+    private _formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -112,21 +113,10 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  private _openSnackBar(message: string, action: string) {
-    console.log(message);
-    console.log(action);
-    this._snackBar.open(message, action, {
-      horizontalPosition: 'center',
-      verticalPosition: 'bottom',
-    });
-  }
-
   handleButtonLaunchSimulation(): void {
-    console.log(this.form);
     if (this.form.invalid) {
-      //@TODO: no working
       this.form.markAllAsTouched();
-      this._openSnackBar('Select all option', 'Close');
+      this._notificationService.openSnackBar('Select all option', 'Close');
       return;
     }
     this._apiLoading$.next(true);
@@ -148,8 +138,15 @@ export class ParametersComponent implements OnInit {
         this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
       },
       error: (error) => {
-        this._openSnackBar('Real data cannot be loaded', 'Close');
+        this._notificationService.openSnackBar(
+          'Real data cannot be loaded',
+          'Close'
+        );
         console.error('Error:', error);
+
+        this._mapService.clearMap(this._mapService.mapTop);
+        this._mapService.clearMap(this._mapService.mapBottom);
+        this.showResult$.next(false);
         return;
       },
     });
@@ -171,8 +168,15 @@ export class ParametersComponent implements OnInit {
         this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
       },
       error: (error) => {
-        this._openSnackBar('Operator data cannot be loaded', 'Close');
+        this._notificationService.openSnackBar(
+          'Operator data cannot be loaded',
+          'Close'
+        );
         console.error(error);
+
+        //@todo:simulate this error
+        this._mapService.clearMap(this._mapService.mapBottom);
+        this.showResult$.next(false);
         return;
       },
     });
@@ -197,10 +201,27 @@ export class ParametersComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this._populateAlgorithmResult(data);
+          this._notificationService.closeSnackBar();
         },
         error: (error) => {
-          this._openSnackBar('Algorithms result cannot be loaded', 'Close');
+          this._notificationService.openSnackBar(
+            'Algorithms result cannot be loaded',
+            'Close'
+          );
           console.error(error);
+
+          //@todo:simulate this error
+          let detectedTarget: algorithmResult = {
+            columns: [],
+            data: [],
+          };
+          this.algorithmsResult$.next(detectedTarget);
+
+          let positiveResult: (string | undefined)[] = [];
+          this.positiveResult$.next(positiveResult);
+
+          this.showResult$.next(false);
+
           return;
         },
       });
@@ -251,8 +272,8 @@ export class ParametersComponent implements OnInit {
         targetsDetected: positiveResult,
       });
     }
-    this.positiveResult = positiveResultsAlgo;
-
+    this.positiveResult$.next(positiveResultsAlgo);
     this.algorithmsResult$.next(detectedTarget);
+    this.showResult$.next(true);
   }
 }
