@@ -74,9 +74,9 @@ export class ParametersComponent implements OnInit {
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
 
   form = this._formBuilder.group({
-    season: ['', Validators.required],
-    day: ['', Validators.required],
-    hour: ['', Validators.required],
+    season: ['Winter', Validators.required],
+    day: ['Weekday', Validators.required],
+    hour: ['22-2h', Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgo: [[] as string[], Validators.required],
   });

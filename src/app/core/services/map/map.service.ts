@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
-import { algorithmResult } from '@models/parameters';
+import { algorithmResult, timeParameters } from '@models/parameters';
 import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
@@ -158,7 +158,13 @@ export class MapService {
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
-    this._apiService.getInitialGrid().subscribe({
+    const defaultParameters: timeParameters = {
+      season: 'winter',
+      day: 'weekday',
+      hour: '22-2h',
+    };
+
+    this._apiService.postRealNetwork(defaultParameters).subscribe({
       next: (data) => {
         const formattedData = this.getFormattedPantagruelData(data);
         this.drawOnMap(mapTop, formattedData);

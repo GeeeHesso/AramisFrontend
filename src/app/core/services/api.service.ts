@@ -45,8 +45,6 @@ export class ApiService {
       'Content-Type': 'application/json',
       Accept: '*/*',
     });
-    //console.log("postRealNetwork")
-    //console.log(data)
     return this._http.post<Pantagruel>(`${this._baseUrl}/real_network`, data, {
       headers,
     });
