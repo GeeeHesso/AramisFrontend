@@ -3,12 +3,7 @@
   <table mat-table matSort matSortDisabled [dataSource]="dataSource">
     @for (column of displayedColumns; track $index) {
     <ng-container [matColumnDef]="column">
-      <th
-        mat-header-cell
-        [mat-sort-header]="column"
-        [mat-sort-header]="column"
-        *matHeaderCellDef
-      >
+      <th mat-header-cell [mat-sort-header]="column" *matHeaderCellDef>
         @if(column !== 'genName'){
         {{ column }}
         }
