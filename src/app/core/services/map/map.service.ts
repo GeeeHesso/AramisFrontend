@@ -161,7 +161,7 @@ export class MapService {
     const defaultParameters: timeParameters = {
       season: 'winter',
       day: 'weekday',
-      hour: '22-2h',
+      hour: '10-14h',
     };
 
     this._apiService.postRealNetwork(defaultParameters).subscribe({

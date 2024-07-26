@@ -17,7 +17,6 @@ export class BusService {
     data: any,
     selectedTargets: BehaviorSubject<number[]>
   ): void {
-    // @TODO: check removal
     this.genMarkers.forEach((marker) => {
       map.removeLayer(marker);
     });

@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { POTENTIALTARGETS } from '@core/core.const';
 import {
   ALGORITHMS_RESULT,
@@ -57,6 +58,7 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
     MatInputModule,
     MatRadioModule,
     MatChipsModule,
+    MatSnackBarModule,
   ],
 })
 export class ParametersComponent implements OnInit {
@@ -77,7 +79,7 @@ export class ParametersComponent implements OnInit {
   form = this._formBuilder.group({
     season: ['Winter', Validators.required],
     day: ['Weekday', Validators.required],
-    hour: ['22-2h', Validators.required],
+    hour: ['10-14h', Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgo: [[] as string[], Validators.required],
   });
@@ -94,7 +96,8 @@ export class ParametersComponent implements OnInit {
     private _mapService: MapService,
     private _apiService: ApiService,
     private _dialog: MatDialog,
-    private _formBuilder: FormBuilder
+    private _formBuilder: FormBuilder,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -109,10 +112,21 @@ export class ParametersComponent implements OnInit {
     });
   }
 
+  private _openSnackBar(message: string, action: string) {
+    console.log(message);
+    console.log(action);
+    this._snackBar.open(message, action, {
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+    });
+  }
+
   handleButtonLaunchSimulation(): void {
+    console.log(this.form);
     if (this.form.invalid) {
+      //@TODO: no working
       this.form.markAllAsTouched();
-      //@TODO: show message to user
+      this._openSnackBar('Select all option', 'Close');
       return;
     }
     this._apiLoading$.next(true);
@@ -134,8 +148,9 @@ export class ParametersComponent implements OnInit {
         this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
       },
       error: (error) => {
-        //@TODO: show snackbar
+        this._openSnackBar('Real data cannot be loaded', 'Close');
         console.error('Error:', error);
+        return;
       },
     });
 
@@ -156,8 +171,9 @@ export class ParametersComponent implements OnInit {
         this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
       },
       error: (error) => {
-        //@TODO: show snackbar if none before
+        this._openSnackBar('Operator data cannot be loaded', 'Close');
         console.error(error);
+        return;
       },
     });
 
@@ -183,8 +199,9 @@ export class ParametersComponent implements OnInit {
           this._populateAlgorithmResult(data);
         },
         error: (error) => {
-          //@TODO: show snackbar if none before
+          this._openSnackBar('Algorithms result cannot be loaded', 'Close');
           console.error(error);
+          return;
         },
       });
   }
