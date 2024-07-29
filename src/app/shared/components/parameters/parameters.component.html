@@ -22,6 +22,12 @@
     }
   </mat-chip-listbox>
 
+  <h3>Factor</h3>
+  {{ form.value.percentageFactor }}%
+  <mat-slider max="130" min="90" step="10" discrete="true" showTickMarks="true">
+    <input matSliderThumb formControlName="percentageFactor" />
+  </mat-slider>
+
   <h2>Target(s)</h2>
   <mat-chip-listbox
     aria-label="Targets"

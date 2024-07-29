@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { POTENTIALTARGETS } from '@core/core.const';
 import {
   ALGORITHMS_RESULT,
@@ -58,6 +59,7 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
     MatInputModule,
     MatRadioModule,
     MatChipsModule,
+    MatSliderModule,
   ],
 })
 export class ParametersComponent implements OnInit {
@@ -71,14 +73,15 @@ export class ParametersComponent implements OnInit {
     ['14-18h', 16],
     ['18-22h', 20],
   ]);
+  percentageFactor = 100;
   potentialTargets = POTENTIALTARGETS;
-
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
 
   form = this._formBuilder.group({
-    season: ['Winter', Validators.required],
-    day: ['Weekday', Validators.required],
+    season: [this.seasons[0], Validators.required],
+    day: [this.days[0], Validators.required],
     hour: ['10-14h', Validators.required],
+    percentageFactor: [this.percentageFactor, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgo: [[] as string[], Validators.required],
   });
@@ -122,6 +125,7 @@ export class ParametersComponent implements OnInit {
     this._apiLoading$.next(true);
 
     const formValue = this.form.getRawValue();
+    console.log(formValue);
 
     // Update "Real data" map
     if (!formValue.season || !formValue.day || !formValue.hour) return;
