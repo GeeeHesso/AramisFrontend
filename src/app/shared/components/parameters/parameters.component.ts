@@ -276,10 +276,11 @@ export class ParametersComponent implements OnInit {
       });
     }
     this.positiveResult$.next(positiveResultsAlgo);
+    console.log("positiveResultsAlgo",positiveResultsAlgo)
     this.algorithmsResult$.next(detectedTarget);
+    console.log("detectedTarget",detectedTarget)
     this.showResult$.next(true);
   }
-
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
     return 0;
   };

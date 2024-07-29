@@ -1,4 +1,4 @@
-import { KeyValuePipe } from '@angular/common';
+import {CommonModule, KeyValuePipe} from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -14,13 +14,14 @@ import { BehaviorSubject, filter, takeUntil } from 'rxjs';
   standalone: true,
   imports: [
     KeyValuePipe,
-
+    CommonModule,  // Add CommonModule to the imports array
     // Mat
     MatDialogModule,
     MatButtonModule,
     MatTableModule,
     MatSortModule,
   ],
+  styleUrls: ['./dialogResult.component.scss'],
   templateUrl: './dialogResult.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,7 +47,7 @@ export class DialogResultComponent extends BaseClass {
       .subscribe((value) => {
         this.dataSource = value.data
         this.displayedColumns = value.columns
-
+        console.log(this.displayedColumns)
       });
     this.selectedTargets$
       .pipe(
@@ -58,5 +59,26 @@ export class DialogResultComponent extends BaseClass {
         console.log(this.selectedTargets)
       });
 
+  }
+  getRowClass(row: any): string {
+    console.log("getRowClass")
+    console.log("getRowClass",row)
+    const genId = row.genId;
+    const isSelectedTarget = this.selectedTargets.includes(genId);
+    const hasTrueValue = this.displayedColumns.some(column => row[column] === true);
+    if (isSelectedTarget) {
+      console.log("isSelectedTarget")
+      return 'highlight';
+    }
+
+    if (hasTrueValue && !isSelectedTarget) {
+      return 'highlight-red';
+    }
+
+    if (hasTrueValue && isSelectedTarget) {
+      return 'highlight-green';
+    }
+
+    return '';
   }
 }
