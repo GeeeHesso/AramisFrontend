@@ -18,8 +18,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { ALGO_LIST, MatSliderModule } from '@angular/material/slider';
+import { MatSliderModule } from '@angular/material/slider';
 import {
+  ALGO_LIST,
   DAYS,
   HOURS,
   PERCENTAGE,
@@ -76,13 +77,12 @@ export class ParametersComponent implements OnInit {
   hours = HOURS;
   percentageFactor = PERCENTAGE;
   potentialTargets = POTENTIALTARGETS;
-
   algorithmList = ALGO_LIST;
 
   form = this._formBuilder.group({
     season: [this.seasons[0], Validators.required],
     day: [this.days[0], Validators.required],
-    hour: [this.hours.entries().next().value, Validators.required],
+    hour: [this.hours.entries().next().value[0], Validators.required],
     percentageFactor: [this.percentageFactor, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgos: [[] as string[], Validators.required],
@@ -146,7 +146,7 @@ export class ParametersComponent implements OnInit {
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
-      hour: formValue.hour[0],
+      hour: formValue.hour,
       percentage_factor: formValue.percentageFactor,
     };
     this._apiService.postRealNetwork({ ...commonParams }).subscribe({
