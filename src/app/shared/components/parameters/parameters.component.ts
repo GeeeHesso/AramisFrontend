@@ -214,6 +214,7 @@ export class ParametersComponent implements OnInit {
           let detectedTarget: algorithmResult = {
             columns: [],
             data: [],
+
           };
           this.algorithmsResult$.next(detectedTarget);
 
@@ -243,8 +244,9 @@ export class ParametersComponent implements OnInit {
 
     let detectedTarget: algorithmResult = {
       columns: ['genName', ...Object.keys(data)],
-      data: [],
+      data: []
     };
+    console.log("detectedTarget", detectedTarget);
 
     for (const [algoName, algoResults] of Object.entries(data)) {
       let positiveResult: (string | undefined)[] = [];
@@ -262,6 +264,7 @@ export class ParametersComponent implements OnInit {
           detectedTarget.data.push({
             genName: genName,
             [algoName]: genValue,
+            genId: genIndex // Store the genId in the data object
           });
         }
 
@@ -278,4 +281,6 @@ export class ParametersComponent implements OnInit {
     this.algorithmsResult$.next(detectedTarget);
     this.showResult$.next(true);
   }
+
+
 }
