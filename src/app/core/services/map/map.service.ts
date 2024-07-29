@@ -163,7 +163,7 @@ export class MapService {
       season: SEASONS[0].toLowerCase(),
       day: DAYS[0].toLowerCase(),
       hour: HOURS.entries().next().value[0],
-      percentage_factor: PERCENTAGE,
+      scale_factor: PERCENTAGE,
     };
 
     this._apiService.postRealNetwork(defaultParameters).subscribe({

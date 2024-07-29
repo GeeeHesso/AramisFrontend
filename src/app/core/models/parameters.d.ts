@@ -10,7 +10,7 @@ export interface timeParameters {
   season: string;
   day: string;
   hour: string;
-  percentage_factor: number;
+  scale_factor: number;
 }
 
 export interface targetsParameters extends timeParameters {

@@ -147,7 +147,7 @@ export class ParametersComponent implements OnInit {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
       hour: formValue.hour,
-      percentage_factor: formValue.percentageFactor,
+      scale_factor: formValue.percentageFactor,
     };
     this._apiService.postRealNetwork({ ...commonParams }).subscribe({
       next: (data) => {
