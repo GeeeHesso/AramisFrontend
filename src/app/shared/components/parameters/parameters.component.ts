@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValuePipe } from '@angular/common';
+import { AsyncPipe, KeyValue, KeyValuePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -66,12 +66,12 @@ export class ParametersComponent implements OnInit {
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   days = ['Weekday', 'Weekend'];
   hours = new Map([
-    ['22-2h', 0],
     ['2-6h', 4],
     ['6-10h', 8],
     ['10-14h', 12],
     ['14-18h', 16],
     ['18-22h', 20],
+    ['22-2h', 0],
   ]);
   percentageFactor = 100;
   potentialTargets = POTENTIALTARGETS;
@@ -238,8 +238,6 @@ export class ParametersComponent implements OnInit {
   }
 
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
-    console.log('populateAlgorithmResult', data);
-
     let positiveResultsAlgo: {
       algoName: string;
       targetsDetected: (string | undefined)[];
@@ -282,4 +280,8 @@ export class ParametersComponent implements OnInit {
     this.algorithmsResult$.next(detectedTarget);
     this.showResult$.next(true);
   }
+
+  originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
+    return 0;
+  };
 }
