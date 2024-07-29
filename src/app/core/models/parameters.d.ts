@@ -9,7 +9,7 @@ export interface algorithmsParametersForm {
 export interface timeParameters {
   season: string;
   day: string;
-  hour: string;
+  hour: number;
   scale_factor: number;
 }
 

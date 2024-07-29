@@ -143,10 +143,15 @@ export class ParametersComponent implements OnInit {
     )
       return;
 
+    const hour = HOURS.get(formValue.hour);
+    if (!hour) {
+      return;
+    }
+
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
-      hour: formValue.hour,
+      hour: hour,
       scale_factor: formValue.percentageFactor,
     };
     this._apiService.postRealNetwork({ ...commonParams }).subscribe({

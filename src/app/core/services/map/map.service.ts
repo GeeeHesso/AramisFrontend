@@ -162,7 +162,7 @@ export class MapService {
     const defaultParameters: timeParameters = {
       season: SEASONS[0].toLowerCase(),
       day: DAYS[0].toLowerCase(),
-      hour: HOURS.entries().next().value[0],
+      hour: HOURS.entries().next().value[1],
       scale_factor: PERCENTAGE,
     };
 
