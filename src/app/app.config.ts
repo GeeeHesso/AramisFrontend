@@ -11,6 +11,7 @@ import { provideRouter } from '@angular/router';
 import {
   ALGORITHMS_RESULT,
   API_LOADING,
+  SELECTED_ALGOS,
   SELECTED_TARGETS,
 } from '@core/models/base.const';
 import { BehaviorSubject } from 'rxjs';
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     { provide: ALGORITHMS_RESULT, useValue: new BehaviorSubject(null) },
     { provide: SELECTED_TARGETS, useValue: new BehaviorSubject([]) },
+    { provide: SELECTED_ALGOS, useValue: new BehaviorSubject([]) },
     { provide: API_LOADING, useValue: new BehaviorSubject(0) },
 
     provideZoneChangeDetection({ eventCoalescing: true }),
