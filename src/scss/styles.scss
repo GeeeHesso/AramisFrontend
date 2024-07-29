@@ -21,9 +21,11 @@ h3 {
   font-weight: bold !important;
   line-height: 1rem !important;
 }
-
+.mat-drawer {
+  --mat-sidenav-container-width: 400px;
+}
 .mat-mdc-row,
 .mat-mdc-header-row {
-  --mat-table-row-item-label-text-line-height: 30px;
-  --mat-table-row-item-container-height: 30px;
+  --mat-table-row-item-label-text-line-height: var(--space-bigger);
+  --mat-table-row-item-container-height: var(--space-bigger);
 }

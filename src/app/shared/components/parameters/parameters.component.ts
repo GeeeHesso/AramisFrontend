@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValuePipe } from '@angular/common';
+import { AsyncPipe, KeyValue, KeyValuePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -64,13 +64,14 @@ export class ParametersComponent implements OnInit {
   seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   days = ['Weekday', 'Weekend'];
   hours = new Map([
-    ['22-2h', 0],
     ['2-6h', 4],
     ['6-10h', 8],
     ['10-14h', 12],
     ['14-18h', 16],
     ['18-22h', 20],
+    ['22-2h', 0],
   ]);
+
   potentialTargets = POTENTIALTARGETS;
 
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
@@ -214,7 +215,6 @@ export class ParametersComponent implements OnInit {
           let detectedTarget: algorithmResult = {
             columns: [],
             data: [],
-
           };
           this.algorithmsResult$.next(detectedTarget);
 
@@ -235,8 +235,6 @@ export class ParametersComponent implements OnInit {
   }
 
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
-    console.log('populateAlgorithmResult', data);
-
     let positiveResultsAlgo: {
       algoName: string;
       targetsDetected: (string | undefined)[];
@@ -244,9 +242,9 @@ export class ParametersComponent implements OnInit {
 
     let detectedTarget: algorithmResult = {
       columns: ['genName', ...Object.keys(data)],
-      data: []
+      data: [],
     };
-    console.log("detectedTarget", detectedTarget);
+    console.log('detectedTarget', detectedTarget);
 
     for (const [algoName, algoResults] of Object.entries(data)) {
       let positiveResult: (string | undefined)[] = [];
@@ -264,7 +262,7 @@ export class ParametersComponent implements OnInit {
           detectedTarget.data.push({
             genName: genName,
             [algoName]: genValue,
-            genId: genIndex
+            genId: genIndex,
           });
         }
 
@@ -282,5 +280,7 @@ export class ParametersComponent implements OnInit {
     this.showResult$.next(true);
   }
 
-
+  originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
+    return 0;
+  };
 }

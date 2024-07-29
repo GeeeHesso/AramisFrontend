@@ -14,7 +14,7 @@ export class BranchService {
    * @param data Pantagruel reprocessed data
    */
 
-  public branchMarker: Polyline[] = [];
+  public branchMarkers: Polyline[] = [];
 
   public drawBranch(map: L.Map, data: Pantagruel): void {
     const zoom = map.getZoom();
@@ -70,7 +70,7 @@ export class BranchService {
       });
 
       // Add branch to the layer
-      this.branchMarker[data.branch[b].index] = branch.addTo(map);
+      this.branchMarkers.push(branch.addTo(map));
     });
   }
 }

@@ -53,7 +53,7 @@ export class BusService {
 
       const genIcon = L.marker(data.gen[g].coord, {
         icon: svgIcon,
-        pane: 'shadowPane', // important to force bus go over svg (to bind popup)
+        pane: 'markerPane', // force to go over branch
       });
 
       if (
