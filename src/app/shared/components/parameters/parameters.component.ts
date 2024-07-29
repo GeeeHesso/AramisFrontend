@@ -19,7 +19,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
-import { POTENTIALTARGETS } from '@core/core.const';
+import {
+  DAYS,
+  HOURS,
+  PERCENTAGE,
+  POTENTIALTARGETS,
+  SEASONS,
+} from '@core/core.const';
 import {
   ALGORITHMS_RESULT,
   API_LOADING,
@@ -63,24 +69,17 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
   ],
 })
 export class ParametersComponent implements OnInit {
-  seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
-  days = ['Weekday', 'Weekend'];
-  hours = new Map([
-    ['2-6h', 4],
-    ['6-10h', 8],
-    ['10-14h', 12],
-    ['14-18h', 16],
-    ['18-22h', 20],
-    ['22-2h', 0],
-  ]);
-  percentageFactor = 100;
+  seasons = SEASONS;
+  days = DAYS;
+  hours = HOURS;
+  percentageFactor = PERCENTAGE;
   potentialTargets = POTENTIALTARGETS;
   algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
 
   form = this._formBuilder.group({
     season: [this.seasons[0], Validators.required],
     day: [this.days[0], Validators.required],
-    hour: ['10-14h', Validators.required],
+    hour: [this.hours.entries().next().value, Validators.required],
     percentageFactor: [this.percentageFactor, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgo: [[] as string[], Validators.required],

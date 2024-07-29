@@ -9,6 +9,18 @@ export const LINE_380KV_COLOR = '#6e0606';
 export const LINE_220KV_COLOR = '#0f6e06';
 export const INACTIVE_COLOR = '#bfbfbf';
 
+export const SEASONS = ['Winter', 'Spring', 'Summer', 'Autumn'];
+export const DAYS = ['Weekday', 'Weekend'];
+export const HOURS = new Map([
+  ['2-6h', 4],
+  ['6-10h', 8],
+  ['10-14h', 12],
+  ['14-18h', 16],
+  ['18-22h', 20],
+  ['22-2h', 0],
+]);
+export const PERCENTAGE = 100;
+
 export const POTENTIALTARGETS = new Map([
   [918, 'Innertkirchen'],
   [933, 'Löbbia'],

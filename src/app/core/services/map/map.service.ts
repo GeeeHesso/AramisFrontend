@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+import { DAYS, HOURS, PERCENTAGE, SEASONS } from '@core/core.const';
 import { SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
@@ -158,13 +159,13 @@ export class MapService {
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
-    //Define default parameter in another place and import it in map service and parameters components
     const defaultParameters: timeParameters = {
-      season: 'winter',
-      day: 'weekday',
-      hour: '10-14h',
-      percentage_factor: 100,
+      season: SEASONS[0].toLowerCase(),
+      day: DAYS[0].toLowerCase(),
+      hour: HOURS.entries().next().value[0],
+      percentage_factor: PERCENTAGE,
     };
+    console.log(defaultParameters);
 
     this._apiService.postRealNetwork(defaultParameters).subscribe({
       next: (data) => {
