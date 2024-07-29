@@ -235,8 +235,6 @@ export class ParametersComponent implements OnInit {
   }
 
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
-    console.log('populateAlgorithmResult', data);
-
     let positiveResultsAlgo: {
       algoName: string;
       targetsDetected: (string | undefined)[];

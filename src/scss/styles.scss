@@ -26,6 +26,6 @@ h3 {
 }
 .mat-mdc-row,
 .mat-mdc-header-row {
-  --mat-table-row-item-label-text-line-height: 30px;
-  --mat-table-row-item-container-height: 30px;
+  --mat-table-row-item-label-text-line-height: var(--space-bigger);
+  --mat-table-row-item-container-height: var(--space-bigger);
 }
