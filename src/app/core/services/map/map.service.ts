@@ -158,10 +158,12 @@ export class MapService {
   }
 
   private _initDefaultGrid(mapTop: L.Map) {
+    //Define default parameter in another place and import it in map service and parameters components
     const defaultParameters: timeParameters = {
       season: 'winter',
       day: 'weekday',
       hour: '10-14h',
+      percentage_factor: 100,
     };
 
     this._apiService.postRealNetwork(defaultParameters).subscribe({

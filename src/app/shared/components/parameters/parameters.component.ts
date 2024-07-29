@@ -125,15 +125,21 @@ export class ParametersComponent implements OnInit {
     this._apiLoading$.next(true);
 
     const formValue = this.form.getRawValue();
-    console.log(formValue);
 
     // Update "Real data" map
-    if (!formValue.season || !formValue.day || !formValue.hour) return;
+    if (
+      !formValue.season ||
+      !formValue.day ||
+      !formValue.hour ||
+      !formValue.percentageFactor
+    )
+      return;
 
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
       hour: formValue.hour,
+      percentage_factor: formValue.percentageFactor,
     };
 
     this._apiService.postRealNetwork({ ...commonParams }).subscribe({
