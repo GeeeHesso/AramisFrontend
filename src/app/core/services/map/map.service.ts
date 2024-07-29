@@ -165,7 +165,6 @@ export class MapService {
       hour: HOURS.entries().next().value[0],
       percentage_factor: PERCENTAGE,
     };
-    console.log(defaultParameters);
 
     this._apiService.postRealNetwork(defaultParameters).subscribe({
       next: (data) => {
