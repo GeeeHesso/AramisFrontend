@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValue, KeyValuePipe } from '@angular/common';
+import { AsyncPipe, KeyValue, KeyValuePipe, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
+import { ALGO_LIST, MatSliderModule } from '@angular/material/slider';
 import {
   DAYS,
   HOURS,
@@ -29,6 +29,7 @@ import {
 import {
   ALGORITHMS_RESULT,
   API_LOADING,
+  SELECTED_ALGOS,
   SELECTED_TARGETS,
 } from '@core/models/base.const';
 import {
@@ -53,6 +54,7 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
   imports: [
     KeyValuePipe,
     AsyncPipe,
+    NgClass,
 
     // Forms
     FormsModule,
@@ -74,7 +76,8 @@ export class ParametersComponent implements OnInit {
   hours = HOURS;
   percentageFactor = PERCENTAGE;
   potentialTargets = POTENTIALTARGETS;
-  algorithmList = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
+
+  algorithmList = ALGO_LIST;
 
   form = this._formBuilder.group({
     season: [this.seasons[0], Validators.required],
@@ -82,18 +85,20 @@ export class ParametersComponent implements OnInit {
     hour: [this.hours.entries().next().value, Validators.required],
     percentageFactor: [this.percentageFactor, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
-    selectedAlgo: [[] as string[], Validators.required],
+    selectedAlgos: [[] as string[], Validators.required],
   });
 
-  positiveResult$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  positiveResults$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
   showResult$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
-    public algorithmsResult$: BehaviorSubject<algorithmResult>,
+    public algorithmsResult$: BehaviorSubject<algorithmResult[]>,
     @Inject(SELECTED_TARGETS)
     private _selectedTargets: BehaviorSubject<number[]>,
+    @Inject(SELECTED_ALGOS)
+    private _selectedAlgos: BehaviorSubject<string[]>,
     @Inject(API_LOADING)
     private _apiLoading$: BehaviorSubject<boolean>,
     private _mapService: MapService,
@@ -112,6 +117,10 @@ export class ParametersComponent implements OnInit {
       this.form.controls['selectedTargets'].patchValue(targets, {
         emitEvent: false,
       });
+    });
+
+    this.form.get('selectedAlgos')?.valueChanges.subscribe((value) => {
+      this._selectedAlgos.next(value as string[]);
     });
   }
 
@@ -190,14 +199,14 @@ export class ParametersComponent implements OnInit {
     });
 
     // Calculate algo
-    const selectedAlgo = formValue.selectedAlgo;
-    if (!Array.isArray(selectedAlgo)) {
-      console.error('Selected targets are not an array:', selectedAlgo);
+    const selectedAlgos = formValue.selectedAlgos;
+    if (!Array.isArray(selectedAlgos)) {
+      console.error('Selected targets are not an array:', selectedAlgos);
       return;
     }
     const algorithmParams: algorithmsParameters = {
       ...attackParams,
-      algorithms: selectedAlgo,
+      algorithms: selectedAlgos,
     };
     this._apiService
       .postAlgorithmResults(algorithmParams)
@@ -219,14 +228,10 @@ export class ParametersComponent implements OnInit {
           console.error(error);
 
           //@todo:simulate this error
-          let detectedTarget: algorithmResult = {
-            columns: [],
-            data: [],
-          };
-          this.algorithmsResult$.next(detectedTarget);
+          this.algorithmsResult$.next([]);
 
           let positiveResult: (string | undefined)[] = [];
-          this.positiveResult$.next(positiveResult);
+          this.positiveResults$.next(positiveResult);
 
           this.showResult$.next(false);
 
@@ -247,10 +252,7 @@ export class ParametersComponent implements OnInit {
       targetsDetected: (string | undefined)[];
     }[] = [];
 
-    let detectedTarget: algorithmResult = {
-      columns: ['genName', ...Object.keys(data)],
-      data: [],
-    };
+    let algorithmsResult: algorithmResult[] = [];
 
     for (const [algoName, algoResults] of Object.entries(data)) {
       let positiveResult: (string | undefined)[] = [];
@@ -258,16 +260,32 @@ export class ParametersComponent implements OnInit {
       for (const [genIndex, genValue] of Object.entries(algoResults)) {
         const genName = this.potentialTargets.get(+genIndex) || genIndex;
 
-        const targetData = detectedTarget.data.find(
+        const targetData = algorithmsResult.find(
           (d) => genName === d['genName']
         );
 
-        if (targetData) {
-          targetData[algoName] = genValue;
+        let TPFPFNTN = '';
+        const selectedTargets = this._selectedTargets.getValue();
+        if (genValue) {
+          if (selectedTargets.includes(parseInt(genIndex))) {
+            TPFPFNTN = 'TP'; // True positive
+          } else {
+            TPFPFNTN = 'FP'; // False positive
+          }
         } else {
-          detectedTarget.data.push({
+          if (selectedTargets.includes(parseInt(genIndex))) {
+            TPFPFNTN = 'FN'; // False negative
+          } else {
+            TPFPFNTN = 'TN'; // True negative
+          }
+        }
+
+        if (targetData) {
+          targetData[algoName] = TPFPFNTN;
+        } else {
+          algorithmsResult.push({
             genName: genName,
-            [algoName]: genValue,
+            [algoName]: TPFPFNTN,
           });
         }
 
@@ -279,10 +297,10 @@ export class ParametersComponent implements OnInit {
         algoName: algoName,
         targetsDetected: positiveResult,
       });
+      this.positiveResults$.next(positiveResultsAlgo);
+      this.algorithmsResult$.next(algorithmsResult);
+      this.showResult$.next(true);
     }
-    this.positiveResult$.next(positiveResultsAlgo);
-    this.algorithmsResult$.next(detectedTarget);
-    this.showResult$.next(true);
   }
 
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {

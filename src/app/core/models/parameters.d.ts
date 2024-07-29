@@ -26,6 +26,5 @@ export interface algorithmsResultAPI {
 }
 
 export interface algorithmResult {
-  columns: string[];
-  data: { [key: string]: any }[];
+  [key: string]: any;
 }

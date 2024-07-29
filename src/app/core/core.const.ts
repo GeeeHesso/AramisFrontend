@@ -33,3 +33,4 @@ export const POTENTIALTARGETS = new Map([
   [927, 'Tavanasa'],
   [923, 'Cavergno'],
 ]);
+export const ALGO_LIST = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];

@@ -43,7 +43,7 @@
   <mat-chip-listbox
     aria-label="Algorithms"
     multiple
-    formControlName="selectedAlgo"
+    formControlName="selectedAlgos"
   >
     @for (algo of algorithmList; track $index) {
     <mat-chip-option [value]="algo">{{ algo }}</mat-chip-option>
@@ -63,12 +63,14 @@
 
 @if(showResult$ | async) {
 <h2>Algorithm result</h2>
-@for (positiveResult of positiveResult$ | async; track $index) {
+@for (positiveResult of positiveResults$ | async; track $index) {
 <p>
-  {{ positiveResult.algoName }} detect @for (detectedTarget of
-  positiveResult.targetsDetected; track detectedTarget) {<b
-    >{{ detectedTarget }} </b
-  >}.
+  {{ positiveResult.algoName }} detected
+  @if(positiveResult.targetsDetected==0){nothing} @for (detectedTarget of
+  positiveResult.targetsDetected; track $index) {
+  <b>{{ detectedTarget }}</b>
+  @if($index<positiveResult.targetsDetected.length-2 ){, }
+  @if($index==positiveResult.targetsDetected.length-2){ and } }.
 </p>
 }
 <button mat-flat-button color="primary" (click)="handleButtonDetails()">

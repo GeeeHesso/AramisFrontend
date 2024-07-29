@@ -5,7 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BaseClass } from '@core/bases/base.class';
-import { ALGORITHMS_RESULT } from '@core/models/base.const';
+import { ALGORITHMS_RESULT, SELECTED_ALGOS } from '@core/models/base.const';
 import { algorithmResult } from '@core/models/parameters';
 import { BehaviorSubject, filter, takeUntil } from 'rxjs';
 
@@ -30,7 +30,9 @@ export class DialogResultComponent extends BaseClass {
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
-    public algorithmsResult$: BehaviorSubject<algorithmResult>
+    public algorithmsResult$: BehaviorSubject<algorithmResult>,
+    @Inject(SELECTED_ALGOS)
+    public selectedAlgos$: BehaviorSubject<string[]>
   ) {
     super();
   }
@@ -42,8 +44,16 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        this.displayedColumns = value.columns;
-        this.dataSource = value.data;
+        this.dataSource = value;
+      });
+
+    this.selectedAlgos$
+      .pipe(
+        filter((event) => (event ? true : false)),
+        takeUntil(this._unsubscribe$)
+      )
+      .subscribe((value) => {
+        this.displayedColumns = ['genName', ...value];
       });
   }
 }
