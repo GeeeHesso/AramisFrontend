@@ -264,7 +264,7 @@ export class ParametersComponent implements OnInit {
           detectedTarget.data.push({
             genName: genName,
             [algoName]: genValue,
-            genId: genIndex // Store the genId in the data object
+            genId: genIndex
           });
         }
 
