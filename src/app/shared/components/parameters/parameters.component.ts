@@ -137,10 +137,9 @@ export class ParametersComponent implements OnInit {
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
-      hour: formValue.hour,
+      hour: formValue.hour[0],
       percentage_factor: formValue.percentageFactor,
     };
-
     this._apiService.postRealNetwork({ ...commonParams }).subscribe({
       next: (data) => {
         const formattedData = this._mapService.getFormattedPantagruelData(data);
