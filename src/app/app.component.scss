@@ -64,6 +64,21 @@
         font-size: 20px;
         z-index: 1000;
       }
+      .map-legend {
+        position: absolute;
+        top: -70px;
+        right: 0;
+        padding: var(--space-smaller);
+        border: 1px solid black;
+        background-color: white;
+        z-index: 1000;
+        p {
+          margin: 0;
+          svg {
+            padding: 0 0 var(--space-smallest) 0;
+          }
+        }
+      }
     }
   }
 }
