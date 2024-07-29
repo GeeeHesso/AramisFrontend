@@ -44,7 +44,9 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        console.log("algorithmsResult$",value)
+        this.dataSource = value.data
+        this.displayedColumns = value.columns
+
       });
     this.selectedTargets$
       .pipe(
