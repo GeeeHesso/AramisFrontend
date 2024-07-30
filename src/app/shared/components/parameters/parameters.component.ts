@@ -260,6 +260,15 @@ export class ParametersComponent implements OnInit {
     });
   }
 
+  protected selectAllTargets() {
+    const potentialTargets: number[] = Array.from(POTENTIALTARGETS.keys());
+    this.form.controls['selectedTargets'].setValue(potentialTargets);
+  }
+
+  protected selectAllAlgos() {
+    this.form.controls['selectedAlgos'].setValue(ALGO_LIST);
+  }
+
   protected handleButtonDetails() {
     this._dialog.open(DialogResultComponent, {
       maxWidth: '80vw',

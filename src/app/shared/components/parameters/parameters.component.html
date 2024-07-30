@@ -30,7 +30,11 @@
     <input matSliderThumb formControlName="percentageFactor" />
   </mat-slider>
 
-  <h2>Target(s)</h2>
+  <h2>
+    Target(s)
+    <button mat-button (click)="selectAllTargets()">Select all</button>
+  </h2>
+
   <mat-chip-listbox
     aria-label="Targets"
     multiple
@@ -41,7 +45,11 @@
     }
   </mat-chip-listbox>
 
-  <h2>Algorithm(s)</h2>
+  <h2>
+    Algorithm(s)
+    <button mat-button (click)="selectAllAlgos()">Select all</button>
+  </h2>
+
   <mat-chip-listbox
     aria-label="Algorithms"
     multiple
