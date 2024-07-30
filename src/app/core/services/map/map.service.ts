@@ -198,9 +198,11 @@ export class MapService {
   }
 
   clearMap(map: L.Map): void {
-    map.eachLayer((layer) => {
-      layer.remove();
-    });
-    this._initBaseMap(map);
+    if (map) {
+      map.eachLayer((layer) => {
+        layer.remove();
+      });
+      this._initBaseMap(map);
+    }
   }
 }

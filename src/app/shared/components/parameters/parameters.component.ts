@@ -120,11 +120,11 @@ export class ParametersComponent implements OnInit {
     this.form.get('selectedTargets')?.valueChanges.subscribe((value) => {
       this._selectedTargets.next(value as number[]);
     });
-
     this._selectedTargets.subscribe((targets) => {
       this.form.controls['selectedTargets'].patchValue(targets, {
         emitEvent: false,
       });
+      this._updateUI();
     });
 
     this.form.get('selectedAlgos')?.valueChanges.subscribe((value) => {
@@ -134,6 +134,9 @@ export class ParametersComponent implements OnInit {
 
   private _updateUI(): void {
     this._apiLoading$.next(true);
+    this.showResult$.next(false);
+    this._mapService.clearMap(this._mapService.mapTop);
+    this._mapService.clearMap(this._mapService.mapBottom);
 
     const formValue = this.form.getRawValue();
 
@@ -174,8 +177,6 @@ export class ParametersComponent implements OnInit {
           );
           console.error('Error:', error);
 
-          this._mapService.clearMap(this._mapService.mapTop);
-          this._mapService.clearMap(this._mapService.mapBottom);
           this.showResult$.next(false);
           return;
         },
@@ -242,7 +243,6 @@ export class ParametersComponent implements OnInit {
       next: (data) => {
         const formattedData = this._mapService.getFormattedPantagruelData(data);
 
-        console.log(formattedData.gen[173]);
         this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
       },
       error: (error) => {
