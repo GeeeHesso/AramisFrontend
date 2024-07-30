@@ -125,7 +125,7 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  handleButtonLaunchSimulation(): void {
+  protected handleButtonLaunchSimulation(): void {
     // Check form
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -255,7 +255,7 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  handleButtonDetails() {
+  protected handleButtonDetails() {
     this._dialog.open(DialogResultComponent, {
       maxWidth: '80vw',
     });
@@ -319,9 +319,8 @@ export class ParametersComponent implements OnInit {
     }
   }
 
-  // Comparator function for the keyvalue pipe used in the html @for loop,
-  // keeps the original order of the Map
-  originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
+  // Comparator function for the keyvalue pipe used in the html @for loop, keeps the original order of the Map
+  protected originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
     return 0;
   };
 }

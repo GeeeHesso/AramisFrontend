@@ -1,11 +1,15 @@
-import {CommonModule, KeyValuePipe} from '@angular/common';
+import { CommonModule, KeyValuePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BaseClass } from '@core/bases/base.class';
-import {ALGORITHMS_RESULT, SELECTED_ALGOS, SELECTED_TARGETS} from '@core/models/base.const';
+import {
+  ALGORITHMS_RESULT,
+  SELECTED_ALGOS,
+  SELECTED_TARGETS,
+} from '@core/models/base.const';
 import { algorithmResult } from '@core/models/parameters';
 import { BehaviorSubject, filter, takeUntil } from 'rxjs';
 
@@ -35,8 +39,7 @@ export class DialogResultComponent extends BaseClass {
     @Inject(SELECTED_ALGOS)
     public selectedAlgos$: BehaviorSubject<string[]>,
     @Inject(SELECTED_TARGETS)
-    private selectedTargets$: BehaviorSubject<number[]>,
-
+    private selectedTargets$: BehaviorSubject<number[]>
   ) {
     super();
   }
@@ -58,24 +61,22 @@ export class DialogResultComponent extends BaseClass {
       )
       .subscribe((value) => {
         this.displayedColumns = ['genName', ...value];
-
       });
+
     this.selectedTargets$
       .pipe(
-        filter((event) => !!event),
+        filter((event) => (event ? true : false)),
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
         this.selectedTargets = value;
-
       });
   }
-  getRowClass(row: any): string {
-    const genId = parseInt(row.genIndex, 10); // Convert genId to integer
-    const isSelectedTarget = this.selectedTargets.includes(genId);
-    return isSelectedTarget ? 'highlight' : '';
+
+  protected getRowClass(row: any): boolean {
+    return this.selectedTargets.includes(parseInt(row.genIndex));
   }
-  getColumnClass(value: string): string {
+  protected getCellClass(value: string): string {
     if (value === 'FP' || value === 'FN') return 'highlight-red';
     if (value === 'TP' || value === 'TN') return 'highlight-green';
     return '';
