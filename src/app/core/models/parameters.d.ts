@@ -27,5 +27,5 @@ export interface algorithmsResultAPI {
 }
 
 export interface algorithmResult {
-  [key: string]: any;
+  [key: string]: string;
 }
