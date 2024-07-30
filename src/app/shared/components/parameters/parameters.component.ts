@@ -36,6 +36,7 @@ import {
 import {
   algorithmResult,
   algorithmsParameters,
+  algorithmsParametersForm,
   algorithmsResultAPI,
   targetsParameters,
   timeParameters,
@@ -125,6 +126,7 @@ export class ParametersComponent implements OnInit {
   }
 
   handleButtonLaunchSimulation(): void {
+    // Check form
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this._notificationService.openSnackBar('Select all option', 'Close');
@@ -148,6 +150,7 @@ export class ParametersComponent implements OnInit {
       return;
     }
 
+    // Complete "Real data" map
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
@@ -158,6 +161,7 @@ export class ParametersComponent implements OnInit {
       next: (data) => {
         const formattedData = this._mapService.getFormattedPantagruelData(data);
         this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+        this._processAlgoResult(commonParams, formValue);
       },
       error: (error) => {
         this._notificationService.openSnackBar(
@@ -172,47 +176,35 @@ export class ParametersComponent implements OnInit {
         return;
       },
     });
+  }
 
-    // Complete "Operator data" map
+  private _processAlgoResult(
+    commonParams: timeParameters,
+    formValue: algorithmsParametersForm
+  ) {
     const selectedTargets = formValue.selectedTargets;
     if (!Array.isArray(selectedTargets)) {
       console.error('Selected targets are not an array:', selectedTargets);
       return;
     }
 
-    const attackParams: targetsParameters = {
-      ...commonParams,
-      attacked_gens: selectedTargets.map(String),
-    };
-    this._apiService.postAttackedNetwork(attackParams).subscribe({
-      next: (data) => {
-        const formattedData = this._mapService.getFormattedPantagruelData(data);
-        this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
-      },
-      error: (error) => {
-        this._notificationService.openSnackBar(
-          'Operator data cannot be loaded',
-          'Close'
-        );
-        console.error(error);
-
-        //@todo:simulate this error
-        this._mapService.clearMap(this._mapService.mapBottom);
-        this.showResult$.next(false);
-        return;
-      },
-    });
-
-    // Calculate algo
     const selectedAlgos = formValue.selectedAlgos;
     if (!Array.isArray(selectedAlgos)) {
       console.error('Selected targets are not an array:', selectedAlgos);
       return;
     }
+
+    const targetParams: targetsParameters = {
+      ...commonParams,
+      attacked_gens: selectedTargets.map(String),
+    };
+
     const algorithmParams: algorithmsParameters = {
-      ...attackParams,
+      ...targetParams,
       algorithms: selectedAlgos,
     };
+
+    // Calculate algo
     this._apiService
       .postAlgorithmResults(algorithmParams)
       .pipe(
@@ -224,6 +216,8 @@ export class ParametersComponent implements OnInit {
         next: (data) => {
           this._populateAlgorithmResult(data);
           this._notificationService.closeSnackBar();
+
+          this._displayOperatorData(targetParams);
         },
         error: (error) => {
           this._notificationService.openSnackBar(
@@ -243,6 +237,28 @@ export class ParametersComponent implements OnInit {
           return;
         },
       });
+  }
+
+  private _displayOperatorData(targetParams: targetsParameters) {
+    // Complete "Operator data" map
+    this._apiService.postAttackedNetwork(targetParams).subscribe({
+      next: (data) => {
+        const formattedData = this._mapService.getFormattedPantagruelData(data);
+        this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
+      },
+      error: (error) => {
+        this._notificationService.openSnackBar(
+          'Operator data cannot be loaded',
+          'Close'
+        );
+        console.error(error);
+
+        //@todo:simulate this error
+        this._mapService.clearMap(this._mapService.mapBottom);
+        this.showResult$.next(false);
+        return;
+      },
+    });
   }
 
   handleButtonDetails() {
@@ -291,6 +307,7 @@ export class ParametersComponent implements OnInit {
           algorithmsResult.push({
             genName: genName,
             [algoName]: TPFPFNTN,
+            genIndex: genIndex,
           });
         }
 

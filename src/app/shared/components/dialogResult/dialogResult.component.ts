@@ -30,7 +30,7 @@ export class DialogResultComponent extends BaseClass {
 
   constructor(
     @Inject(ALGORITHMS_RESULT)
-    public algorithmsResult$: BehaviorSubject<algorithmResult>,
+    public algorithmsResult$: BehaviorSubject<algorithmResult[]>,
     @Inject(SELECTED_ALGOS)
     public selectedAlgos$: BehaviorSubject<string[]>
   ) {

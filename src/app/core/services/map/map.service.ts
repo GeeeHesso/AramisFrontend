@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { DAYS, HOURS, PERCENTAGE, SEASONS } from '@core/core.const';
-import { SELECTED_TARGETS } from '@core/models/base.const';
+import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
-import { timeParameters } from '@models/parameters';
+import { algorithmResult, timeParameters } from '@models/parameters';
 import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
@@ -33,6 +33,8 @@ export class MapService {
   constructor(
     @Inject(SELECTED_TARGETS)
     private _selectedTargets$: BehaviorSubject<number[]>,
+    @Inject(ALGORITHMS_RESULT)
+    private _algorithmsResult$: BehaviorSubject<algorithmResult[]>,
 
     private _dataService: DataService,
     private _apiService: ApiService,
@@ -63,7 +65,12 @@ export class MapService {
   drawOnMap(map: L.Map, grid: Pantagruel): void {
     this.clearMap(map); // in case of loading new data
     this._branchService.drawBranch(map, grid);
-    this._busService.drawGen(map, grid, this._selectedTargets$);
+    this._busService.drawGen(
+      map,
+      grid,
+      this._selectedTargets$,
+      this._algorithmsResult$.getValue()
+    );
   }
 
   getFormattedPantagruelData(data: Pantagruel): Pantagruel {
