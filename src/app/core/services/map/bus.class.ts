@@ -1,11 +1,11 @@
 import {
   DEFAULT_COLOR,
-  INACTIVE_COLOR,
   MAX_SIZE,
   MIN_SIZE,
   POTENTIALTARGETS,
   SELECT_GEN_COLOR,
 } from '@core/core.const';
+import { algorithmResult } from '@core/models/parameters';
 import L, { Marker } from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
 
@@ -15,7 +15,8 @@ export class BusService {
   public drawGen(
     map: L.Map,
     data: any,
-    selectedTargets: BehaviorSubject<number[]>
+    selectedTargets: BehaviorSubject<number[]>,
+    algorithmsResult: algorithmResult[] = [] // not mandatory parameter, only use to draw bottom map
   ): void {
     this.genMarkers.forEach((marker) => {
       map.removeLayer(marker);
@@ -29,13 +30,15 @@ export class BusService {
       // Check if the current generator index is in the selectedTargets array
       const isSelected = targets.includes(data.gen[g].index);
 
-      // Style
-      const color = isSelected
-        ? SELECT_GEN_COLOR
-        : data.gen[g].status == 1
-        ? DEFAULT_COLOR
-        : INACTIVE_COLOR;
+      // Color
+      let color = DEFAULT_COLOR;
+      if (map.getContainer().id == 'mapTop' && isSelected) {
+        color = SELECT_GEN_COLOR;
+      } else if (map.getContainer().id == 'mapBottom') {
+        color = this._getColorGenBottomMap(algorithmsResult, data.gen[g].index);
+      }
 
+      // Size
       const size =
         this._getSizeProportionalMax(
           data.gen[g].pmax,
@@ -43,6 +46,7 @@ export class BusService {
           data.GEN_MAX_MAX_PROD
         ) + zoom;
 
+      // Icon
       const svgHtml = this._constructFullSquareSVG(size, color);
       const svgIcon = L.divIcon({
         html: svgHtml,
@@ -56,6 +60,7 @@ export class BusService {
         pane: 'markerPane', // force to go over branch
       });
 
+      // Action on click
       if (
         POTENTIALTARGETS.has(data.gen[g].index) &&
         map.getContainer().id !== 'mapBottom'
@@ -67,6 +72,52 @@ export class BusService {
 
       this.genMarkers.push(genIcon.addTo(map));
     });
+  }
+
+  private _getColorGenBottomMap(
+    algorithmsResult: algorithmResult[],
+    genIndex: number
+  ): string {
+    let gen = algorithmsResult.find(
+      (r: algorithmResult) => r['genIndex'] == genIndex
+    );
+
+    if (gen) {
+      // Count number of positive result
+      let count = 0;
+      let nbOfAlgo = 0;
+      Object.keys(gen).forEach((genResult) => {
+        if (genResult !== 'genIndex' && genResult !== 'genName') {
+          nbOfAlgo++;
+          if (gen[genResult] == 'TP' || gen[genResult] == 'FP') {
+            count++;
+          }
+        }
+      });
+
+      // Define color
+      const grey = 190; // 190 because DEFAULT_COLOR is #bebebe (190, 190, 190)
+      const baseRed = 210; // 210 because of SELECT_GEN_COLOR is #d20000 (210, 0, 0)
+      const otherColor = Math.round(grey - (count / nbOfAlgo) * grey);
+      const red = Math.round((count / nbOfAlgo) * (baseRed - grey) + grey);
+      return this._rgbToHex(red, otherColor, otherColor);
+    } else {
+      // Gen is not in list of result, display like above
+      return DEFAULT_COLOR;
+    }
+  }
+
+  private _rgbToHex(r: number, g: number, b: number): string {
+    return (
+      '#' +
+      this._componentToHex(r) +
+      this._componentToHex(g) +
+      this._componentToHex(b)
+    );
+  }
+  private _componentToHex(c: number): string {
+    const hex = c.toString(16);
+    return hex.length == 1 ? '0' + hex : hex;
   }
 
   private _getSizeProportionalMax(

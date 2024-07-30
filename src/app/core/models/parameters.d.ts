@@ -1,9 +1,10 @@
 export interface algorithmsParametersForm {
   season: string | null;
   day: string | null;
-  hour: string | null;
+  hour: any;
+  percentageFactor: number | null;
   selectedTargets: number[] | null;
-  selectedAlgo: string[] | null;
+  selectedAlgos: string[] | null;
 }
 
 export interface timeParameters {
