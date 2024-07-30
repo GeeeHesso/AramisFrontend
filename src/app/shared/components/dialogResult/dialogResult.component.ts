@@ -71,7 +71,7 @@ export class DialogResultComponent extends BaseClass {
       });
   }
   getRowClass(row: any): string {
-    const genId = parseInt(row.genId, 10); // Convert genId to integer
+    const genId = parseInt(row.genIndex, 10); // Convert genId to integer
     const isSelectedTarget = this.selectedTargets.includes(genId);
     return isSelectedTarget ? 'highlight' : '';
   }

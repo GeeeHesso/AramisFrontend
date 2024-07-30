@@ -299,10 +299,7 @@ export class ParametersComponent implements OnInit {
           algorithmsResult.push({
             genName: genName,
             [algoName]: TPFPFNTN,
-
-            genId: genIndex
-
-
+            genIndex: genIndex,
           });
         }
 
