@@ -83,7 +83,7 @@ export class ParametersComponent implements OnInit {
   form = this._formBuilder.group({
     season: [this.seasons[0], Validators.required],
     day: [this.days[0], Validators.required],
-    hour: [this.hours.entries().next().value[0], Validators.required],
+    hour: [this.hours.entries().next().value[1], Validators.required],
     percentageFactor: [this.percentageFactor, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgos: [[] as string[], Validators.required],
@@ -145,16 +145,10 @@ export class ParametersComponent implements OnInit {
     )
       return;
 
-    const hour = HOURS.get(formValue.hour);
-    if (!hour) {
-      return;
-    }
-
-    // Complete "Real data" map
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
       day: formValue.day.toLowerCase(),
-      hour: hour,
+      hour: formValue.hour,
       scale_factor: formValue.percentageFactor,
     };
     this._apiService.postRealNetwork({ ...commonParams }).subscribe({
@@ -325,6 +319,8 @@ export class ParametersComponent implements OnInit {
     }
   }
 
+  // Comparator function for the keyvalue pipe used in the html @for loop,
+  // keeps the original order of the Map
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
     return 0;
   };
