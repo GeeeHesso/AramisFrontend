@@ -113,6 +113,10 @@ export class ParametersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.form.valueChanges.subscribe((value) => {
+      this._launchSimulation();
+    });
+
     this.form.get('selectedTargets')?.valueChanges.subscribe((value) => {
       this._selectedTargets.next(value as number[]);
     });
@@ -128,13 +132,7 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  protected handleButtonLaunchSimulation(): void {
-    // Check form
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this._notificationService.openSnackBar('Select all option', 'Close');
-      return;
-    }
+  private _launchSimulation(): void {
     this._apiLoading$.next(true);
 
     const formValue = this.form.getRawValue();
@@ -154,42 +152,44 @@ export class ParametersComponent implements OnInit {
       hour: formValue.hour,
       scale_factor: formValue.percentageFactor,
     };
-    this._apiService.postRealNetwork({ ...commonParams }).subscribe({
-      next: (data) => {
-        const formattedData = this._mapService.getFormattedPantagruelData(data);
-        this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
-        this._processAlgoResult(commonParams, formValue);
-      },
-      error: (error) => {
-        this._notificationService.openSnackBar(
-          'Real data cannot be loaded',
-          'Close'
-        );
-        console.error('Error:', error);
+    this._apiService
+      .postRealNetwork({ ...commonParams })
+      .pipe(
+        finalize(() => {
+          this._apiLoading$.next(false);
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          const formattedData =
+            this._mapService.getFormattedPantagruelData(data);
+          this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
+          this._processAlgoResult(commonParams, formValue);
+        },
+        error: (error) => {
+          console.log('error');
+          this._notificationService.openSnackBar(
+            'Real data cannot be loaded',
+            'Close'
+          );
+          console.error('Error:', error);
 
-        this._mapService.clearMap(this._mapService.mapTop);
-        this._mapService.clearMap(this._mapService.mapBottom);
-        this.showResult$.next(false);
-        return;
-      },
-    });
+          this._mapService.clearMap(this._mapService.mapTop);
+          this._mapService.clearMap(this._mapService.mapBottom);
+          this.showResult$.next(false);
+          return;
+        },
+      });
   }
 
   private _processAlgoResult(
     commonParams: timeParameters,
     formValue: algorithmsParametersForm
   ) {
-    const selectedTargets = formValue.selectedTargets;
-    if (!Array.isArray(selectedTargets)) {
-      console.error('Selected targets are not an array:', selectedTargets);
-      return;
-    }
+    const selectedTargets = formValue.selectedTargets || [];
+    const selectedAlgos = formValue.selectedAlgos || [];
 
-    const selectedAlgos = formValue.selectedAlgos;
-    if (!Array.isArray(selectedAlgos)) {
-      console.error('Selected targets are not an array:', selectedAlgos);
-      return;
-    }
+    if (selectedTargets.length < 1 || selectedAlgos.length < 1) return;
 
     const targetParams: targetsParameters = {
       ...commonParams,

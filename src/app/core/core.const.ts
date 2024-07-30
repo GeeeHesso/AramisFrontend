@@ -10,7 +10,7 @@ export const SELECT_GEN_COLOR = '#d20000';
 export const LINE_380KV_COLOR = '#6e0606';
 export const LINE_220KV_COLOR = '#0f6e06';
 
-export const SEASONS = ['Winter', 'Spring', 'Summer', 'fall'];
+export const SEASONS = ['Winter', 'Spring', 'Summer', 'Fall'];
 export const DAYS = ['Weekday', 'Weekend'];
 export const HOURS = new Map([
   ['2-6h', 4],

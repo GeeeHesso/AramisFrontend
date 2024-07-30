@@ -53,16 +53,6 @@
   </mat-chip-listbox>
 </form>
 
-<button
-  mat-flat-button
-  color="primary"
-  (click)="handleButtonLaunchSimulation()"
-  [disabled]="form.invalid"
-  disabledInteractive=""
->
-  Launch simulation
-</button>
-
 @if(showResult$ | async) {
 <h2>Algorithm result</h2>
 @for (detectedTargets of detectedTargetsByAlgo$ | async; track $index) {
