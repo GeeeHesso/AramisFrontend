@@ -58,7 +58,7 @@ export class DialogResultComponent extends BaseClass {
       )
       .subscribe((value) => {
         this.displayedColumns = ['genName', ...value];
-        console.log("selectedAlgos$",this.displayedColumns)
+
       });
     this.selectedTargets$
       .pipe(
@@ -67,7 +67,7 @@ export class DialogResultComponent extends BaseClass {
       )
       .subscribe((value) => {
         this.selectedTargets = value;
-        console.warn(this.selectedTargets)
+
       });
   }
   getRowClass(row: any): string {
