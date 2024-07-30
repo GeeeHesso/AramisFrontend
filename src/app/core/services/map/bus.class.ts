@@ -79,7 +79,7 @@ export class BusService {
     genIndex: number
   ): string {
     let gen = algorithmsResult.find(
-      (r: algorithmResult) => r['genIndex'] == genIndex
+      (r: algorithmResult) => r['genIndex'] == genIndex.toString()
     );
 
     if (gen) {
