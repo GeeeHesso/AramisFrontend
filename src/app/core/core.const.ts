@@ -18,7 +18,7 @@ export const HOURS = new Map([
   ['10-14h', 12],
   ['14-18h', 16],
   ['18-22h', 20],
-  ['22-2h', 0], // @todo: 0 crash, why ?
+  ['22-2h', 24],
 ]);
 export const PERCENTAGE = 100;
 
