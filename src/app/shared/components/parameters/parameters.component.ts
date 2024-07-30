@@ -264,13 +264,13 @@ export class ParametersComponent implements OnInit {
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
     let positiveResultsAlgo: {
       algoName: string;
-      targetsDetected: (string | undefined)[];
+      targetsDetected: any[];
     }[] = [];
 
     let algorithmsResult: algorithmResult[] = [];
 
     for (const [algoName, algoResults] of Object.entries(data)) {
-      let positiveResult: (string | undefined)[] = [];
+      let positiveResults: any[] = [];
 
       for (const [genIndex, genValue] of Object.entries(algoResults)) {
         const genName = this.potentialTargets.get(+genIndex) || genIndex;
@@ -280,10 +280,12 @@ export class ParametersComponent implements OnInit {
         );
 
         let TPFPFNTN = '';
+        let isFalsePositive = true;
         const selectedTargets = this._selectedTargets.getValue();
         if (genValue) {
           if (selectedTargets.includes(parseInt(genIndex))) {
             TPFPFNTN = 'TP'; // True positive
+            isFalsePositive = false;
           } else {
             TPFPFNTN = 'FP'; // False positive
           }
@@ -306,12 +308,16 @@ export class ParametersComponent implements OnInit {
         }
 
         if (data[algoName][genIndex]) {
-          positiveResult.push(this.potentialTargets.get(parseInt(genIndex)));
+          positiveResults.push({
+            genIndex: genIndex,
+            name: this.potentialTargets.get(parseInt(genIndex)),
+            isFalsePositive: isFalsePositive,
+          });
         }
       }
       positiveResultsAlgo.push({
         algoName: algoName,
-        targetsDetected: positiveResult,
+        targetsDetected: positiveResults,
       });
       this.positiveResults$.next(positiveResultsAlgo);
       this.algorithmsResult$.next(algorithmsResult);

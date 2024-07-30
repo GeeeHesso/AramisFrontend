@@ -70,7 +70,9 @@
   {{ positiveResult.algoName }} detected
   @if(positiveResult.targetsDetected==0){nothing} @for (detectedTarget of
   positiveResult.targetsDetected; track $index) {
-  <b>{{ detectedTarget }}</b>
+  <b [class.false-positive]="detectedTarget.isFalsePositive">{{
+    detectedTarget.name
+  }}</b>
   @if($index<positiveResult.targetsDetected.length-2 ){, }
   @if($index==positiveResult.targetsDetected.length-2){ and } }.
 </p>
