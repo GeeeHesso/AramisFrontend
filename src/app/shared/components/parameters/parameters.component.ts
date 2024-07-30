@@ -114,7 +114,7 @@ export class ParametersComponent implements OnInit {
 
   ngOnInit(): void {
     this.form.valueChanges.subscribe((value) => {
-      this._launchSimulation();
+      this._updateUI();
     });
 
     this.form.get('selectedTargets')?.valueChanges.subscribe((value) => {
@@ -132,7 +132,7 @@ export class ParametersComponent implements OnInit {
     });
   }
 
-  private _launchSimulation(): void {
+  private _updateUI(): void {
     this._apiLoading$.next(true);
 
     const formValue = this.form.getRawValue();
@@ -241,6 +241,8 @@ export class ParametersComponent implements OnInit {
     this._apiService.postAttackedNetwork(targetParams).subscribe({
       next: (data) => {
         const formattedData = this._mapService.getFormattedPantagruelData(data);
+
+        console.log(formattedData.gen[173]);
         this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
       },
       error: (error) => {
