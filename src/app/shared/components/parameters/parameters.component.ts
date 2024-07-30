@@ -56,8 +56,6 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
     KeyValuePipe,
     AsyncPipe,
     NgClass,
-
-    // Forms
     FormsModule,
     MatFormFieldModule,
     ReactiveFormsModule,
@@ -286,6 +284,7 @@ export class ParametersComponent implements OnInit {
           algorithmsResult.push({
             genName: genName,
             [algoName]: TPFPFNTN,
+            genId: genIndex
           });
         }
 
