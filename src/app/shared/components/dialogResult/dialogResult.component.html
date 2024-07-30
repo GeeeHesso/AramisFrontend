@@ -29,7 +29,7 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns"
-      [class.highlight]="getRowClass(row)"
+      [ngStyle]="{ 'font-weight': getRowClass(row) ? 'bold' : '' }"
     ></tr>
   </table>
 </mat-dialog-content>
