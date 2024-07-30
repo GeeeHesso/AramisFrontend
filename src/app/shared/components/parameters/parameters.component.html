@@ -65,16 +65,16 @@
 
 @if(showResult$ | async) {
 <h2>Algorithm result</h2>
-@for (positiveResult of positiveResults$ | async; track $index) {
+@for (detectedTargets of detectedTargetsByAlgo$ | async; track $index) {
 <p>
-  {{ positiveResult.algoName }} detected
-  @if(positiveResult.targetsDetected==0){nothing} @for (detectedTarget of
-  positiveResult.targetsDetected; track $index) {
-  <b [class.false-positive]="detectedTarget.isFalsePositive">{{
-    detectedTarget.name
+  {{ detectedTargets.algoName }} detected
+  @if(detectedTargets.targetsDetected.length==0){nothing} @for (detectedTarget
+  of detectedTargets.targetsDetected; track $index) {
+  <b [class.highlight-red]="detectedTarget.isFalsePositive">{{
+    detectedTarget.genName
   }}</b>
-  @if($index<positiveResult.targetsDetected.length-2 ){, }
-  @if($index==positiveResult.targetsDetected.length-2){ and } }.
+  @if($index<detectedTargets.targetsDetected.length-2 ){, }
+  @if($index==detectedTargets.targetsDetected.length-2){ and } }.
 </p>
 }
 <button mat-flat-button color="primary" (click)="handleButtonDetails()">

@@ -25,13 +25,12 @@ import { BehaviorSubject, filter, takeUntil } from 'rxjs';
     MatTableModule,
     MatSortModule,
   ],
-  styleUrls: ['./dialogResult.component.scss'],
   templateUrl: './dialogResult.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogResultComponent extends BaseClass {
   displayedColumns!: string[];
-  dataSource!: any;
+  dataSource!: algorithmResult[];
   selectedTargets!: number[];
   constructor(
     @Inject(ALGORITHMS_RESULT)

@@ -38,6 +38,8 @@ import {
   algorithmsParameters,
   algorithmsParametersForm,
   algorithmsResultAPI,
+  detectedTarget,
+  detectedTargets1Algo,
   targetsParameters,
   timeParameters,
 } from '@core/models/parameters';
@@ -89,7 +91,8 @@ export class ParametersComponent implements OnInit {
     selectedAlgos: [[] as string[], Validators.required],
   });
 
-  positiveResults$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  detectedTargetsByAlgo$: BehaviorSubject<detectedTargets1Algo[]> =
+    new BehaviorSubject<detectedTargets1Algo[]>([]);
 
   showResult$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -223,8 +226,8 @@ export class ParametersComponent implements OnInit {
           //@todo:simulate this error
           this.algorithmsResult$.next([]);
 
-          let positiveResult: (string | undefined)[] = [];
-          this.positiveResults$.next(positiveResult);
+          let detectedTarget1Algo: detectedTargets1Algo[] = [];
+          this.detectedTargetsByAlgo$.next(detectedTarget1Algo);
 
           this.showResult$.next(false);
 
@@ -262,15 +265,12 @@ export class ParametersComponent implements OnInit {
   }
 
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
-    let positiveResultsAlgo: {
-      algoName: string;
-      targetsDetected: any[];
-    }[] = [];
+    let detectedTargetsByAlgo: detectedTargets1Algo[] = [];
 
     let algorithmsResult: algorithmResult[] = [];
 
     for (const [algoName, algoResults] of Object.entries(data)) {
-      let positiveResults: any[] = [];
+      let detectedTargets: detectedTarget[] = [];
 
       for (const [genIndex, genValue] of Object.entries(algoResults)) {
         const genName = this.potentialTargets.get(+genIndex) || genIndex;
@@ -308,18 +308,18 @@ export class ParametersComponent implements OnInit {
         }
 
         if (data[algoName][genIndex]) {
-          positiveResults.push({
+          detectedTargets.push({
             genIndex: genIndex,
-            name: this.potentialTargets.get(parseInt(genIndex)),
+            genName: this.potentialTargets.get(parseInt(genIndex)) || '',
             isFalsePositive: isFalsePositive,
           });
         }
       }
-      positiveResultsAlgo.push({
+      detectedTargetsByAlgo.push({
         algoName: algoName,
-        targetsDetected: positiveResults,
+        targetsDetected: detectedTargets,
       });
-      this.positiveResults$.next(positiveResultsAlgo);
+      this.detectedTargetsByAlgo$.next(detectedTargetsByAlgo);
       this.algorithmsResult$.next(algorithmsResult);
       this.showResult$.next(true);
     }

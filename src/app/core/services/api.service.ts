@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { Pantagruel } from '@core/models/pantagruel';
 import {
   algorithmsParameters,
+  algorithmsResultAPI,
   targetsParameters,
   timeParameters,
 } from '@core/models/parameters';
@@ -48,7 +49,10 @@ export class ApiService {
   }
 
   postAlgorithmResults(data: algorithmsParameters) {
-    return this._http.post<any>(`${this._baseUrl}/algorithms`, data);
+    return this._http.post<algorithmsResultAPI>(
+      `${this._baseUrl}/algorithms`,
+      data
+    );
   }
 
   //@TODO: check how to reuse this
