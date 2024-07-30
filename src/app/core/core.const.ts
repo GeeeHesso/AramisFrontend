@@ -10,7 +10,7 @@ export const SELECT_GEN_COLOR = '#d20000';
 export const LINE_380KV_COLOR = '#6e0606';
 export const LINE_220KV_COLOR = '#0f6e06';
 
-export const SEASONS = ['Winter', 'Spring', 'Summer', 'Autumn'];
+export const SEASONS = ['Winter', 'Spring', 'Summer', 'fall'];
 export const DAYS = ['Weekday', 'Weekend'];
 export const HOURS = new Map([
   ['2-6h', 4],
@@ -18,7 +18,7 @@ export const HOURS = new Map([
   ['10-14h', 12],
   ['14-18h', 16],
   ['18-22h', 20],
-  ['22-2h', 0],
+  ['22-2h', 0], // @todo: 0 crash, why ?
 ]);
 export const PERCENTAGE = 100;
 
