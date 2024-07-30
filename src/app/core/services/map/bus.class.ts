@@ -5,6 +5,7 @@ import {
   POTENTIALTARGETS,
   SELECT_GEN_COLOR,
 } from '@core/core.const';
+import { Pantagruel } from '@core/models/pantagruel';
 import { algorithmResult } from '@core/models/parameters';
 import L, { Marker } from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
@@ -14,7 +15,7 @@ export class BusService {
 
   public drawGen(
     map: L.Map,
-    data: any,
+    data: Pantagruel,
     selectedTargets: BehaviorSubject<number[]>,
     algorithmsResult: algorithmResult[] = [] // not mandatory parameter, only use to draw bottom map
   ): void {
@@ -55,7 +56,7 @@ export class BusService {
         popupAnchor: [0, 0],
       });
 
-      const genIcon = L.marker(data.gen[g].coord, {
+      const genIcon = L.marker([data.gen[g].coord[0], data.gen[g].coord[1]], {
         icon: svgIcon,
         pane: 'markerPane', // force to go over branch
       });
