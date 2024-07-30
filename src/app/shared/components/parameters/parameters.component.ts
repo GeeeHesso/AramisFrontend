@@ -56,6 +56,8 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
   imports: [
     KeyValuePipe,
     AsyncPipe,
+
+    // Forms
     NgClass,
     FormsModule,
     MatFormFieldModule,
