@@ -52,7 +52,7 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        // Map through the data and add the canton information
+
         this.dataSource = value.map((item) => {
           console.log(item)
           const target = this.potentialTargets.get(parseInt(item["genIndex"]
@@ -74,7 +74,7 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        this.displayedColumns = ['genName','Canton', ...value];
+        this.displayedColumns = ['genName','canton', ...value];
       });
 
     this.selectedTargets$
