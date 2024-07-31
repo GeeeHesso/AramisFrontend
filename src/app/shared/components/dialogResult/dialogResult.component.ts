@@ -6,7 +6,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BaseClass } from '@core/bases/base.class';
 import {
-  ALGORITHMS_RESULT,
+  ALGORITHMS_RESULT_FOR_TABLE,
   SELECTED_ALGOS,
   SELECTED_TARGETS,
 } from '@core/models/base.const';
@@ -34,7 +34,7 @@ export class DialogResultComponent extends BaseClass {
   selectedTargets!: number[];
 
   constructor(
-    @Inject(ALGORITHMS_RESULT)
+    @Inject(ALGORITHMS_RESULT_FOR_TABLE)
     public algorithmsResult$: BehaviorSubject<algorithmResult[]>,
     @Inject(SELECTED_ALGOS)
     public selectedAlgos$: BehaviorSubject<string[]>,

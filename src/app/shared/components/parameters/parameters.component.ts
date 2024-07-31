@@ -34,7 +34,7 @@ import {
   SEASONS,
 } from '@core/core.const';
 import {
-  ALGORITHMS_RESULT,
+  ALGORITHMS_RESULT_FOR_TABLE,
   API_LOADING,
   SELECTED_ALGOS,
   SELECTED_TARGETS,
@@ -104,8 +104,8 @@ export class ParametersComponent implements OnInit {
   showResult$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
-    @Inject(ALGORITHMS_RESULT)
-    public algorithmsResult$: BehaviorSubject<algorithmResult[]>,
+    @Inject(ALGORITHMS_RESULT_FOR_TABLE)
+    public algorithmsResultForTable$: BehaviorSubject<algorithmResult[]>,
     @Inject(SELECTED_TARGETS)
     private _selectedTargets$: BehaviorSubject<number[]>,
     @Inject(SELECTED_ALGOS)
@@ -301,23 +301,23 @@ export class ParametersComponent implements OnInit {
 
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
     let detectedTargetsByAlgo: detectedTargets1Algo[] = []; // Use for summary result in left panel
-    let algorithmsResult: algorithmResult[] = []; // Use for dialog result
+    let algorithmsResultForTable: algorithmResult[] = []; // Use for dialog result
 
+    // Iterate through each algo return by the API
     for (const [algoName, algoResults] of Object.entries(data)) {
       let detectedTargets: detectedTarget[] = [];
 
+      // Iterate through each genIndex return by the API inside the current algo
       for (const [genIndex, genValue] of Object.entries(algoResults)) {
+        // Gen information of the target
         const target = this.potentialTargets.get(+genIndex);
         const genName = target ? target.genName : genIndex;
         const genCanton = target ? target.canton : '';
         const displayName = `${genName} (${genCanton})`;
 
-        const targetData = algorithmsResult.find(
-          (d) => displayName === d['displayName']
-        );
-
+        // Specify value for table
         let TPFPFNTN = '';
-        let isFalsePositive = false;
+        let isFalsePositive = false; // stored value for CSS
         const selectedTargets = this._selectedTargets$.getValue();
         if (genValue) {
           if (selectedTargets.includes(parseInt(genIndex))) {
@@ -334,16 +334,22 @@ export class ParametersComponent implements OnInit {
           }
         }
 
-        if (targetData) {
-          targetData[algoName] = TPFPFNTN;
+        // Store result for the result table in dialog
+        const targetResult = algorithmsResultForTable.find(
+          (d) => displayName === d['displayName']
+        );
+        // If target already store in result, we have to just define the TPFPFNTN result for the current algo, if not we have to push name and result to algorithmsResult
+        if (targetResult) {
+          targetResult[algoName] = TPFPFNTN;
         } else {
-          algorithmsResult.push({
+          algorithmsResultForTable.push({
             displayName: displayName,
             [algoName]: TPFPFNTN,
             genIndex: genIndex,
           });
         }
 
+        // Store result by target for summary result
         if (data[algoName][genIndex]) {
           detectedTargets.push({
             genIndex: genIndex,
@@ -358,8 +364,8 @@ export class ParametersComponent implements OnInit {
         targetsDetected: detectedTargets,
       });
       this.detectedTargetsByAlgo$.next(detectedTargetsByAlgo);
-      this.algorithmsResult$.next(
-        algorithmsResult.sort((a, b) =>
+      this.algorithmsResultForTable$.next(
+        algorithmsResultForTable.sort((a, b) =>
           a['displayName'].localeCompare(b['displayName'])
         )
       );

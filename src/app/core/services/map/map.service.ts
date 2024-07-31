@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
-import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
+import {
+  ALGORITHMS_RESULT_FOR_TABLE,
+  SELECTED_TARGETS,
+} from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
 import { algorithmResult } from '@models/parameters';
@@ -32,7 +35,7 @@ export class MapService {
   constructor(
     @Inject(SELECTED_TARGETS)
     private _selectedTargets$: BehaviorSubject<number[]>,
-    @Inject(ALGORITHMS_RESULT)
+    @Inject(ALGORITHMS_RESULT_FOR_TABLE)
     private _algorithmsResult$: BehaviorSubject<algorithmResult[]>,
 
     private _dataService: DataService,
