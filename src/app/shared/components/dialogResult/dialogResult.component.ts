@@ -12,6 +12,7 @@ import {
 } from '@core/models/base.const';
 import { algorithmResult } from '@core/models/parameters';
 import { BehaviorSubject, filter, takeUntil } from 'rxjs';
+import {POTENTIALTARGETS} from "@core/core.const";
 
 @Component({
   selector: 'app-dialog-result',
@@ -32,6 +33,7 @@ export class DialogResultComponent extends BaseClass {
   displayedColumns!: string[];
   dataSource!: algorithmResult[];
   selectedTargets!: number[];
+  potentialTargets = POTENTIALTARGETS;
   constructor(
     @Inject(ALGORITHMS_RESULT)
     public algorithmsResult$: BehaviorSubject<algorithmResult[]>,
@@ -50,7 +52,20 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        this.dataSource = value;
+        // Map through the data and add the canton information
+        this.dataSource = value.map((item) => {
+          console.log(item)
+          const target = this.potentialTargets.get(parseInt(item["genIndex"]
+          ));
+          console.log("target",target)
+          return {
+            ...item,
+            genName: target ? target.name : '',
+            canton: target ? target.canton : '',
+          };
+        });
+
+        console.log("datasource",this.dataSource)
       });
 
     this.selectedAlgos$
