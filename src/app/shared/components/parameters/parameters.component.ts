@@ -83,10 +83,10 @@ export class ParametersComponent implements OnInit {
   algorithmList = ALGO_LIST;
 
   form = this._formBuilder.group({
-    season: [this.seasons[0], Validators.required],
-    day: [this.days[0], Validators.required],
-    hour: [this.hours.entries().next().value[1], Validators.required],
-    percentageFactor: [this.percentageFactor, Validators.required],
+    season: [SEASONS[0], Validators.required],
+    day: [DAYS[0], Validators.required],
+    hour: [HOURS.entries().next().value[1], Validators.required],
+    percentageFactor: [PERCENTAGE, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgos: [[] as string[], Validators.required],
   });
@@ -319,7 +319,7 @@ export class ParametersComponent implements OnInit {
         if (data[algoName][genIndex]) {
           detectedTargets.push({
             genIndex: genIndex,
-            genName: this.potentialTargets.get(parseInt(genIndex)) || '',
+            genName: genName,
             isFalsePositive: isFalsePositive,
           });
         }
