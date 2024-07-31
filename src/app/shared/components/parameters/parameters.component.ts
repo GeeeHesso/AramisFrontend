@@ -282,6 +282,13 @@ export class ParametersComponent implements OnInit {
     this.form.controls['selectedTargets'].setValue(potentialTargets);
   }
 
+  protected alphabeticalOrder = (
+    a: KeyValue<any, any>,
+    b: KeyValue<any, any>
+  ): number => {
+    return a.value.genName.localeCompare(b.value.genName);
+  };
+
   protected selectAllAlgos() {
     this.form.controls['selectedAlgos'].setValue(ALGO_LIST);
   }
@@ -301,8 +308,8 @@ export class ParametersComponent implements OnInit {
 
       for (const [genIndex, genValue] of Object.entries(algoResults)) {
         const target = this.potentialTargets.get(+genIndex);
-        const genName = target ? target.name : genIndex;
-        const genCanton = target ? target.canton : genIndex;
+        const genName = target ? target.genName : genIndex;
+        const genCanton = target ? target.canton : '';
 
         const targetData = algorithmsResult.find(
           (d) => genName === d['genName']
@@ -349,7 +356,11 @@ export class ParametersComponent implements OnInit {
         targetsDetected: detectedTargets,
       });
       this.detectedTargetsByAlgo$.next(detectedTargetsByAlgo);
-      this.algorithmsResult$.next(algorithmsResult);
+      this.algorithmsResult$.next(
+        algorithmsResult.sort((a, b) =>
+          a['displayName'].localeCompare(b['displayName'])
+        )
+      );
       this.showResult$.next(true);
     }
   }
