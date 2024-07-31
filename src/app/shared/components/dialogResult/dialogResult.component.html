@@ -8,29 +8,18 @@
   </p>
 
   <table mat-table [dataSource]="dataSource" matSort matSortDisabled>
-    <ng-container
-      *ngFor="let column of displayedColumns"
-      [matColumnDef]="column"
-    >
+    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>
         <ng-container *ngIf="column !== 'genName'">
           {{ column }}
         </ng-container>
       </th>
-      <td
-        mat-cell
-        *matCellDef="let element"
-        [ngClass]="getCellClass(element[column])"
-      >
+      <td mat-cell *matCellDef="let element" [ngClass]="getCellClass(element[column])">
         {{ element[column] }}
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [ngStyle]="{ 'font-weight': getRowClass(row) ? 'bold' : '' }"
-    ></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{ 'font-weight': getRowClass(row) ? 'bold' : '' }"></tr>
   </table>
 </mat-dialog-content>
 
