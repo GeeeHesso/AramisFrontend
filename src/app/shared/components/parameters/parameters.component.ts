@@ -107,9 +107,9 @@ export class ParametersComponent implements OnInit {
     @Inject(ALGORITHMS_RESULT)
     public algorithmsResult$: BehaviorSubject<algorithmResult[]>,
     @Inject(SELECTED_TARGETS)
-    private _selectedTargets: BehaviorSubject<number[]>,
+    private _selectedTargets$: BehaviorSubject<number[]>,
     @Inject(SELECTED_ALGOS)
-    private _selectedAlgos: BehaviorSubject<string[]>,
+    private _selectedAlgos$: BehaviorSubject<string[]>,
     @Inject(API_LOADING)
     private _apiLoading$: BehaviorSubject<boolean>,
     private _mapService: MapService,
@@ -120,40 +120,62 @@ export class ParametersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.form.get('selectedTargets')?.valueChanges.subscribe((value) => {
-      this._selectedTargets.next(value as number[]);
+    // When "Data source" are selected in form, update UI
+    // If a listener is put on the all form, updateUI is calling twice because selectedTarget can be updated by the map
+    this.form.get('season')?.valueChanges.subscribe(() => {
+      this._updateUI();
+    });
+    this.form.get('day')?.valueChanges.subscribe(() => {
+      this._updateUI();
+    });
+    this.form.get('hour')?.valueChanges.subscribe(() => {
+      this._updateUI();
+    });
+    this.form.get('percentageFactor')?.valueChanges.subscribe(() => {
+      this._updateUI();
     });
 
-    this._selectedTargets.subscribe((targets) => {
+    // When "Target" are selected in form, update global list of selected target to update top map
+    this.form.get('selectedTargets')?.valueChanges.subscribe((value) => {
+      this._selectedTargets$.next(value as number[]);
+    });
+    // Update UI at each change of the global list of selected target
+    this._selectedTargets$.subscribe((targets) => {
       this.form.controls['selectedTargets'].patchValue(targets, {
         emitEvent: false,
       });
+      this._updateUI();
     });
 
+    // When "Algorithm" are selected in form, update global list of selected algos and update UI
     this.form.get('selectedAlgos')?.valueChanges.subscribe((value) => {
-      this._selectedAlgos.next(value as string[]);
+      this._selectedAlgos$.next(value as string[]);
+      this._updateUI();
     });
   }
 
-  protected handleButtonLaunchSimulation(): void {
-    // Check form
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this._notificationService.openSnackBar('Select all option', 'Close');
-      return;
-    }
-    this._apiLoading$.next(true);
+  private _updateUI(): void {
+    // Reset UI
+    this.showResult$.next(false);
+    this._mapService.clearMap(this._mapService.mapTop);
+    this._mapService.clearMap(this._mapService.mapBottom);
+    this._notificationService.closeSnackBar();
 
     const formValue = this.form.getRawValue();
 
-    // Update "Real data" map
+    this._callPostRealNetwork(formValue);
+  }
+
+  private _callPostRealNetwork(formValue: algorithmsParametersForm) {
     if (
       !formValue.season ||
       !formValue.day ||
-      !formValue.hour ||
+      (!formValue.hour && formValue.hour !== 0) ||
       !formValue.percentageFactor
-    )
+    ) {
       return;
+    }
+    this._apiLoading$.next(true);
 
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
@@ -164,8 +186,10 @@ export class ParametersComponent implements OnInit {
     this._apiService.postRealNetwork({ ...commonParams }).subscribe({
       next: (data) => {
         const formattedData = this._mapService.getFormattedPantagruelData(data);
+        // Update "Real data" map
         this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
-        this._processAlgoResult(commonParams, formValue);
+        // Update "Operator data" map and "Algorithm result"
+        this._callPostAlgorithmResults(commonParams, formValue);
       },
       error: (error) => {
         this._notificationService.openSnackBar(
@@ -173,28 +197,23 @@ export class ParametersComponent implements OnInit {
           'Close'
         );
         console.error('Error:', error);
-
-        this._mapService.clearMap(this._mapService.mapTop);
-        this._mapService.clearMap(this._mapService.mapBottom);
+        this._apiLoading$.next(false);
         this.showResult$.next(false);
         return;
       },
     });
   }
 
-  private _processAlgoResult(
+  // "Post Algorithm Results" allows to update the bottom map and the result, that is why it must be called before "Post Attacked Network"
+  private _callPostAlgorithmResults(
     commonParams: timeParameters,
     formValue: algorithmsParametersForm
   ) {
-    const selectedTargets = formValue.selectedTargets;
-    if (!Array.isArray(selectedTargets)) {
-      console.error('Selected targets are not an array:', selectedTargets);
-      return;
-    }
+    const selectedTargets = formValue.selectedTargets || [];
+    const selectedAlgos = formValue.selectedAlgos || [];
 
-    const selectedAlgos = formValue.selectedAlgos;
-    if (!Array.isArray(selectedAlgos)) {
-      console.error('Selected targets are not an array:', selectedAlgos);
+    if (selectedTargets.length < 1 || selectedAlgos.length < 1) {
+      this._apiLoading$.next(false);
       return;
     }
 
@@ -209,8 +228,31 @@ export class ParametersComponent implements OnInit {
     };
 
     // Calculate algo
+    this._apiService.postAlgorithmResults(algorithmParams).subscribe({
+      next: (data) => {
+        this._populateAlgorithmResult(data);
+        // Complete "Operator data" map
+        this._callPostAttackedNetwork(targetParams);
+      },
+      error: (error) => {
+        this._notificationService.openSnackBar(
+          'Algorithms results cannot be loaded',
+          'Close'
+        );
+        console.error(error);
+
+        this._apiLoading$.next(false);
+        this.showResult$.next(false);
+
+        return;
+      },
+    });
+  }
+
+  // Complete "Operator data" map
+  private _callPostAttackedNetwork(targetParams: targetsParameters) {
     this._apiService
-      .postAlgorithmResults(algorithmParams)
+      .postAttackedNetwork(targetParams)
       .pipe(
         finalize(() => {
           this._apiLoading$.next(false);
@@ -218,51 +260,21 @@ export class ParametersComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this._populateAlgorithmResult(data);
-          this._notificationService.closeSnackBar();
-
-          this._displayOperatorData(targetParams);
+          const formattedData =
+            this._mapService.getFormattedPantagruelData(data);
+          this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
         },
         error: (error) => {
+          //@todo:simulate this error
           this._notificationService.openSnackBar(
-            'Algorithms results cannot be loaded',
+            'Operator data cannot be loaded',
             'Close'
           );
           console.error(error);
-
-          //@todo:simulate this error
-          this.algorithmsResult$.next([]);
-
-          let detectedTarget1Algo: detectedTargets1Algo[] = [];
-          this.detectedTargetsByAlgo$.next(detectedTarget1Algo);
-
           this.showResult$.next(false);
-
           return;
         },
       });
-  }
-
-  private _displayOperatorData(targetParams: targetsParameters) {
-    // Complete "Operator data" map
-    this._apiService.postAttackedNetwork(targetParams).subscribe({
-      next: (data) => {
-        const formattedData = this._mapService.getFormattedPantagruelData(data);
-        this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
-      },
-      error: (error) => {
-        this._notificationService.openSnackBar(
-          'Operator data cannot be loaded',
-          'Close'
-        );
-        console.error(error);
-
-        //@todo:simulate this error
-        this._mapService.clearMap(this._mapService.mapBottom);
-        this.showResult$.next(false);
-        return;
-      },
-    });
   }
 
   protected selectAllTargets() {
@@ -281,9 +293,8 @@ export class ParametersComponent implements OnInit {
   }
 
   private _populateAlgorithmResult(data: algorithmsResultAPI) {
-    let detectedTargetsByAlgo: detectedTargets1Algo[] = [];
-
-    let algorithmsResult: algorithmResult[] = [];
+    let detectedTargetsByAlgo: detectedTargets1Algo[] = []; // Use for summary result in left panel
+    let algorithmsResult: algorithmResult[] = []; // Use for dialog result
 
     for (const [algoName, algoResults] of Object.entries(data)) {
       let detectedTargets: detectedTarget[] = [];
@@ -298,7 +309,7 @@ export class ParametersComponent implements OnInit {
 
         let TPFPFNTN = '';
         let isFalsePositive = true;
-        const selectedTargets = this._selectedTargets.getValue();
+        const selectedTargets = this._selectedTargets$.getValue();
         if (genValue) {
           if (selectedTargets.includes(parseInt(genIndex))) {
             TPFPFNTN = 'TP'; // True positive
