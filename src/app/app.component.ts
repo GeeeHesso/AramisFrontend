@@ -47,7 +47,5 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     // Need map to be initialized before anything else
     this.mapService.initMaps();
-
-    this.apiLoading$.next(false);
   }
 }
