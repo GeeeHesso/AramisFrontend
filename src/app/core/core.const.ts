@@ -23,15 +23,15 @@ export const HOURS = new Map([
 export const PERCENTAGE = 100;
 
 export const POTENTIALTARGETS = new Map([
-  [918, { genName: 'Innertkirchen', canton: 'Bern' }],
-  [933, { genName: 'Löbbia', canton: 'Ticino' }],
-  [934, { genName: 'Pradella', canton: 'Graubünden' }],
-  [173, { genName: 'Riddes', canton: 'Valais' }],
-  [932, { genName: 'Rothenbrunnen', canton: 'Graubünden' }],
-  [924, { genName: 'Sedrun', canton: 'Graubünden' }],
-  [931, { genName: 'Sils', canton: 'Graubünden' }],
-  [915, { genName: 'Stalden', canton: 'Valais' }],
-  [927, { genName: 'Tavanasa', canton: 'Graubünden' }],
-  [923, { genName: 'Cavergno', canton: 'Ticino' }],
+  [918, { genName: 'Innertkirchen', canton: 'BE' }],
+  [933, { genName: 'Löbbia', canton: 'TI' }],
+  [934, { genName: 'Pradella', canton: 'GR' }],
+  [173, { genName: 'Riddes', canton: 'VS' }],
+  [932, { genName: 'Rothenbrunnen', canton: 'GR' }],
+  [924, { genName: 'Sedrun', canton: 'GR' }],
+  [931, { genName: 'Sils', canton: 'GR' }],
+  [915, { genName: 'Stalden', canton: 'VS' }],
+  [927, { genName: 'Tavanasa', canton: 'GR' }],
+  [923, { genName: 'Cavergno', canton: 'TI' }],
 ]);
 export const ALGO_LIST = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
