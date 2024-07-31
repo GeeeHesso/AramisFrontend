@@ -159,11 +159,7 @@ export class ParametersComponent implements OnInit {
     };
     this._apiService
       .postRealNetwork({ ...commonParams })
-      .pipe(
-        finalize(() => {
-          this._apiLoading$.next(false);
-        })
-      )
+
       .subscribe({
         next: (data) => {
           const formattedData =
@@ -178,7 +174,7 @@ export class ParametersComponent implements OnInit {
             'Close'
           );
           console.error('Error:', error);
-
+          this._apiLoading$.next(false);
           this.showResult$.next(false);
           return;
         },
@@ -192,7 +188,10 @@ export class ParametersComponent implements OnInit {
     const selectedTargets = formValue.selectedTargets || [];
     const selectedAlgos = formValue.selectedAlgos || [];
 
-    if (selectedTargets.length < 1 || selectedAlgos.length < 1) return;
+    if (selectedTargets.length < 1 || selectedAlgos.length < 1) {
+      this._apiLoading$.next(false);
+      return;
+    }
 
     const targetParams: targetsParameters = {
       ...commonParams,
@@ -205,8 +204,38 @@ export class ParametersComponent implements OnInit {
     };
 
     // Calculate algo
+    this._apiService.postAlgorithmResults(algorithmParams).subscribe({
+      next: (data) => {
+        this._populateAlgorithmResult(data);
+        this._notificationService.closeSnackBar();
+
+        this._displayOperatorData(targetParams);
+      },
+      error: (error) => {
+        this._notificationService.openSnackBar(
+          'Algorithms results cannot be loaded',
+          'Close'
+        );
+        console.error(error);
+
+        //@todo:simulate this error
+        this.algorithmsResult$.next([]);
+
+        let detectedTarget1Algo: detectedTargets1Algo[] = [];
+        this.detectedTargetsByAlgo$.next(detectedTarget1Algo);
+
+        this._apiLoading$.next(false);
+        this.showResult$.next(false);
+
+        return;
+      },
+    });
+  }
+
+  private _displayOperatorData(targetParams: targetsParameters) {
+    // Complete "Operator data" map
     this._apiService
-      .postAlgorithmResults(algorithmParams)
+      .postAttackedNetwork(targetParams)
       .pipe(
         finalize(() => {
           this._apiLoading$.next(false);
@@ -214,52 +243,24 @@ export class ParametersComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this._populateAlgorithmResult(data);
-          this._notificationService.closeSnackBar();
+          const formattedData =
+            this._mapService.getFormattedPantagruelData(data);
 
-          this._displayOperatorData(targetParams);
+          this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
         },
         error: (error) => {
           this._notificationService.openSnackBar(
-            'Algorithms results cannot be loaded',
+            'Operator data cannot be loaded',
             'Close'
           );
           console.error(error);
 
           //@todo:simulate this error
-          this.algorithmsResult$.next([]);
-
-          let detectedTarget1Algo: detectedTargets1Algo[] = [];
-          this.detectedTargetsByAlgo$.next(detectedTarget1Algo);
-
+          this._mapService.clearMap(this._mapService.mapBottom);
           this.showResult$.next(false);
-
           return;
         },
       });
-  }
-
-  private _displayOperatorData(targetParams: targetsParameters) {
-    // Complete "Operator data" map
-    this._apiService.postAttackedNetwork(targetParams).subscribe({
-      next: (data) => {
-        const formattedData = this._mapService.getFormattedPantagruelData(data);
-
-        this._mapService.drawOnMap(this._mapService.mapBottom, formattedData);
-      },
-      error: (error) => {
-        this._notificationService.openSnackBar(
-          'Operator data cannot be loaded',
-          'Close'
-        );
-        console.error(error);
-
-        //@todo:simulate this error
-        this._mapService.clearMap(this._mapService.mapBottom);
-        this.showResult$.next(false);
-        return;
-      },
-    });
   }
 
   protected selectAllTargets() {
