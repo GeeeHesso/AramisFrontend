@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BaseClass } from '@core/bases/base.class';
+import { POTENTIALTARGETS } from '@core/core.const';
 import {
   ALGORITHMS_RESULT,
   SELECTED_ALGOS,
@@ -12,7 +13,6 @@ import {
 } from '@core/models/base.const';
 import { algorithmResult } from '@core/models/parameters';
 import { BehaviorSubject, filter, takeUntil } from 'rxjs';
-import {POTENTIALTARGETS} from "@core/core.const";
 
 @Component({
   selector: 'app-dialog-result',
@@ -52,20 +52,12 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-
-        this.dataSource = value.map((item) => {
-          console.log(item)
-          const target = this.potentialTargets.get(parseInt(item["genIndex"]
-          ));
-          console.log("target",target)
+        this.dataSource = value.map((gen) => {
           return {
-            ...item,
-            genName: target ? target.name : '',
-            canton: target ? target.canton : '',
+            ...gen,
+            displayName: gen['displayName'],
           };
         });
-
-        console.log("datasource",this.dataSource)
       });
 
     this.selectedAlgos$
@@ -74,7 +66,7 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        this.displayedColumns = ['genName','canton', ...value];
+        this.displayedColumns = ['displayName', ...value];
       });
 
     this.selectedTargets$

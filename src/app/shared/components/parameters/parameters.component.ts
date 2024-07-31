@@ -302,6 +302,7 @@ export class ParametersComponent implements OnInit {
       for (const [genIndex, genValue] of Object.entries(algoResults)) {
         const target = this.potentialTargets.get(+genIndex);
         const genName = target ? target.name : genIndex;
+        const genCanton = target ? target.canton : genIndex;
 
         const targetData = algorithmsResult.find(
           (d) => genName === d['genName']
@@ -329,14 +330,13 @@ export class ParametersComponent implements OnInit {
           targetData[algoName] = TPFPFNTN;
         } else {
           algorithmsResult.push({
-            genName: genName,
+            displayName: `${genName} (${genCanton})`,
             [algoName]: TPFPFNTN,
             genIndex: genIndex,
           });
         }
 
         if (data[algoName][genIndex]) {
-          const target = this.potentialTargets.get(parseInt(genIndex));
           detectedTargets.push({
             genIndex: genIndex,
             genName: genName,
