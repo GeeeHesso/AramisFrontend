@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
-import { DAYS, HOURS, PERCENTAGE, SEASONS } from '@core/core.const';
 import { ALGORITHMS_RESULT, SELECTED_TARGETS } from '@core/models/base.const';
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
-import { algorithmResult, timeParameters } from '@models/parameters';
+import { algorithmResult } from '@models/parameters';
 import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
@@ -59,11 +58,10 @@ export class MapService {
 
     this._initBaseMap(this.mapTop);
     this._initBaseMap(this.mapBottom);
-    this._initDefaultGrid(this.mapTop);
   }
 
   drawOnMap(map: L.Map, grid: Pantagruel): void {
-    this.clearMap(map); // in case of loading new data
+    this.clearMap(map); // normally not use
     this._branchService.drawBranch(map, grid);
     this._busService.drawGen(
       map,
@@ -162,38 +160,6 @@ export class MapService {
       if (view.map !== map) {
         map.setView(view.center, view.zoom, { animate: false });
       }
-    });
-  }
-
-  private _initDefaultGrid(mapTop: L.Map) {
-    const defaultParameters: timeParameters = {
-      season: SEASONS[0].toLowerCase(),
-      day: DAYS[0].toLowerCase(),
-      hour: HOURS.entries().next().value[1],
-      scale_factor: PERCENTAGE,
-    };
-
-    this._apiService.postRealNetwork(defaultParameters).subscribe({
-      next: (data) => {
-        const formattedData = this.getFormattedPantagruelData(data);
-        this.drawOnMap(mapTop, formattedData);
-
-        // Redraw gen when target selected
-        this._selectedTargets$.subscribe(() => {
-          this._busService.drawGen(
-            this.mapTop,
-            formattedData,
-            this._selectedTargets$
-          );
-        });
-      },
-      error: (error) => {
-        console.warn('_initDefaultGrid: ', error);
-        this._notificationService.openSnackBar(
-          'API failure, try again later',
-          'Close'
-        );
-      },
     });
   }
 

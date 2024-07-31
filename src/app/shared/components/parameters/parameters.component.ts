@@ -133,7 +133,6 @@ export class ParametersComponent implements OnInit {
   }
 
   private _updateUI(): void {
-    this._apiLoading$.next(true);
     this.showResult$.next(false);
     this._mapService.clearMap(this._mapService.mapTop);
     this._mapService.clearMap(this._mapService.mapBottom);
@@ -146,8 +145,11 @@ export class ParametersComponent implements OnInit {
       !formValue.day ||
       !formValue.hour ||
       !formValue.percentageFactor
-    )
+    ) {
       return;
+    }
+
+    this._apiLoading$.next(true);
 
     const commonParams: timeParameters = {
       season: formValue.season.toLowerCase(),
