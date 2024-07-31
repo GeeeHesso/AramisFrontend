@@ -143,7 +143,7 @@ export class ParametersComponent implements OnInit {
     if (
       !formValue.season ||
       !formValue.day ||
-      !formValue.hour ||
+      (!formValue.hour && formValue.hour !== 0) ||
       !formValue.percentageFactor
     ) {
       return;
