@@ -12,7 +12,7 @@ import {
   timeParameters,
 } from '@core/models/parameters';
 import { environment } from 'app/environment';
-import { throwError } from 'rxjs';
+import { throwError, timeout } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +21,7 @@ export class ApiService {
   constructor(private _http: HttpClient) {}
 
   private _baseUrl: string = environment.JULIA_BACKEND_BASE_URL;
+  private TIMEOUT_MS = 6000;
 
   getInitialGrid() {
     return this._http.get<Pantagruel>(`${this._baseUrl}/initial_network`);
@@ -31,9 +32,11 @@ export class ApiService {
       'Content-Type': 'application/json',
       Accept: '*/*',
     });
-    return this._http.post<Pantagruel>(`${this._baseUrl}/real_network`, data, {
-      headers,
-    });
+    return this._http
+      .post<Pantagruel>(`${this._baseUrl}/real_network`, data, {
+        headers,
+      })
+      .pipe(timeout(this.TIMEOUT_MS));
   }
 
   postAttackedNetwork(data: targetsParameters) {
@@ -41,18 +44,15 @@ export class ApiService {
       'Content-Type': 'application/json',
       Accept: '*/*',
     });
-    return this._http.post<Pantagruel>(
-      `${this._baseUrl}/attacked_network`,
-      data,
-      { headers }
-    );
+    return this._http
+      .post<Pantagruel>(`${this._baseUrl}/attacked_network`, data, { headers })
+      .pipe(timeout(this.TIMEOUT_MS));
   }
 
   postAlgorithmResults(data: algorithmsParameters) {
-    return this._http.post<algorithmsResultAPI>(
-      `${this._baseUrl}/algorithms`,
-      data
-    );
+    return this._http
+      .post<algorithmsResultAPI>(`${this._baseUrl}/algorithms`, data)
+      .pipe(timeout(this.TIMEOUT_MS));
   }
 
   //@TODO: check how to reuse this
