@@ -39,7 +39,7 @@
     multiple
     formControlName="selectedTargets"
   >
-    <ng-container *ngFor="let target of potentialTargets | keyvalue; let i = index">
+    <ng-container *ngFor="let target of potentialTargets | keyvalue : alphabeticalOrder">
       <mat-chip-option [value]="target.key">{{ target.value.name }}</mat-chip-option>
     </ng-container>
   </mat-chip-listbox>

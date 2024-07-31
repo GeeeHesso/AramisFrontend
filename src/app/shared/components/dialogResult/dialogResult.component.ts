@@ -33,7 +33,7 @@ export class DialogResultComponent extends BaseClass {
   displayedColumns!: string[];
   dataSource!: algorithmResult[];
   selectedTargets!: number[];
-  potentialTargets = POTENTIALTARGETS;
+  potentialTargets = new Map([...POTENTIALTARGETS].sort((a, b) => a[1].name.localeCompare(b[1].name)));
   constructor(
     @Inject(ALGORITHMS_RESULT)
     public algorithmsResult$: BehaviorSubject<algorithmResult[]>,
@@ -52,20 +52,16 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-
         this.dataSource = value.map((item) => {
-          console.log(item)
-          const target = this.potentialTargets.get(parseInt(item["genIndex"]
-          ));
-          console.log("target",target)
+          const target = this.potentialTargets.get(parseInt(item["genIndex"]));
           return {
             ...item,
             genName: target ? target.name : '',
             canton: target ? target.canton : '',
           };
-        });
+        }).sort((a, b) => a.genName.localeCompare(b.genName)); // Sorting by genName
 
-        console.log("datasource",this.dataSource)
+        console.log("datasource", this.dataSource);
       });
 
     this.selectedAlgos$

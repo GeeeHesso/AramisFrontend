@@ -17,14 +17,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
+import {MatButtonModule} from '@angular/material/button';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatDialog} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSliderModule} from '@angular/material/slider';
 import {
   ALGO_LIST,
   DAYS,
@@ -49,11 +49,11 @@ import {
   targetsParameters,
   timeParameters,
 } from '@core/models/parameters';
-import { ApiService } from '@core/services/api.service';
-import { MapService } from '@core/services/map/map.service';
-import { NotificationService } from '@core/services/notification.service';
-import { BehaviorSubject, finalize } from 'rxjs';
-import { DialogResultComponent } from '../dialogResult/dialogResult.component';
+import {ApiService} from '@core/services/api.service';
+import {MapService} from '@core/services/map/map.service';
+import {NotificationService} from '@core/services/notification.service';
+import {BehaviorSubject, finalize} from 'rxjs';
+import {DialogResultComponent} from '../dialogResult/dialogResult.component';
 
 @Component({
   standalone: true,
@@ -86,7 +86,8 @@ export class ParametersComponent implements OnInit {
   days = DAYS;
   hours = HOURS;
   percentageFactor = PERCENTAGE;
-  potentialTargets = POTENTIALTARGETS;
+  //TODO refactor and apply directly to POTENTIALTARGETS that order ?
+  potentialTargets = new Map([...POTENTIALTARGETS].sort((a, b) => a[1].name.localeCompare(b[1].name)));
   algorithmList = ALGO_LIST;
 
   form = this._formBuilder.group({
@@ -117,7 +118,8 @@ export class ParametersComponent implements OnInit {
     private _notificationService: NotificationService,
     private _dialog: MatDialog,
     private _formBuilder: FormBuilder
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.form.get('selectedTargets')?.valueChanges.subscribe((value) => {
@@ -161,11 +163,12 @@ export class ParametersComponent implements OnInit {
       hour: formValue.hour,
       scale_factor: formValue.percentageFactor,
     };
-    this._apiService.postRealNetwork({ ...commonParams }).subscribe({
+    this._apiService.postRealNetwork({...commonParams}).subscribe({
       next: (data) => {
         const formattedData = this._mapService.getFormattedPantagruelData(data);
         this._mapService.drawOnMap(this._mapService.mapTop, formattedData);
         this._processAlgoResult(commonParams, formValue);
+        console.log("potentialTargets",this.potentialTargets)
       },
       error: (error) => {
         this._notificationService.openSnackBar(
@@ -269,7 +272,9 @@ export class ParametersComponent implements OnInit {
     const potentialTargets: number[] = Array.from(POTENTIALTARGETS.keys());
     this.form.controls['selectedTargets'].setValue(potentialTargets);
   }
-
+  protected alphabeticalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
+    return a.value.name.localeCompare(b.value.name);
+  };
   protected selectAllAlgos() {
     this.form.controls['selectedAlgos'].setValue(ALGO_LIST);
   }
@@ -343,7 +348,6 @@ export class ParametersComponent implements OnInit {
     }
   }
 
-  // Comparator function for the keyvalue pipe used in the html @for loop, keeps the original order of the Map
   protected originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
     return 0;
   };
