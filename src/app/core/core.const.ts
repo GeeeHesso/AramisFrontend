@@ -13,12 +13,12 @@ export const LINE_220KV_COLOR = '#0f6e06';
 export const SEASONS = ['Winter', 'Spring', 'Summer', 'Fall'];
 export const DAYS = ['Weekday', 'Weekend'];
 export const HOURS = new Map([
-  ['2-6h', 4],
-  ['6-10h', 8],
-  ['10-14h', 12],
-  ['14-18h', 16],
-  ['18-22h', 20],
-  ['22-2h', 24],
+  [4, '2-6h'],
+  [8, '6-10h'],
+  [12, '10-14h'],
+  [16, '14-18h'],
+  [20, '18-22h'],
+  [24, '22-2h'],
 ]);
 export const PERCENTAGE = 100;
 

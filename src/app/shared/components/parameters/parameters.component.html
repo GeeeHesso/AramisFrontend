@@ -17,9 +17,9 @@
 
   <h3>Time slot</h3>
   <mat-chip-listbox aria-label="Time slot" formControlName="hour">
-    @for (timeSlot of hours | keyvalue : originalOrder; track $index) {
-    <mat-chip-option [value]="timeSlot.value">{{
-      timeSlot.key
+    @for (timeSlot of hours | keyvalue; track $index) {
+    <mat-chip-option [value]="timeSlot.key">{{
+      timeSlot.value
     }}</mat-chip-option>
     }
   </mat-chip-listbox>

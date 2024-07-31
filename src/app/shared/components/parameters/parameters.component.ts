@@ -92,7 +92,7 @@ export class ParametersComponent implements OnInit {
   form = this._formBuilder.group({
     season: [SEASONS[0], Validators.required],
     day: [DAYS[0], Validators.required],
-    hour: [HOURS.entries().next().value[1], Validators.required],
+    hour: [HOURS.entries().next().value[0], Validators.required],
     percentageFactor: [PERCENTAGE, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgos: [[] as string[], Validators.required],
@@ -372,9 +372,4 @@ export class ParametersComponent implements OnInit {
       this.showResult$.next(true);
     }
   }
-
-  // Comparator function for the keyvalue pipe used in the html @for loop, keeps the original order of the Map
-  protected originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>) => {
-    return 0;
-  };
 }
