@@ -316,14 +316,14 @@ export class ParametersComponent implements OnInit {
         );
 
         let TPFPFNTN = '';
-        let isFalsePositive = true;
+        let isFalsePositive = false;
         const selectedTargets = this._selectedTargets$.getValue();
         if (genValue) {
           if (selectedTargets.includes(parseInt(genIndex))) {
             TPFPFNTN = 'TP'; // True positive
-            isFalsePositive = false;
           } else {
             TPFPFNTN = 'FP'; // False positive
+            isFalsePositive = true;
           }
         } else {
           if (selectedTargets.includes(parseInt(genIndex))) {
