@@ -35,7 +35,7 @@ export class BusService {
       let color = DEFAULT_COLOR;
       if (map.getContainer().id == 'mapTop' && isSelected) {
         color = SELECT_GEN_COLOR;
-      } else if (map.getContainer().id == 'mapBottom') {
+      } else if (map.getContainer().id == 'mapBottom' && algorithmsResult) {
         color = this._getColorGenBottomMap(algorithmsResult, data.gen[g].index);
       }
 
