@@ -1,4 +1,10 @@
-import {AsyncPipe, CommonModule, KeyValue, KeyValuePipe, NgClass} from '@angular/common';
+import {
+  AsyncPipe,
+  CommonModule,
+  KeyValue,
+  KeyValuePipe,
+  NgClass,
+} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -84,10 +90,10 @@ export class ParametersComponent implements OnInit {
   algorithmList = ALGO_LIST;
 
   form = this._formBuilder.group({
-    season: [this.seasons[0], Validators.required],
-    day: [this.days[0], Validators.required],
-    hour: [this.hours.entries().next().value[1], Validators.required],
-    percentageFactor: [this.percentageFactor, Validators.required],
+    season: [SEASONS[0], Validators.required],
+    day: [DAYS[0], Validators.required],
+    hour: [HOURS.entries().next().value[1], Validators.required],
+    percentageFactor: [PERCENTAGE, Validators.required],
     selectedTargets: [[] as number[], Validators.required],
     selectedAlgos: [[] as string[], Validators.required],
   });
@@ -322,7 +328,7 @@ export class ParametersComponent implements OnInit {
           const target = this.potentialTargets.get(parseInt(genIndex));
           detectedTargets.push({
             genIndex: genIndex,
-            genName: target ? target.name : '',
+            genName: genName,
             isFalsePositive: isFalsePositive,
           });
         }
