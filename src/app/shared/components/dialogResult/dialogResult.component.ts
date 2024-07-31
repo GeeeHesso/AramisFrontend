@@ -59,7 +59,7 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        this.displayedColumns = ['genName', ...value];
+        this.displayedColumns = ['genName','Canton', ...value];
       });
 
     this.selectedTargets$

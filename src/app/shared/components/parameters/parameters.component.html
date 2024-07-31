@@ -34,15 +34,14 @@
     Target(s)
     <button mat-button (click)="selectAllTargets()">Select all</button>
   </h2>
-
   <mat-chip-listbox
     aria-label="Targets"
     multiple
     formControlName="selectedTargets"
   >
-    @for (target of potentialTargets | keyvalue; track $index) {
-    <mat-chip-option [value]="target.key">{{ target.value }}</mat-chip-option>
-    }
+    <ng-container *ngFor="let target of potentialTargets | keyvalue; let i = index">
+      <mat-chip-option [value]="target.key">{{ target.value.name }}</mat-chip-option>
+    </ng-container>
   </mat-chip-listbox>
 
   <h2>

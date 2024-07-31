@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValue, KeyValuePipe, NgClass } from '@angular/common';
+import {AsyncPipe, CommonModule, KeyValue, KeyValuePipe, NgClass} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -56,6 +56,7 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
   styleUrls: ['./parameters.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CommonModule,
     KeyValuePipe,
     AsyncPipe,
 
@@ -282,7 +283,8 @@ export class ParametersComponent implements OnInit {
       let detectedTargets: detectedTarget[] = [];
 
       for (const [genIndex, genValue] of Object.entries(algoResults)) {
-        const genName = this.potentialTargets.get(+genIndex) || genIndex;
+        const target = this.potentialTargets.get(+genIndex);
+        const genName = target ? target.name : genIndex;
 
         const targetData = algorithmsResult.find(
           (d) => genName === d['genName']
@@ -317,9 +319,10 @@ export class ParametersComponent implements OnInit {
         }
 
         if (data[algoName][genIndex]) {
+          const target = this.potentialTargets.get(parseInt(genIndex));
           detectedTargets.push({
             genIndex: genIndex,
-            genName: this.potentialTargets.get(parseInt(genIndex)) || '',
+            genName: target ? target.name : '',
             isFalsePositive: isFalsePositive,
           });
         }

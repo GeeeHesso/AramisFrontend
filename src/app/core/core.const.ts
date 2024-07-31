@@ -23,15 +23,15 @@ export const HOURS = new Map([
 export const PERCENTAGE = 100;
 
 export const POTENTIALTARGETS = new Map([
-  [918, 'Innertkirchen'],
-  [933, 'Löbbia'],
-  [934, 'Pradella'],
-  [173, 'Riddes'],
-  [932, 'Rothenbrunnen'],
-  [924, 'Sedrun'],
-  [931, 'Sils'],
-  [915, 'Stalden'],
-  [927, 'Tavanasa'],
-  [923, 'Cavergno'],
+  [918, { name: 'Innertkirchen', canton: 'Bern' }],
+  [933, { name: 'Löbbia', canton: 'Ticino' }],
+  [934, { name: 'Pradella', canton: 'Graubünden' }],
+  [173, { name: 'Riddes', canton: 'Valais' }],
+  [932, { name: 'Rothenbrunnen', canton: 'Graubünden' }],
+  [924, { name: 'Sedrun', canton: 'Graubünden' }],
+  [931, { name: 'Sils', canton: 'Graubünden' }],
+  [915, { name: 'Stalden', canton: 'Valais' }],
+  [927, { name: 'Tavanasa', canton: 'Graubünden' }],
+  [923, { name: 'Cavergno', canton: 'Ticino' }],
 ]);
 export const ALGO_LIST = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
