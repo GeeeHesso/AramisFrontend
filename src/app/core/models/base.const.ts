@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { algorithmResult } from './parameters';
 
-export const ALGORITHMS_RESULT = new InjectionToken<
+export const ALGORITHMS_RESULT_FOR_TABLE = new InjectionToken<
   BehaviorSubject<algorithmResult[]>
 >('aramis.algorithms.result');
 

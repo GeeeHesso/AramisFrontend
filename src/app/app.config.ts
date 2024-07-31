@@ -9,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import {
-  ALGORITHMS_RESULT,
+  ALGORITHMS_RESULT_FOR_TABLE,
   API_LOADING,
   SELECTED_ALGOS,
   SELECTED_TARGETS,
@@ -19,7 +19,10 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    { provide: ALGORITHMS_RESULT, useValue: new BehaviorSubject(null) },
+    {
+      provide: ALGORITHMS_RESULT_FOR_TABLE,
+      useValue: new BehaviorSubject(null),
+    },
     { provide: SELECTED_TARGETS, useValue: new BehaviorSubject([]) },
     { provide: SELECTED_ALGOS, useValue: new BehaviorSubject([]) },
     { provide: API_LOADING, useValue: new BehaviorSubject(0) },
