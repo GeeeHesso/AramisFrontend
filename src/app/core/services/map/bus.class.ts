@@ -61,17 +61,18 @@ export class BusService {
         pane: 'markerPane', // force to go over branch
       });
 
-      // Action on click
+      const genMarker = genIcon.addTo(map);
+
+      // Action on click + store list of markers of potential target
       if (
         POTENTIALTARGETS.has(data.gen[g].index) &&
         map.getContainer().id !== 'mapBottom'
       ) {
+        this.genMarkers.push(genMarker);
         genIcon.on('click', () => {
           this._toggleSelectedTarget(data.gen[g].index, selectedTargets);
         });
       }
-
-      this.genMarkers.push(genIcon.addTo(map));
     });
   }
 
