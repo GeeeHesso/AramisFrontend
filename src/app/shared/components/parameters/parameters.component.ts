@@ -212,7 +212,7 @@ export class ParametersComponent implements OnInit {
     const selectedTargets = formValue.selectedTargets || [];
     const selectedAlgos = formValue.selectedAlgos || [];
 
-    if (selectedTargets.length < 1 || selectedAlgos.length < 1) {
+    if (selectedAlgos.length < 1) {
       this._apiLoading$.next(false);
       return;
     }
