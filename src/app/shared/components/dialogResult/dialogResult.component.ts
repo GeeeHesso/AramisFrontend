@@ -82,8 +82,9 @@ export class DialogResultComponent extends BaseClass {
     return this.selectedTargets.includes(parseInt(row.genIndex));
   }
   protected getCellClass(value: string): string {
-    if (value === 'FP' || value === 'FN') return 'highlight-red';
-    if (value === 'TP' || value === 'TN') return 'highlight-green';
+    if (value === 'FP') return 'highlight-red';
+    if (value === 'TP') return 'highlight-green';
+    if (value === 'FN') return 'highlight-red';
     return '';
   }
 }
