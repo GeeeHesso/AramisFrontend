@@ -7,8 +7,8 @@ export const MIN_SIZE = 2;
 export const DEFAULT_COLOR = '#bebebe';
 export const SELECT_GEN_COLOR = '#d20000';
 
-export const LINE_380KV_COLOR = '#6e0606';
-export const LINE_220KV_COLOR = '#0f6e06';
+export const LINE_380KV_COLOR = '#e4032f';
+export const LINE_220KV_COLOR = '#04b494';
 
 export const SEASONS = ['Winter', 'Spring', 'Summer', 'Fall'];
 export const DAYS = ['Weekday', 'Weekend'];
