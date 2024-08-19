@@ -1,12 +1,7 @@
 <mat-toolbar>
   <h1>Aramis</h1>
   <span class="spacer"></span>
-  <button
-    mat-icon-button
-    aria-label="Menu"
-    [hidden]="screenWidth > 1000"
-    (click)="sidenav.toggle()"
-  >
+  <button mat-icon-button aria-label="Menu" (click)="sidenav.toggle()">
     <mat-icon>view_sidebar</mat-icon>
   </button>
 </mat-toolbar>
@@ -16,7 +11,7 @@
 </div>
 
 <mat-sidenav-container hasBackdrop="false">
-  <mat-sidenav mode="over" [opened]="screenWidth > 720" #sidenav>
+  <mat-sidenav mode="push" [opened]="screenWidth > 720" #sidenav>
     <app-parameters></app-parameters>
   </mat-sidenav>
 
@@ -28,41 +23,41 @@
     <div class="map-container map-container-bottom">
       <div class="map-label">Operator data</div>
       <div id="mapBottom" class="map"></div>
-
-      <span class="map-legend">
-        <p>
-          <svg width="30px" height="4px">
-            <rect width="30px" height="4px" [attr.fill]="line380kVColor"></rect>
-          </svg>
-          380kV
-        </p>
-        <p>
-          <svg width="30px" height="4px">
-            <rect width="30px" height="4px" [attr.fill]="line220kVColor"></rect>
-          </svg>
-          220kV
-        </p>
-        <p>
-          <svg width="30px" height="4px">
-            <rect width="30px" height="4px" fill="yellow"></rect>
-          </svg>
-          > 90%
-        </p>
-        <p>
-          <svg width="30px" height="4px">
-            <line
-              x1="0"
-              y1="3"
-              x2="30"
-              y2="3"
-              stroke="black"
-              stroke-width="5"
-              stroke-dasharray="5"
-            />
-          </svg>
-          100%
-        </p>
-      </span>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<div class="map-legend" [hidden]="sidenav.opened && screenWidth < 720">
+  <p>
+    <svg width="30px" height="4px">
+      <rect width="30px" height="4px" [attr.fill]="line380kVColor"></rect>
+    </svg>
+    380kV
+  </p>
+  <p>
+    <svg width="30px" height="4px">
+      <rect width="30px" height="4px" [attr.fill]="line220kVColor"></rect>
+    </svg>
+    220kV
+  </p>
+  <p>
+    <svg width="30px" height="4px">
+      <rect width="30px" height="4px" fill="yellow"></rect>
+    </svg>
+    > 90%
+  </p>
+  <p>
+    <svg width="30px" height="4px">
+      <line
+        x1="0"
+        y1="3"
+        x2="30"
+        y2="3"
+        stroke="black"
+        stroke-width="5"
+        stroke-dasharray="5"
+      />
+    </svg>
+    100%
+  </p>
+</div>
