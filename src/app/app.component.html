@@ -5,11 +5,10 @@
     <mat-icon>view_sidebar</mat-icon>
   </button>
 </mat-toolbar>
-<div *ngIf="this.apiLoading$ | async">
-  <mat-spinner></mat-spinner>
-  <div class="overlay-container"></div>
-</div>
-
+<mat-progress-bar
+  [mode]="(this.apiLoading$ | async) ? 'indeterminate' : 'determinate'"
+  [value]="100"
+></mat-progress-bar>
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav mode="push" [opened]="screenWidth > 720" #sidenav>
     <app-parameters></app-parameters>

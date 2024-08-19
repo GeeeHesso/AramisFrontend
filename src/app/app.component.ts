@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
@@ -32,9 +32,9 @@ import { BehaviorSubject } from 'rxjs';
     // Material
     MatToolbarModule,
     MatSidenavModule,
-    MatProgressSpinner,
     MatButtonModule,
     MatIconModule,
+    MatProgressBar,
 
     // Component
     ParametersComponent,
