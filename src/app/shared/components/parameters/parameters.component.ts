@@ -21,10 +21,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ALGO_LIST,
   DAYS,
@@ -80,6 +82,8 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
     MatRadioModule,
     MatChipsModule,
     MatSliderModule,
+    MatIconModule,
+    MatTooltipModule,
   ],
 })
 export class ParametersComponent implements OnInit {
@@ -278,6 +282,10 @@ export class ParametersComponent implements OnInit {
     this.form.controls['selectedTargets'].setValue(potentialTargets);
   }
 
+  protected unselectAllTargets() {
+    this.form.controls['selectedTargets'].setValue([]);
+  }
+
   protected alphabeticalOrder = (
     a: KeyValue<any, any>,
     b: KeyValue<any, any>
@@ -287,6 +295,10 @@ export class ParametersComponent implements OnInit {
 
   protected selectAllAlgos() {
     this.form.controls['selectedAlgos'].setValue(ALGO_LIST);
+  }
+
+  protected unselectAllAlgos() {
+    this.form.controls['selectedAlgos'].setValue([]);
   }
 
   protected handleButtonDetails() {

@@ -37,10 +37,24 @@
       <input matSliderThumb formControlName="percentageFactor" />
     </mat-slider>
 
-    <h2>
-      Target(s)
-      <button mat-button (click)="selectAllTargets()">Select all</button>
-    </h2>
+    <div class="selector-container">
+      <h2>Target(s)</h2>
+      <button
+        mat-button
+        aria-label="Select all targets"
+        (click)="selectAllTargets()"
+      >
+        <mat-icon>done_all</mat-icon> All
+      </button>
+      <button
+        mat-button
+        aria-label="Unselect all targets"
+        (click)="unselectAllTargets()"
+      >
+        <mat-icon>delete</mat-icon> None
+      </button>
+    </div>
+
     <mat-chip-listbox
       aria-label="Targets"
       multiple
@@ -55,11 +69,28 @@
       </ng-container>
     </mat-chip-listbox>
 
-    <h2>
-      Algorithm(s)
-      <button mat-button (click)="selectAllAlgos()">Select all</button>
-    </h2>
+    <div class="selector-container">
+      <h2>Algorithm(s)</h2>
+      <mat-icon
+        matTooltip="NBC = Naive Bayes classifier MLPR = Machine Learning and Pattern Recognition KNN = K-Nearest Neighbors RFC = Random Forest Classifier SVC = Support vector machine GBC = Gradient Boosting Classifier MLPC = ?"
+        >info</mat-icon
+      >
 
+      <button
+        mat-button
+        aria-label="Select all algorithms"
+        (click)="selectAllAlgos()"
+      >
+        <mat-icon>done_all</mat-icon> All
+      </button>
+      <button
+        mat-button
+        aria-label="Unselect all algorithms"
+        (click)="unselectAllTargets()"
+      >
+        <mat-icon>delete</mat-icon> None
+      </button>
+    </div>
     <mat-chip-listbox
       aria-label="Algorithms"
       multiple
