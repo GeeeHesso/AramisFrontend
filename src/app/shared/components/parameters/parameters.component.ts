@@ -355,6 +355,8 @@ export class ParametersComponent implements OnInit {
         }
       }
 
+      detectedTargets.sort((a, b) => a.genName.localeCompare(b.genName));
+
       detectedTargetsByAlgo.push({
         algoName: algoName,
         targetsDetected: detectedTargets,
