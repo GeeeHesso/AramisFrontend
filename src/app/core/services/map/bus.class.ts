@@ -1,5 +1,6 @@
 import {
   DEFAULT_COLOR,
+  GEN_DISPLAY_NAME,
   MAX_SIZE,
   MIN_SIZE,
   POTENTIALTARGETS,
@@ -89,7 +90,7 @@ export class BusService {
       let count = 0;
       let nbOfAlgo = 0;
       Object.keys(gen).forEach((genResult) => {
-        if (genResult !== 'genIndex' && genResult !== 'genName') {
+        if (genResult !== 'genIndex' && genResult !== GEN_DISPLAY_NAME) {
           nbOfAlgo++;
           if (gen[genResult] == 'TP' || gen[genResult] == 'FP') {
             count++;

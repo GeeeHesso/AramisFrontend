@@ -28,6 +28,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import {
   ALGO_LIST,
   DAYS,
+  GEN_DISPLAY_NAME,
   HOURS,
   PERCENTAGE,
   POTENTIALTARGETS,
@@ -212,11 +213,6 @@ export class ParametersComponent implements OnInit {
     const selectedTargets = formValue.selectedTargets || [];
     const selectedAlgos = formValue.selectedAlgos || [];
 
-    if (selectedAlgos.length < 1) {
-      this._apiLoading$.next(false);
-      return;
-    }
-
     const targetParams: targetsParameters = {
       ...commonParams,
       attacked_gens: selectedTargets.map(String),
@@ -336,7 +332,7 @@ export class ParametersComponent implements OnInit {
 
         // Store result for the result table in dialog
         const targetResult = algorithmsResultForTable.find(
-          (d) => displayName === d['displayName']
+          (d) => displayName === d[GEN_DISPLAY_NAME]
         );
         // If target already store in result, we have to just define the TPFPFNTN result for the current algo, if not we have to push name and result to algorithmsResult
         if (targetResult) {
@@ -366,7 +362,7 @@ export class ParametersComponent implements OnInit {
       this.detectedTargetsByAlgo$.next(detectedTargetsByAlgo);
       this.algorithmsResultForTable$.next(
         algorithmsResultForTable.sort((a, b) =>
-          a['displayName'].localeCompare(b['displayName'])
+          a[GEN_DISPLAY_NAME].localeCompare(b[GEN_DISPLAY_NAME])
         )
       );
       this.showResult$.next(true);

@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BaseClass } from '@core/bases/base.class';
+import { GEN_DISPLAY_NAME } from '@core/core.const';
 import {
   ALGORITHMS_RESULT_FOR_TABLE,
   SELECTED_ALGOS,
@@ -54,7 +55,7 @@ export class DialogResultComponent extends BaseClass {
         this.dataSource = value.map((gen) => {
           return {
             ...gen,
-            displayName: gen['displayName'],
+            GEN_DISPLAY_NAME: gen[GEN_DISPLAY_NAME],
           };
         });
       });
@@ -65,7 +66,7 @@ export class DialogResultComponent extends BaseClass {
         takeUntil(this._unsubscribe$)
       )
       .subscribe((value) => {
-        this.displayedColumns = ['displayName', ...value];
+        this.displayedColumns = [GEN_DISPLAY_NAME, ...value];
       });
 
     this.selectedTargets$
