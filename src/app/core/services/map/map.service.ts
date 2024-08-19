@@ -6,12 +6,10 @@ import {
 import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
 import { algorithmResult } from '@models/parameters';
-import { ApiService } from '@services/api.service';
 import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DataService } from '../data.service';
-import { NotificationService } from '../notification.service';
 import { BranchService } from './branch.class';
 import { BusService } from './bus.class';
 
@@ -38,9 +36,7 @@ export class MapService {
     @Inject(ALGORITHMS_RESULT_FOR_TABLE)
     private _algorithmsResult$: BehaviorSubject<algorithmResult[]>,
 
-    private _dataService: DataService,
-    private _apiService: ApiService,
-    private _notificationService: NotificationService
+    private _dataService: DataService
   ) {}
 
   initMaps(): void {
@@ -133,7 +129,7 @@ export class MapService {
       {
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
         maxZoom: 16,
-        minZoom: 7,
+        minZoom: 6,
       }
     ).addTo(map);
 

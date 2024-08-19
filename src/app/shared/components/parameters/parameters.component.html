@@ -1,84 +1,94 @@
-<h2>Data source</h2>
+<div class="input-container">
+  <h2>Data source</h2>
 
-<form [formGroup]="form">
-  <h3>Season</h3>
-  <mat-chip-listbox aria-label="Season" formControlName="season">
-    @for (season of seasons; track $index) {
-    <mat-chip-option [value]="season">{{ season }}</mat-chip-option>
-    }
-  </mat-chip-listbox>
+  <form [formGroup]="form">
+    <h3>Season</h3>
+    <mat-chip-listbox aria-label="Season" formControlName="season">
+      @for (season of seasons; track $index) {
+      <mat-chip-option [value]="season">{{ season }}</mat-chip-option>
+      }
+    </mat-chip-listbox>
 
-  <h3>Day</h3>
-  <mat-chip-listbox aria-label="Day type" formControlName="day">
-    @for (day of days; track $index) {
-    <mat-chip-option [value]="day">{{ day }}</mat-chip-option>
-    }
-  </mat-chip-listbox>
+    <h3>Day</h3>
+    <mat-chip-listbox aria-label="Day type" formControlName="day">
+      @for (day of days; track $index) {
+      <mat-chip-option [value]="day">{{ day }}</mat-chip-option>
+      }
+    </mat-chip-listbox>
 
-  <h3>Time slot</h3>
-  <mat-chip-listbox aria-label="Time slot" formControlName="hour">
-    @for (timeSlot of hours | keyvalue; track $index) {
-    <mat-chip-option [value]="timeSlot.key">{{
-      timeSlot.value
-    }}</mat-chip-option>
-    }
-  </mat-chip-listbox>
-
-  <h3>Factor</h3>
-  {{ form.value.percentageFactor }}%
-  <mat-slider max="130" min="90" step="10" discrete="true" showTickMarks="true">
-    <input matSliderThumb formControlName="percentageFactor" />
-  </mat-slider>
-
-  <h2>
-    Target(s)
-    <button mat-button (click)="selectAllTargets()">Select all</button>
-  </h2>
-  <mat-chip-listbox
-    aria-label="Targets"
-    multiple
-    formControlName="selectedTargets"
-  >
-    <ng-container
-      *ngFor="let target of potentialTargets | keyvalue : alphabeticalOrder"
-    >
-      <mat-chip-option [value]="target.key">{{
-        target.value.genName
+    <h3>Time slot</h3>
+    <mat-chip-listbox aria-label="Time slot" formControlName="hour">
+      @for (timeSlot of hours | keyvalue; track $index) {
+      <mat-chip-option [value]="timeSlot.key">{{
+        timeSlot.value
       }}</mat-chip-option>
-    </ng-container>
-  </mat-chip-listbox>
+      }
+    </mat-chip-listbox>
 
-  <h2>
-    Algorithm(s)
-    <button mat-button (click)="selectAllAlgos()">Select all</button>
-  </h2>
+    <h3>Factor</h3>
+    {{ form.value.percentageFactor }}%
+    <mat-slider
+      max="130"
+      min="90"
+      step="10"
+      discrete="true"
+      showTickMarks="true"
+    >
+      <input matSliderThumb formControlName="percentageFactor" />
+    </mat-slider>
 
-  <mat-chip-listbox
-    aria-label="Algorithms"
-    multiple
-    formControlName="selectedAlgos"
-  >
-    @for (algo of algorithmList; track $index) {
-    <mat-chip-option [value]="algo">{{ algo }}</mat-chip-option>
-    }
-  </mat-chip-listbox>
-</form>
+    <h2>
+      Target(s)
+      <button mat-button (click)="selectAllTargets()">Select all</button>
+    </h2>
+    <mat-chip-listbox
+      aria-label="Targets"
+      multiple
+      formControlName="selectedTargets"
+    >
+      <ng-container
+        *ngFor="let target of potentialTargets | keyvalue : alphabeticalOrder"
+      >
+        <mat-chip-option [value]="target.key">{{
+          target.value.genName
+        }}</mat-chip-option>
+      </ng-container>
+    </mat-chip-listbox>
+
+    <h2>
+      Algorithm(s)
+      <button mat-button (click)="selectAllAlgos()">Select all</button>
+    </h2>
+
+    <mat-chip-listbox
+      aria-label="Algorithms"
+      multiple
+      formControlName="selectedAlgos"
+    >
+      @for (algo of algorithmList; track $index) {
+      <mat-chip-option [value]="algo">{{ algo }}</mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </form>
+</div>
 
 @if(showResult$ | async) {
-<h2>Algorithm result</h2>
-@for (detectedTargets of detectedTargetsByAlgo$ | async; track $index) {
-<p>
-  {{ detectedTargets.algoName }} detected
-  @if(detectedTargets.targetsDetected.length==0){nothing} @for (detectedTarget
-  of detectedTargets.targetsDetected; track $index) {
-  <b [class.highlight-red]="detectedTarget.isFalsePositive">{{
-    detectedTarget.genName
-  }}</b>
-  @if($index<detectedTargets.targetsDetected.length-2 ){, }
-  @if($index==detectedTargets.targetsDetected.length-2){ and } }.
-</p>
-}
-<button mat-flat-button color="primary" (click)="handleButtonDetails()">
-  See details
-</button>
+<div class="result-container">
+  <h2>Algorithm result</h2>
+  @for (detectedTargets of detectedTargetsByAlgo$ | async; track $index) {
+  <p>
+    {{ detectedTargets.algoName }} detected
+    @if(detectedTargets.targetsDetected.length==0){nothing} @for (detectedTarget
+    of detectedTargets.targetsDetected; track $index) {
+    <b [class.highlight-red]="detectedTarget.isFalsePositive">{{
+      detectedTarget.genName
+    }}</b>
+    @if($index<detectedTargets.targetsDetected.length-2 ){, }
+    @if($index==detectedTargets.targetsDetected.length-2){ and } }.
+  </p>
+  }
+  <button mat-flat-button color="primary" (click)="handleButtonDetails()">
+    See details
+  </button>
+</div>
 }

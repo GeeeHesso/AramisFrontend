@@ -1,16 +1,23 @@
-<div class="toolbar-container">
+<mat-toolbar>
   <h1>Aramis</h1>
-</div>
+  <span class="spacer"></span>
+  <button
+    mat-icon-button
+    aria-label="Menu"
+    [hidden]="screenWidth > 1000"
+    (click)="sidenav.toggle()"
+  >
+    <mat-icon>view_sidebar</mat-icon>
+  </button>
+</mat-toolbar>
 <div *ngIf="this.apiLoading$ | async">
   <mat-spinner></mat-spinner>
   <div class="overlay-container"></div>
 </div>
 
-<mat-sidenav-container>
-  <mat-sidenav mode="side" opened disableClose>
-    <div class="content-container">
-      <app-parameters></app-parameters>
-    </div>
+<mat-sidenav-container hasBackdrop="false">
+  <mat-sidenav mode="over" [opened]="screenWidth > 720" #sidenav>
+    <app-parameters></app-parameters>
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -18,11 +25,11 @@
       <div class="map-label">Real data</div>
       <div id="mapTop" class="map"></div>
     </div>
-    <div class="map-container">
+    <div class="map-container map-container-bottom">
       <div class="map-label">Operator data</div>
-
       <div id="mapBottom" class="map"></div>
-      <div class="map-legend">
+
+      <span class="map-legend">
         <p>
           <svg width="30px" height="4px">
             <rect width="30px" height="4px" [attr.fill]="line380kVColor"></rect>
@@ -55,7 +62,7 @@
           </svg>
           100%
         </p>
-      </div>
+      </span>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

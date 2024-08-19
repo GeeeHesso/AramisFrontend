@@ -11,4 +11,12 @@
   .mat-mdc-unelevated-button {
     width: 100%;
   }
+
+  .input-container {
+    padding: var(--space-small);
+  }
+  .result-container {
+    padding: var(--space-small);
+    border-top: 1px solid black;
+  }
 }
