@@ -49,7 +49,7 @@ export class BusService {
         ) + zoom;
 
       // Icon
-      const svgHtml = this._constructFullSquareSVG(size, color);
+      const svgHtml = this._constructStrokeSquareSVG(size, color);
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
@@ -99,7 +99,7 @@ export class BusService {
       });
 
       // Define color
-      const grey = 190; // 190 because DEFAULT_COLOR is #bebebe (190, 190, 190)
+      const grey = 255; // number depend on DEFAULT_COLOR
       const baseRed = 210; // 210 because of SELECT_GEN_COLOR is #d20000 (210, 0, 0)
       const otherColor = Math.round(grey - (count / nbOfAlgo) * grey);
       const red = Math.round((count / nbOfAlgo) * (baseRed - grey) + grey);
@@ -155,9 +155,16 @@ export class BusService {
     selectedTargets.next(currentTargets);
   }
 
-  private _constructFullSquareSVG(size: number, color: string): string {
+  private _constructFullSquareSVG(size: number): string {
     return `<svg width="${size}" height="${size}" style="display: block">
-        <rect width="${size}" height="${size}" fill="${color}"></rect>
+        <rect width="${size}" height="${size}" fill="${DEFAULT_COLOR}"></rect>
+        </svg>`;
+  }
+
+  private _constructStrokeSquareSVG(size: number, color: string): string {
+    console.log(color);
+    return `<svg width="${size}" height="${size}" style="display: block">
+        <rect width="${size}" height="${size}" " style="fill:${color};stroke:black;stroke-width:3;fill-opacity:1;stroke-opacity:1"></rect>
         </svg>`;
   }
 }

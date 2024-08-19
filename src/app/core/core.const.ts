@@ -4,7 +4,7 @@ export const MAX_SIZE = 10;
 export const MIN_SIZE = 2;
 
 // Please change color grey and baseRed for bottom if you change the 2 colors below
-export const DEFAULT_COLOR = '#bebebe';
+export const DEFAULT_COLOR = '#ffffff';
 export const SELECT_GEN_COLOR = '#d20000';
 
 export const LINE_380KV_COLOR = '#e4032f';
