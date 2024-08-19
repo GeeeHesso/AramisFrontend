@@ -155,14 +155,7 @@ export class BusService {
     selectedTargets.next(currentTargets);
   }
 
-  private _constructFullSquareSVG(size: number): string {
-    return `<svg width="${size}" height="${size}" style="display: block">
-        <rect width="${size}" height="${size}" fill="${DEFAULT_COLOR}"></rect>
-        </svg>`;
-  }
-
   private _constructStrokeSquareSVG(size: number, color: string): string {
-    console.log(color);
     return `<svg width="${size}" height="${size}" style="display: block">
         <rect width="${size}" height="${size}" " style="fill:${color};stroke:black;stroke-width:3;fill-opacity:1;stroke-opacity:1"></rect>
         </svg>`;
