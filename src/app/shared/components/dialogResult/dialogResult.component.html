@@ -13,7 +13,7 @@
       [matColumnDef]="column"
     >
       <th mat-header-cell *matHeaderCellDef>
-        <ng-container *ngIf="column !== 'displayName'">
+        <ng-container *ngIf="column !== genDisplayName">
           {{ column }}
         </ng-container>
       </th>

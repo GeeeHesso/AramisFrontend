@@ -33,6 +33,7 @@ export class DialogResultComponent extends BaseClass {
   displayedColumns!: string[];
   dataSource!: algorithmResult[];
   selectedTargets!: number[];
+  genDisplayName = GEN_DISPLAY_NAME;
 
   constructor(
     @Inject(ALGORITHMS_RESULT_FOR_TABLE)

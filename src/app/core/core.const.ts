@@ -36,4 +36,4 @@ export const POTENTIALTARGETS = new Map([
 ]);
 export const ALGO_LIST = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
 
-export const GEN_DISPLAY_NAME = 'displayName'; // If changed, need to be change in HTML file (ngIf)
+export const GEN_DISPLAY_NAME = 'displayName';
