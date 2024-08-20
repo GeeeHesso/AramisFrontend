@@ -1,6 +1,7 @@
 import {
   DEFAULT_COLOR,
   GEN_DISPLAY_NAME,
+  GEN_INDEX,
   MAX_SIZE,
   MIN_SIZE,
   POTENTIALTARGETS,
@@ -88,7 +89,7 @@ export class BusService {
     genIndex: number
   ): string {
     let gen = algorithmsResult.find(
-      (r: algorithmResult) => r['genIndex'] == genIndex.toString()
+      (r: algorithmResult) => r[GEN_INDEX] == genIndex.toString()
     );
 
     if (gen) {
@@ -96,7 +97,7 @@ export class BusService {
       let count = 0;
       let nbOfAlgo = 0;
       Object.keys(gen).forEach((genResult) => {
-        if (genResult !== 'genIndex' && genResult !== GEN_DISPLAY_NAME) {
+        if (genResult !== GEN_INDEX && genResult !== GEN_DISPLAY_NAME) {
           nbOfAlgo++;
           if (gen[genResult] == 'TP' || gen[genResult] == 'FP') {
             count++;
