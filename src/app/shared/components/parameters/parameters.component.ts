@@ -31,6 +31,7 @@ import {
   ALGO_LIST,
   DAYS,
   GEN_DISPLAY_NAME,
+  GEN_INDEX,
   HOURS,
   PERCENTAGE,
   POTENTIALTARGETS,
@@ -351,9 +352,9 @@ export class ParametersComponent implements OnInit {
           targetResult[algoName] = TPFPFNTN;
         } else {
           algorithmsResultForTable.push({
-            displayName: displayName,
+            [GEN_DISPLAY_NAME]: displayName,
             [algoName]: TPFPFNTN,
-            genIndex: genIndex,
+            [GEN_INDEX]: genIndex,
           });
         }
 

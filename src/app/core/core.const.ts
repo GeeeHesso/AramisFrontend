@@ -37,3 +37,4 @@ export const POTENTIALTARGETS = new Map([
 export const ALGO_LIST = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
 
 export const GEN_DISPLAY_NAME = 'displayName';
+export const GEN_INDEX = 'genIndex';
