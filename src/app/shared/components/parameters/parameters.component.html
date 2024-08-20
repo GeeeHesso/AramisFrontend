@@ -71,11 +71,6 @@
 
     <div class="icon-text">
       <h2>Algorithm(s)</h2>
-      <mat-icon
-        matTooltip="NBC = Naive Bayes classifier MLPR = Machine Learning and Pattern Recognition KNN = K-Nearest Neighbors RFC = Random Forest Classifier SVC = Support vector machine GBC = Gradient Boosting Classifier MLPC = ?"
-        >info</mat-icon
-      >
-
       <button
         mat-button
         aria-label="Select all algorithms"
@@ -97,7 +92,12 @@
       formControlName="selectedAlgos"
     >
       @for (algo of algorithmList; track $index) {
-      <mat-chip-option [value]="algo">{{ algo }}</mat-chip-option>
+      <mat-chip-option
+        [value]="algo"
+        matTooltipClass="tooltip-breakline"
+        [matTooltip]="getTooltipAlgo(algo)"
+        >{{ algo }}</mat-chip-option
+      >
       }
     </mat-chip-listbox>
   </form>

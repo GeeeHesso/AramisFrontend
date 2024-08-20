@@ -51,10 +51,17 @@ h3 {
 
 // Display icon on the same line as text
 .icon-text {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
   .mat-icon {
     margin-right: var(--space-smallest);
     margin-left: var(--space-smallest);
   }
+}
+
+.tooltip-breakline {
+  white-space: pre-line !important;
+}
+.tooltip-breakline .mdc-tooltip__surface {
+  max-width: 300px !important;
 }

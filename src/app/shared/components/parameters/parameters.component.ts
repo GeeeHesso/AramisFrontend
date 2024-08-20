@@ -29,6 +29,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   ALGO_LIST,
+  ALGO_TOOLTIP,
   DAYS,
   GEN_DISPLAY_NAME,
   GEN_INDEX,
@@ -382,5 +383,9 @@ export class ParametersComponent implements OnInit {
       );
       this.showResult$.next(true);
     }
+  }
+
+  protected getTooltipAlgo(algo: string) {
+    return ALGO_TOOLTIP.get(algo) || '';
   }
 }

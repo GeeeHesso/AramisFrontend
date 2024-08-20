@@ -31,6 +31,7 @@ import { BehaviorSubject, filter, takeUntil } from 'rxjs';
     MatIconModule,
   ],
   templateUrl: './dialogResult.component.html',
+  styleUrl: './dialogResult.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogResultComponent extends BaseClass {
@@ -92,5 +93,9 @@ export class DialogResultComponent extends BaseClass {
     if (value === 'TP') return 'highlight-green';
     if (value === 'FN') return 'highlight-red';
     return '';
+  }
+
+  protected getTooltipResult() {
+    return "- True positive (TP): The algorithm detects an attack that is truely happening on the generator. \n - True negative (TN): The generator is not under attack, and the algorithm does not detect anything. \n - False positive (FP): The algorithm raises an alarm even though the generator is not attacked. This case requires the operator's attention, but it is not critical. \n- False negative (FN): An attack is happening on the generator, but the algorithm does not detect anything. This is a dangerous situation that should be avoided as much as possible.";
   }
 }

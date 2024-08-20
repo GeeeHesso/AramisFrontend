@@ -34,7 +34,38 @@ export const POTENTIALTARGETS = new Map([
   [927, { genName: 'Tavanasa', canton: 'GR' }],
   [923, { genName: 'Cavergno', canton: 'TI' }],
 ]);
-export const ALGO_LIST = ['NBC', 'MLPR', 'KNNC', 'RFC', 'SVC', 'GBC', 'MLPC'];
+export const ALGO_LIST = ['NBC', 'KNNC', 'SVC', 'RFC', 'GBC', 'MLPC', 'MLPR'];
 
 export const GEN_DISPLAY_NAME = 'displayName';
 export const GEN_INDEX = 'genIndex';
+
+export const ALGO_TOOLTIP = new Map([
+  [
+    'NBC',
+    'Gaussian Naive Bayes Classifier : A simple classifier algorithm based on conditional probabilities (Bayes theorem).',
+  ],
+  [
+    'KNNC',
+    'k-Nearest Neighbors Classifier : Classifier implementing the k-nearest neighbors algorithm. k is typically equal to 1, which means that the algorithm simply finds the closest example in the training set.',
+  ],
+  [
+    'SVC',
+    'Support Vector machine Classifier : Classifier based on the separation of features by a hyperplane in a large space.',
+  ],
+  [
+    'RFC',
+    'Random Forest Classifier : Classifier based on the most common outcome of multiple decision trees (around 100 in our case).',
+  ],
+  [
+    'GBC',
+    'Gradient Boosted decision tree Classifier : Simple decision tree optimized over 1000 boosting stages.',
+  ],
+  [
+    'MLPC',
+    'Multi-Layer Perceptron Classifier : A shallow neural network classifier with 2 to 4 layers of up to 500 fully-connected neurons per layer. In addition to the context (the state of other generators at the detection time), the MLP takes as input the history of the generator over the last 4 time steps.',
+  ],
+  [
+    'MLPR',
+    'Multi-Layer Perceptron Regression : The unsupervised version of the multi-layer perceptron algorithm (MLP) that predicts an expected output value for each generator, as well as a sensitivity threshold. The alarm is raised if the actual output differs from the prediction by more than the threshold.',
+  ],
+]);
