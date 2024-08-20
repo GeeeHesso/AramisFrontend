@@ -2,8 +2,10 @@ import { CommonModule, KeyValuePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BaseClass } from '@core/bases/base.class';
 import { GEN_DISPLAY_NAME } from '@core/core.const';
 import {
@@ -25,6 +27,8 @@ import { BehaviorSubject, filter, takeUntil } from 'rxjs';
     MatButtonModule,
     MatTableModule,
     MatSortModule,
+    MatTooltipModule,
+    MatIconModule,
   ],
   templateUrl: './dialogResult.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

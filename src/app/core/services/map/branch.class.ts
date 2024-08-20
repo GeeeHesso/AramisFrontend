@@ -36,7 +36,7 @@ export class BranchService {
 
       // Determine initial color based on base_kv value
       let color: string;
-      let dashArray: string | undefined; // Default is undefined (solid line)
+      let dashArray: string = '0,0';
       switch (data.branch[b].fromBus.base_kv) {
         case 220:
           color = LINE_220KV_COLOR;
@@ -53,12 +53,9 @@ export class BranchService {
         Math.abs(data.branch[b].pt / data.branch[b].rate_a) * 100;
 
       if (loadPercentage >= 100) {
-        color = 'black';
-        dashArray = '5, 5';
-        //console.log(`Branch ${b}: loadPercentage is >= 100%, color set to black, dashed line`);
+        dashArray = '8, 12';
       } else if (loadPercentage >= 90) {
-        color = 'yellow';
-        //console.log(`Branch ${b}: loadPercentage is >= 90% and < 100%, color set to yellow`);
+        dashArray = '2, 6';
       }
 
       // Define line

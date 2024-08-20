@@ -1,10 +1,11 @@
 <h1 mat-dialog-title>Result</h1>
 <mat-dialog-content>
-  <p>
+  <p matTooltip="False positive means ..." class="icon-text">
     <span class="highlight-green">TP = true positive </span> /
     <span class="highlight-red">FN = false negative </span> /
     <span class="highlight-red">FP = false positive </span> /
     <span>TN = true negative </span>
+    <mat-icon>info</mat-icon>
   </p>
 
   <table mat-table [dataSource]="dataSource">

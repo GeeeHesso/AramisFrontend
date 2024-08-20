@@ -4,7 +4,8 @@ import {
   MAX_SIZE,
   MIN_SIZE,
   POTENTIALTARGETS,
-  SELECT_GEN_COLOR,
+  SELECTED_COLOR,
+  WHITE_COLOR,
 } from '@core/core.const';
 import { Pantagruel } from '@core/models/pantagruel';
 import { algorithmResult } from '@core/models/parameters';
@@ -33,9 +34,9 @@ export class BusService {
       const isSelected = targets.includes(data.gen[g].index);
 
       // Color
-      let color = DEFAULT_COLOR;
+      let color = WHITE_COLOR;
       if (map.getContainer().id == 'mapTop' && isSelected) {
-        color = SELECT_GEN_COLOR;
+        color = SELECTED_COLOR;
       } else if (map.getContainer().id == 'mapBottom' && algorithmsResult) {
         color = this._getColorGenBottomMap(algorithmsResult, data.gen[g].index);
       }
@@ -49,7 +50,12 @@ export class BusService {
         ) + zoom;
 
       // Icon
-      const svgHtml = this._constructStrokeSquareSVG(size, color);
+      let svgHtml = '';
+      if (POTENTIALTARGETS.has(data.gen[g].index)) {
+        svgHtml = this._constructStrokeSquareSVG(size, color);
+      } else {
+        svgHtml = this._constructFullSquareSVG(size);
+      }
       const svgIcon = L.divIcon({
         html: svgHtml,
         className: 'svg-icon',
@@ -99,10 +105,14 @@ export class BusService {
       });
 
       // Define color
-      const grey = 255; // number depend on DEFAULT_COLOR
-      const baseRed = 210; // 210 because of SELECT_GEN_COLOR is #d20000 (210, 0, 0)
-      const otherColor = Math.round(grey - (count / nbOfAlgo) * grey);
-      const red = Math.round((count / nbOfAlgo) * (baseRed - grey) + grey);
+      const baseNotDetected = 255;
+      const baseDetected = 210;
+      const otherColor = Math.round(
+        baseNotDetected - (count / nbOfAlgo) * baseNotDetected
+      );
+      const red = Math.round(
+        (count / nbOfAlgo) * (baseDetected - baseNotDetected) + baseNotDetected
+      );
       return this._rgbToHex(red, otherColor, otherColor);
     } else {
       // Gen is not in list of result, display like above
@@ -153,6 +163,12 @@ export class BusService {
     }
 
     selectedTargets.next(currentTargets);
+  }
+
+  private _constructFullSquareSVG(size: number): string {
+    return `<svg width="${size}" height="${size}" style="display: block">
+        <rect width="${size}" height="${size}" fill="${DEFAULT_COLOR}"></rect>
+        </svg>`;
   }
 
   private _constructStrokeSquareSVG(size: number, color: string): string {

@@ -13,7 +13,6 @@ html {
 //@TODO: define in global style
 h2 {
   margin-top: 0.5em !important;
-  margin-right: 0.5em !important;
   font-size: 1.2rem !important;
   line-height: 1.2rem !important;
 }
@@ -23,21 +22,39 @@ h3 {
   font-weight: bold !important;
   line-height: 1rem !important;
 }
-.mat-drawer {
-  --mat-sidenav-container-width: 400px;
-}
+
+// Remove space in table
 .mat-mdc-row,
 .mat-mdc-header-row {
   --mat-table-row-item-label-text-line-height: var(--space-bigger);
   --mat-table-row-item-container-height: var(--space-bigger);
 }
 
+// Remove icon in chip and add padding instead
+.mat-mdc-standard-chip.mdc-evolution-chip--with-primary-graphic
+  .mdc-evolution-chip__action--primary {
+  padding-left: 12px !important;
+}
+.mat-mdc-standard-chip.mdc-evolution-chip--with-primary-graphic
+  .mdc-evolution-chip__graphic {
+  display: none;
+}
+
 .highlight-red {
   color: red;
   font-weight: bold;
 }
-
 .highlight-green {
   color: green;
   font-weight: bold;
+}
+
+// Display icon on the same line as text
+.icon-text {
+  display: flex;
+  align-items: center;
+  .mat-icon {
+    margin-right: var(--space-smallest);
+    margin-left: var(--space-smallest);
+  }
 }
