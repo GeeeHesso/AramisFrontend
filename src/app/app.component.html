@@ -1,7 +1,7 @@
 <mat-toolbar>
   <h1>Aramis</h1>
   <span class="spacer"></span>
-  <button mat-icon-button aria-label="Menu" (click)="sidenav.toggle()">
+  <button mat-icon-button aria-label="Menu" (click)="toggleSidenav()">
     <mat-icon>view_sidebar</mat-icon>
   </button>
 </mat-toolbar>
@@ -10,7 +10,7 @@
   [value]="100"
 ></mat-progress-bar>
 <mat-sidenav-container hasBackdrop="false">
-  <mat-sidenav mode="push" [opened]="screenWidth > 720" #sidenav>
+  <mat-sidenav mode="side" #sidenav>
     <app-parameters></app-parameters>
   </mat-sidenav>
 

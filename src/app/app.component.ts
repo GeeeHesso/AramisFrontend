@@ -72,4 +72,12 @@ export class AppComponent implements AfterViewInit {
     // Need map to be initialized before anything else
     this.mapService.initMaps();
   }
+
+  // Reload maps to avoid grey band on the side
+  protected toggleSidenav(): void {
+    this.sidenav.toggle().then(() => {
+      this.mapService.mapTop.invalidateSize();
+      this.mapService.mapBottom.invalidateSize();
+    });
+  }
 }

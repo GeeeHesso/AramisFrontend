@@ -20,7 +20,7 @@ export class MapService {
   public mapTop!: L.Map;
   public mapBottom!: L.Map;
 
-  private _center = new LatLng(46.8, 11.5); // Centered on Switzerland
+  private _center = new LatLng(46.8, 8.2); // Centered on Switzerland
   private _zoom = 7;
   private _zoomControl = false; // Disable the default zoom control
   private _attributionControl = false; // Disable the attribution control
