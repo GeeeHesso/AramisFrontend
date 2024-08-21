@@ -58,7 +58,7 @@ export class MapService {
     this._initBaseMap(this.mapTop);
     this._initBaseMap(this.mapBottom);
     this.mapTop.sync(this.mapBottom);
-    this.mapTop.sync(this.mapBottom);
+    this.mapBottom.sync(this.mapTop);
   }
 
   drawOnMap(map: L.Map, grid: Pantagruel): void {
