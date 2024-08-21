@@ -150,7 +150,6 @@ export class MapService {
               fillOpacity: 1, // To not show only border
             },
           }).addTo(map);
-          console.log('fetch', map.getContainer().id);
           fetchPass = true;
         }
       }
