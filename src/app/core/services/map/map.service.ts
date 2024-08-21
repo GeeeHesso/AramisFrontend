@@ -7,7 +7,7 @@ import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
 import { algorithmResult } from '@models/parameters';
 import * as L from 'leaflet';
-import { LatLng } from 'leaflet';
+import 'leaflet.sync';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DataService } from '../data.service';
 import { BranchService } from './branch.class';
@@ -20,7 +20,7 @@ export class MapService {
   public mapTop!: L.Map;
   public mapBottom!: L.Map;
 
-  private _center = new LatLng(46.8, 8.2); // Centered on Switzerland
+  private _center = new L.LatLng(46.8, 8.2); // Centered on Switzerland
   private _zoom = 7;
   private _zoomControl = false; // Disable the default zoom control
   private _attributionControl = false; // Disable the attribution control
@@ -57,6 +57,8 @@ export class MapService {
 
     this._initBaseMap(this.mapTop);
     this._initBaseMap(this.mapBottom);
+    this.mapTop.sync(this.mapBottom);
+    this.mapTop.sync(this.mapBottom);
   }
 
   drawOnMap(map: L.Map, grid: Pantagruel): void {
@@ -130,36 +132,29 @@ export class MapService {
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
         maxZoom: 16,
         minZoom: 6,
+        bounds: [
+          [48, 11],
+          [46, 6],
+        ],
       }
     ).addTo(map);
 
     // Hide other country
-    fetch('assets/world_mask_without_switzerland.geojson')
-      .then((res) => res.json())
-      .then((json) => {
-        L.geoJSON(json, {
-          style: {
-            color: '#ffffff', // Color of the mask
-            fillOpacity: 1, // Opacity of the mask
-            weight: 0,
-          },
-        }).addTo(map);
-      });
-
-    // Synchronize maps
-    map.on('move', () => {
-      this._view$.next({
-        center: map.getCenter(),
-        zoom: map.getZoom(),
-        map: map,
-      });
-    });
-
-    this._view$.subscribe((view) => {
-      if (view.map !== map) {
-        map.setView(view.center, view.zoom, { animate: false });
+    let fetchPass = false; // fetch is done twice without this condition
+    fetch('assets/world_mask_without_switzerland.geojson').then(
+      async (json) => {
+        if (!fetchPass) {
+          L.geoJSON(await json.json(), {
+            style: {
+              color: '#ffffff', // Color of the mask
+              fillOpacity: 1, // To not show only border
+            },
+          }).addTo(map);
+          console.log('fetch', map.getContainer().id);
+          fetchPass = true;
+        }
       }
-    });
+    );
   }
 
   clearMap(map: L.Map): void {

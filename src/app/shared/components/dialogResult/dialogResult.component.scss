@@ -1,3 +1,9 @@
 :host {
   text-align: center;
+
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
 }

@@ -53,6 +53,7 @@ h3 {
 .icon-text {
   display: flex !important;
   align-items: center !important;
+  flex-wrap: wrap;
   .mat-icon {
     margin-right: var(--space-smallest);
     margin-left: var(--space-smallest);

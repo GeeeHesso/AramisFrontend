@@ -37,7 +37,8 @@
               "src/scss/styles.scss"
             ],
             "scripts": [
-              "./node_modules/leaflet/dist/leaflet.js"
+              "./node_modules/leaflet/dist/leaflet.js",
+              "./node_modules/leaflet.sync/L.Map.Sync.js"
             ]
           },
           "configurations": {
@@ -96,7 +97,8 @@
               "src/scss/styles.scss"
             ],
             "scripts": [
-              "./node_modules/leaflet/dist/leaflet.js"
+              "./node_modules/leaflet/dist/leaflet.js",
+              "./node_modules/leaflet.sync/L.Map.Sync.js"
             ]
           }
         }

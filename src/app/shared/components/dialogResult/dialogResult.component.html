@@ -1,6 +1,10 @@
 <h1 mat-dialog-title>Result</h1>
 <mat-dialog-content>
-  <p matTooltipClass="tooltip-breakline" [matTooltip]="getTooltipResult()">
+  <p
+    matTooltipClass="tooltip-breakline"
+    [matTooltip]="getTooltipResult()"
+    class="icon-text"
+  >
     <span class="highlight-green">TP=true positive </span>&nbsp;/&nbsp;
     <span class="highlight-red"> FN=false negative</span> &nbsp;/&nbsp;
     <span>TN=true negative </span>&nbsp;/&nbsp;
@@ -8,31 +12,33 @@
     <mat-icon>info</mat-icon>
   </p>
 
-  <table mat-table [dataSource]="dataSource">
-    <ng-container
-      *ngFor="let column of displayedColumns"
-      [matColumnDef]="column"
-    >
-      <th mat-header-cell *matHeaderCellDef>
-        <ng-container *ngIf="column !== genDisplayName">
-          {{ column }}
-        </ng-container>
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element"
-        [ngClass]="getCellClass(element[column])"
+  <div class="table-responsive">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container
+        *ngFor="let column of displayedColumns"
+        [matColumnDef]="column"
       >
-        {{ element[column] }}
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [ngStyle]="{ 'font-weight': getRowClass(row) ? 'bold' : '' }"
-    ></tr>
-  </table>
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngIf="column !== genDisplayName">
+            {{ column }}
+          </ng-container>
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [ngClass]="getCellClass(element[column])"
+        >
+          {{ element[column] }}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [ngStyle]="{ 'font-weight': getRowClass(row) ? 'bold' : '' }"
+      ></tr>
+    </table>
+  </div>
 </mat-dialog-content>
 
 <div mat-dialog-actions align="center">
