@@ -6,11 +6,11 @@
   </button>
 </mat-toolbar>
 <mat-progress-bar
-  [mode]="(this.apiLoading$ | async) ? 'indeterminate' : 'determinate'"
+  [mode]="(apiLoading$ | async) ? 'indeterminate' : 'determinate'"
   [value]="100"
 ></mat-progress-bar>
 <mat-sidenav-container hasBackdrop="false">
-  <mat-sidenav mode="side" #sidenav>
+  <mat-sidenav mode="side" [opened]="screenWidth > 720" #sidenav>
     <app-parameters></app-parameters>
   </mat-sidenav>
 
