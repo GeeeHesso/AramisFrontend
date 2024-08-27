@@ -69,6 +69,10 @@ export class BusService {
         pane: 'markerPane', // force to go over branch
       });
 
+      genIcon.bindTooltip(
+        `<b>${data.gen[g].busName}</b> ${data.gen[g].percentage}% <br> ${data.gen[g].produceMW} / ${data.gen[g].maxMW} MW`
+      );
+
       const genMarker = genIcon.addTo(map);
 
       // Action on click + store list of markers of potential target

@@ -81,6 +81,16 @@ export class MapService {
         data.bus[data.gen[g].gen_bus].coord[1],
         data.bus[data.gen[g].gen_bus].coord[0],
       ];
+      data.gen[g].busName = data.bus[data.gen[g].gen_bus].name;
+      data.gen[g].percentage = Math.round(
+        (Math.abs(data.gen[g].pg) / data.gen[g].pmax + Number.EPSILON) * 100
+      );
+      data.gen[g].produceMW =
+        Math.round((data.gen[g].pg * data.baseMVA + Number.EPSILON) * 100) /
+        100;
+      data.gen[g].maxMW =
+        Math.round((data.gen[g].pmax * data.baseMVA + Number.EPSILON) * 100) /
+        100;
     });
 
     Object.keys(data.branch).forEach((br) => {
@@ -109,6 +119,21 @@ export class MapService {
         data.branch[br].fromBus = data.bus[data.branch[br].t_bus];
         data.branch[br].toBus = data.bus[data.branch[br].f_bus];
       }
+
+      data.branch[br].percentage = Math.round(
+        (Math.abs(data.branch[br].pf) / data.branch[br].rate_a +
+          Number.EPSILON) *
+          100
+      );
+      data.branch[br].powerMW =
+        Math.round(
+          (Math.abs(data.branch[br].pf) * data.baseMVA + Number.EPSILON) * 100
+        ) / 100;
+      data.branch[br].thermalRatingMW =
+        Math.round(
+          (Math.abs(data.branch[br].rate_a) * data.baseMVA + Number.EPSILON) *
+            100
+        ) / 100;
 
       if (
         !data.branch[br].transformer && // by definition transformer connect 2 points in the same location

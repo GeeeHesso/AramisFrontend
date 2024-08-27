@@ -49,12 +49,9 @@ export class BranchService {
           break;
       }
 
-      const loadPercentage =
-        Math.abs(data.branch[b].pt / data.branch[b].rate_a) * 100;
-
-      if (loadPercentage >= 100) {
+      if (data.branch[b].percentage >= 100) {
         dashArray = '8, 12';
-      } else if (loadPercentage >= 90) {
+      } else if (data.branch[b].percentage >= 90) {
         dashArray = '2, 6';
       }
 
@@ -66,8 +63,58 @@ export class BranchService {
         dashArray: dashArray,
       });
 
+      branch.bindTooltip(this.getTooltip(data, b));
+
       // Add branch to the layer
       this.branchMarkers.push(branch.addTo(map));
     });
+  }
+
+  getTooltip(data: Pantagruel, b: string) {
+    // Init array of branches draw at the same place
+    data.branch[b].sameBranchesFT = [];
+    data.branch[b].sameBranchesTF = [];
+    // Add the current branch
+    data.branch[b].sameBranchesFT.push(data.branch[b]);
+
+    Object.keys(data.branch).forEach((searchBranch) => {
+      if (
+        data.branch[searchBranch].fromBus.coord[0] ==
+          data.branch[b].fromBus.coord[0] &&
+        data.branch[searchBranch].fromBus.coord[1] ==
+          data.branch[b].fromBus.coord[1] &&
+        data.branch[searchBranch].toBus.coord[0] ==
+          data.branch[b].toBus.coord[0] &&
+        data.branch[searchBranch].toBus.coord[1] ==
+          data.branch[b].toBus.coord[1] &&
+        data.branch[searchBranch].index !== data.branch[b].index
+      ) {
+        data.branch[b].sameBranchesFT.push(data.branch[searchBranch]);
+      }
+    });
+    Object.keys(data.branch).forEach((searchBranch) => {
+      if (
+        data.branch[searchBranch].fromBus.coord[0] ==
+          data.branch[b].toBus.coord[0] &&
+        data.branch[searchBranch].fromBus.coord[1] ==
+          data.branch[b].toBus.coord[1] &&
+        data.branch[searchBranch].toBus.coord[0] ==
+          data.branch[b].fromBus.coord[0] &&
+        data.branch[searchBranch].toBus.coord[1] ==
+          data.branch[b].fromBus.coord[1]
+      ) {
+        data.branch[b].sameBranchesTF.push(data.branch[searchBranch]);
+      }
+    });
+
+    let tooltip = '';
+
+    data.branch[b].sameBranchesFT.forEach((bFT) => {
+      tooltip =
+        tooltip +
+        `<b>${bFT.index}</b> ${bFT.percentage}% <br> ${bFT.powerMW} / ${bFT.thermalRatingMW} MW <br>`;
+    });
+
+    return tooltip;
   }
 }

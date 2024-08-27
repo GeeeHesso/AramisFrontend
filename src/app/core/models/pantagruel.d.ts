@@ -14,8 +14,8 @@ export interface Pantagruel {
   load: { [key: string]: Load };
   date: { day: number; month: number; year: number; hour: number };
   country: { [key: string]: { pd: number; qd: number } };
-  // Added properties
 
+  // Added properties
   GEN_MAX_MAX_PROD: number;
   GEN_MIN_MAX_PROD: number;
 }
@@ -69,6 +69,11 @@ export interface Branch {
   // Added properties
   fromBus: Bus; // !!! correspond to t_bus if pf negative
   toBus: Bus; // !!! correspond to f_bus if pf negative
+  percentage: number;
+  powerMW: number;
+  thermalRatingMW: number;
+  sameBranchesFT: Branch[];
+  sameBranchesTF: Branch[];
 }
 
 export interface Gen {
@@ -101,4 +106,8 @@ export interface Gen {
 
   // Added properties
   coord: number[];
+  busName: string;
+  percentage: number;
+  produceMW: number;
+  maxMW: number;
 }
