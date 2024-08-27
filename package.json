@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href=\"https://etranselec.ch/aramis/",
-    "build-local": "ng build --base-href=\"http://127.0.0.1:5500/frontend/dist/aramis/browser/",
+    "build": "ng build  --output-path docs --base-href /aramis/",
+    "build-local": "ng build --base-href /frontend/dist/aramis/browser/",
     "watch": "ng build --watch --configuration development --base-href=\"http://127.0.0.1:5500/frontend/dist/aramis/browser/",
     "test": "ng test"
   },

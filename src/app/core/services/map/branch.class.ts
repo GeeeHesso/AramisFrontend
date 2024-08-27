@@ -77,6 +77,9 @@ export class BranchService {
     // Add the current branch
     data.branch[b].sameBranchesFT.push(data.branch[b]);
 
+    let tooltip = '';
+
+    // Search for branch with same from bus and to bus
     Object.keys(data.branch).forEach((searchBranch) => {
       if (
         data.branch[searchBranch].fromBus.coord[0] ==
@@ -92,6 +95,14 @@ export class BranchService {
         data.branch[b].sameBranchesFT.push(data.branch[searchBranch]);
       }
     });
+
+    // Search for branch with "from bus" is equal to "to bus" (reversed direction)
+    data.branch[b].sameBranchesFT.forEach((bFT) => {
+      tooltip =
+        tooltip +
+        `<b>${bFT.index}</b> ${bFT.percentage}% <br> ${bFT.powerMW} / ${bFT.thermalRatingMW} MW <br>`;
+    });
+
     Object.keys(data.branch).forEach((searchBranch) => {
       if (
         data.branch[searchBranch].fromBus.coord[0] ==
@@ -106,13 +117,10 @@ export class BranchService {
         data.branch[b].sameBranchesTF.push(data.branch[searchBranch]);
       }
     });
-
-    let tooltip = '';
-
-    data.branch[b].sameBranchesFT.forEach((bFT) => {
+    data.branch[b].sameBranchesTF.forEach((bTF) => {
       tooltip =
         tooltip +
-        `<b>${bFT.index}</b> ${bFT.percentage}% <br> ${bFT.powerMW} / ${bFT.thermalRatingMW} MW <br>`;
+        `<b>${bTF.index}</b> ${bTF.percentage}% <br> ${bTF.powerMW} / ${bTF.thermalRatingMW} MW <br>`;
     });
 
     return tooltip;
