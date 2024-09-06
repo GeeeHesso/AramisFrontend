@@ -63,12 +63,10 @@
     top: 50%;
     right: 0;
     padding: var(--space-smaller);
-    margin-top: var(
-      --mat-toolbar-title-text-line-height
-    ); // Consider toolbar height
+    margin-top: var(--mat-toolbar-title-text-line-height);
     border: 1px solid black;
     background-color: rgba(239, 239, 239);
-    z-index: var(--z-index-normal);
+    z-index: var(--z-index-normal); // Consider toolbar height
     transform: translateY(
       -50%
     ); // Taking the center of element as reference from top
