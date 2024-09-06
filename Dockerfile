@@ -1,6 +1,6 @@
 FROM node:18 as build-stage
 
-WORKDIR /srv/frontend
+WORKDIR /srv/aramis/swissgrid
 
 COPY package.json package-lock.json ./
 RUN npm install
@@ -14,7 +14,7 @@ RUN npm run build -- --output-path=./dist/out --configuration production --base-
 FROM nginx:1.15
 
 # Copie des fichiers construits depuis l'etape de construction
-COPY --from=build-stage /srv/frontend/dist/out/ /usr/share/nginx/html/vsdr
+COPY --from=build-stage /srv/aramis/swissgrid/dist/out/ /usr/share/nginx/html/vsdr
 
 # Copie de la configuration Nginx si necessaire
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
