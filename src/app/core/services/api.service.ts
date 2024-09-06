@@ -11,7 +11,7 @@ import {
   targetsParameters,
   timeParameters,
 } from '@core/models/parameters';
-import { environment } from 'app/environment';
+import { environment } from 'environments/environment';
 import { throwError, timeout } from 'rxjs';
 
 @Injectable({
