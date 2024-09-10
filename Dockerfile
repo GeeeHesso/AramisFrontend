@@ -18,7 +18,7 @@ RUN npm install
 COPY . .
 
 #### generate build
-RUN npm run build -- --output-path=./dist/aramis --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/
+RUN npm run build -- --output-path=./dist/swissgrid --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/
 
 ### STAGE 2: Run ###
 FROM nginx:1.15
@@ -27,6 +27,6 @@ FROM nginx:1.15
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 #### copy artifact build from the 'build environment'
-COPY --from=build /srv/swissgrid/frontend/dist/aramis /usr/share/nginx/html
+COPY --from=build /srv/swissgrid/frontend/dist/swissgrid /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
