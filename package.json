@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build  --output-path docs --base-href /swissgrid/",
     "build-prod": "ng build --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/browser",
-    "build-local": "ng build --base-href /frontend/dist/swissgrid/browser/",
+    "build-local": "ng build --base-href /swissgrid/dist/swissgrid/browser/",
     "watch": "ng build --watch --configuration development --base-href=\"http://127.0.0.1:5500/frontend/dist/swissgrid/browser/",
     "test": "ng test"
   },

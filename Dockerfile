@@ -18,7 +18,7 @@ RUN npm install
 COPY . .
 
 #### generate build
-RUN npm run build -- --output-path=./dist/swissgrid --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/
+RUN npm run build -- --output-path=./dist/swissgrid/browser --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/
 
 ### STAGE 2: Run ###
 FROM nginx:1.15
