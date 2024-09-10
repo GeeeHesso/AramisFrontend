@@ -18,7 +18,7 @@ RUN npm install
 COPY . .
 
 #### generate build
-RUN npm run build-prod
+RUN npm run build -- --output-path=./dist/aramis --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/
 
 ### STAGE 2: Run ###
 FROM nginx:1.15
