@@ -1,24 +1,32 @@
-FROM node:18 as build-stage
 
-WORKDIR /srv/aramis/swissgrid
+### STAGE 1: Build ###
+FROM node:lts-alpine AS build
 
-COPY package.json package-lock.json ./
+#### make the 'app' folder the current working directory
+WORKDIR /srv/swissgrid/frontend
+
+#### copy both 'package.json' and 'package-lock.json' (if available)
+COPY package*.json ./
+
+#### install angular cli
+RUN npm install -g @angular/cli
+
+#### install project dependencies
 RUN npm install
 
-COPY . ./
+#### copy things
+COPY . .
 
-# Construction de l'application pour la production
-RUN npm run build -- --output-path=./dist/out --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/
+#### generate build
+RUN npm run build-prod
 
-# Etape de dEploiement avec Nginx
+### STAGE 2: Run ###
 FROM nginx:1.15
 
-# Copie des fichiers construits depuis l'etape de construction
-COPY --from=build-stage /srv/aramis/swissgrid/dist/out/ /usr/share/nginx/html/vsdr
-
-# Copie de la configuration Nginx si necessaire
+#### copy nginx conf
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+#### copy artifact build from the 'build environment'
+COPY --from=build /srv/swissgrid/frontend/dist/aramis /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
