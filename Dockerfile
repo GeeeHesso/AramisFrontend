@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:alpine as build
 
 WORKDIR /app
 
@@ -12,8 +12,9 @@ COPY . .
 
 RUN ng build --configuration=production
 
-FROM nginx:1.15
 
-COPY --from=build app/dist/swissgrid /usr/share/nginx/html
+FROM nginx:latest
+
+COPY --from=build /app/dist/swissgrid/browser /usr/share/nginx/html
 
 EXPOSE 80

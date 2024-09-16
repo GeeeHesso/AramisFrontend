@@ -4,13 +4,11 @@ import { LoginComponent } from '@shared/components/login/login.component';
 import { MapComponent } from '@shared/components/map/map.component';
 
 export const routes: Routes = [
-  { path: 'map', component: MapComponent, canActivate: [AuthGuard] },
+  { path: '', component: MapComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-
   {
     path: '**',
-    component: MapComponent,
+    redirectTo: '/map',
     pathMatch: 'full',
-    canActivate: [AuthGuard],
   },
 ];

@@ -62,7 +62,7 @@ export class LoginComponent {
 
       // Call the authentication service's login method
       if (this.authService.login(password)) {
-        this.router.navigate(['/map']);
+        this.router.navigate(['/']);
       } else {
         // Handle authentication error (show error message, etc.)
         //@todo
