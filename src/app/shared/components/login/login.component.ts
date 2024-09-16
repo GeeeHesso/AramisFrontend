@@ -55,8 +55,6 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    console.log('onsubmit');
-    console.log(this.loginForm.valid);
     if (this.loginForm.valid) {
       const password = this.loginForm.get('password').value;
 
