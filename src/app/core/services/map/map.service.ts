@@ -3,12 +3,11 @@ import {
   ALGORITHMS_RESULT_FOR_TABLE,
   SELECTED_TARGETS,
 } from '@core/models/base.const';
-import { MapView } from '@core/models/map';
 import { Pantagruel } from '@core/models/pantagruel';
 import { algorithmResult } from '@models/parameters';
 import * as L from 'leaflet';
 import 'leaflet.sync';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { DataService } from '../data.service';
 import { BranchService } from './branch.class';
 import { BusService } from './bus.class';
@@ -23,9 +22,6 @@ export class MapService {
   private _center = new L.LatLng(46.8, 8.2); // Centered on Switzerland
   private _zoom = 7;
   private _zoomControl = false; // Disable the default zoom control
-  private _attributionControl = false; // Disable the attribution control
-
-  private _view$ = new Subject<MapView>(); // Correct : not a behavior subject because, behaviorSubject need to be initialize
 
   private _busService = new BusService();
   private _branchService = new BranchService();
@@ -44,14 +40,13 @@ export class MapService {
       center: this._center,
       zoom: this._zoom,
       zoomControl: this._zoomControl, // Disable the default zoom control
-      attributionControl: this._attributionControl, // Disable the attribution control
+      attributionControl: false, // Disable the attribution control
       zoomSnap: 0.1,
     });
     this.mapBottom = L.map('mapBottom', {
       center: this._center,
       zoom: this._zoom,
       zoomControl: this._zoomControl, // Disable the default zoom control
-      attributionControl: this._attributionControl, // Disable the attribution control
       zoomSnap: 0.1,
     });
 
@@ -154,7 +149,8 @@ export class MapService {
     L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
       {
-        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        attribution:
+          'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ | Grid by HES-SO - <a href="https://etranselec.ch/">research group of Prof. Philippe Jacquod</a> | ',
         maxZoom: 16,
         minZoom: 6,
         bounds: [

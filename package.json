@@ -1,12 +1,13 @@
 {
-  "name": "aramis",
+  "name": "swissgrid",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build  --output-path docs --base-href /aramis/",
-    "build-local": "ng build --base-href /frontend/dist/aramis/browser/",
-    "watch": "ng build --watch --configuration development --base-href=\"http://127.0.0.1:5500/frontend/dist/aramis/browser/",
+    "build": "ng build --configuration=production",
+    "build-github": "ng build  --output-path docs --base-href /swissgrid/",
+    "build-mobetic": "ng build --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/browser",
+    "watch": "ng build --watch --configuration development --base-href=\"http://127.0.0.1:5500/frontend/dist/swissgrid/browser/",
     "test": "ng test"
   },
   "private": true,

@@ -70,9 +70,9 @@ import { DialogResultComponent } from '../dialogResult/dialogResult.component';
     CommonModule,
     KeyValuePipe,
     AsyncPipe,
+    NgClass,
 
     // Forms
-    NgClass,
     FormsModule,
     MatFormFieldModule,
     ReactiveFormsModule,
