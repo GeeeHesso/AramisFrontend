@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
 
 @Component({
   standalone: true,
@@ -12,7 +11,7 @@ import { AuthService } from '@core/services/auth.service';
 export class AppComponent implements OnInit {
   name = 'Angular';
 
-  constructor(private _authService: AuthService, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngOnInit() {}
 }
