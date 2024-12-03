@@ -1,13 +1,13 @@
 {
-  "name": "swissgrid",
+  "name": "swisscybergrid",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration=production",
-    "build-github": "ng build  --output-path docs --base-href /swissgrid/",
-    "build-mobetic": "ng build --configuration production --base-href=https://vlhmobetic.hevs.ch/swissgrid/browser",
-    "watch": "ng build --watch --configuration development --base-href=\"http://127.0.0.1:5500/frontend/dist/swissgrid/browser/",
+    "build-github": "ng build  --output-path docs --base-href /swisscybergrid/",
+    "build-mobetic": "ng build --configuration production --base-href=https://vlhmobetic.hevs.ch/swisscybergrid/browser",
+    "watch": "ng build --watch --configuration development --base-href=\"http://127.0.0.1:5500/frontend/dist/swisscybergrid/browser/",
     "test": "ng test"
   },
   "private": true,

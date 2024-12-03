@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "swissgrid": {
+    "swisscybergrid": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -18,7 +18,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "dist/swissgrid",
+              "base": "dist/swisscybergrid",
               "browser": ""
             },
             "index": "src/index.html",
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "swissgrid:build:production"
+              "buildTarget": "swisscybergrid:build:production"
             },
             "development": {
-              "buildTarget": "swissgrid:build:development"
+              "buildTarget": "swisscybergrid:build:development"
             }
           },
           "defaultConfiguration": "development"
