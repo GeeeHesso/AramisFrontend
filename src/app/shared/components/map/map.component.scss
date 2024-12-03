@@ -4,6 +4,18 @@
   height: 100%;
   flex-flow: column;
 
+  .h1-button {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    white-space: pre-line;
+    display: flex;
+    flex-direction: row-reverse;
+    mat-icon {
+      padding: 0 0 0 1rem;
+      margin: 0;
+    }
+  }
+
   mat-toolbar {
     border-bottom: 1px solid black;
     .spacer {

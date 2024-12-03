@@ -150,7 +150,7 @@ export class MapService {
       'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
       {
         attribution:
-          'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ | Grid by HES-SO - <a href="https://etranselec.ch/">research group of Prof. Philippe Jacquod</a> | ',
+          'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ | Grid by HES-SO - <a href="https://etranselec.ch/">research group of Prof. Philippe Jacquod</a>',
         maxZoom: 16,
         minZoom: 6,
         bounds: [

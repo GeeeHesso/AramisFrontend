@@ -1,14 +1,25 @@
 <mat-toolbar>
-  <h1>Swisscybergrid</h1>
+  <button class="h1-button" mat-button (click)="openDialog()">
+    Swisscybergrid
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Project info"
+      fontIcon="info"
+    ></mat-icon>
+  </button>
+
   <span class="spacer"></span>
+
   <button mat-icon-button aria-label="Menu" (click)="toggleSidenav()">
     <mat-icon>view_sidebar</mat-icon>
   </button>
 </mat-toolbar>
+
 <mat-progress-bar
   [mode]="(apiLoading$ | async) ? 'indeterminate' : 'determinate'"
   [value]="100"
 ></mat-progress-bar>
+
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav mode="side" [opened]="screenWidth > 720" #sidenav>
     <app-parameters></app-parameters>
