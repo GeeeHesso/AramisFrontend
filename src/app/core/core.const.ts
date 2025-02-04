@@ -66,6 +66,6 @@ export const ALGO_TOOLTIP = new Map([
   ],
   [
     'MLPR',
-    'Multi-Layer Perceptron Regression : The unsupervised version of the multi-layer perceptron algorithm (MLP) that predicts an expected output value for each generator, as well as a sensitivity threshold. The alarm is raised if the actual output differs from the prediction by more than the threshold. In addition to the context (the state of other generators at the detection time), the MLPR takes as input the history of the generator over the last 4 time steps.',
+    'Multi-Layer Perceptron Regression : The unsupervised version of the multi-layer perceptron algorithm (MLP) that predicts an expected output value for each generator, as well as a sensitivity threshold. The alarm is raised if the actual output differs from the prediction by more than the threshold.',
   ],
 ]);

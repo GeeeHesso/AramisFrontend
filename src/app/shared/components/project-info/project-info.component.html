@@ -60,18 +60,18 @@
   and a matrix showing the prediction of every algorithm can be shown by clicking on the button "See details".</p>
 
   <p><i>Example with false negative: Set the season to "Summer", the day to "Weekend", the time slot to "18-22h" and the scale factor to 100%.
-  Place attacks on the "Cavergno" and "Innertkirchen" power plants, and select the algorithms "MLPC" and "MLPR".
-  The MLPR algorithm correctly identifies both attacks, but the MLPC does not detect anything.</i></p>
+  Place an attack on the "Cavergno" power plant, and select the algorithms "GBC" and "MLPC".
+  The MLPC algorithm correctly identifies both attacks, but the GBC does not detect anything.</i></p>
 
   <p><i>Example with false positive: Use the same setting as above but with the time slot "22-2h", and remove both attacks.
-  The MLPR algorithm falsely detects an attack at the Pradella power plant.</i></p>
+  The GBC and MLPC algorithms both falsely detect an attack at the Pradella power plant.</i></p>
 
 
   <h3>Sources</h3>
 
   <uL>
     <li>The model of the Swiss transmission grid is based on the <a href="https://zenodo.org/records/2642175" target="_blank">PanTaGruEl</a> model of the European grid.</li>
-    <li>The synthetic consumption and production data is generated using an <a href="https://arxiv.org/abs/2410.03365" target="_blank">open-source method</a>
+    <li>The synthetic consumption and production data is generated using an <a href="https://doi.org/10.1038/s41597-025-04479-x" target="_blank">open-source method</a>
       and is similar to an existing <a href="https://zenodo.org/records/13378476" target="_blank">dataset</a> published by Marc Gillioz, Guillaume Dubuis and Philippe Jacquod.</li>
     <li>The ML algorithms have been trained by the same authors and will be the subject of a publication to appear.</li>
   </uL>
