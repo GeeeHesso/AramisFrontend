@@ -4,10 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration=production",
-    "build-github": "ng build  --output-path docs --base-href /swisscybergrid/",
-    "build-mobetic": "ng build --configuration production --base-href=https://vlhmobetic.hevs.ch/swisscybergrid/browser",
-    "watch": "ng build --watch --configuration development --base-href=\"http://127.0.0.1:5500/frontend/dist/swisscybergrid/browser/",
+    "start-with-api": "docker compose -f ../docker-compose-local.yml up -d --build api --force-recreate && ng serve --configuration=localhost",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration=development",
     "test": "ng test"
   },
   "private": true,
