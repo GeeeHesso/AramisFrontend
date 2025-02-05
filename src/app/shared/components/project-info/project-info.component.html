@@ -1,12 +1,80 @@
-<h2 mat-dialog-title>Lorem Ipsum</h2>
+<h2 mat-dialog-title>SwissCyberGrid</h2>
 
 <div mat-dialog-content>
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-  nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-  in culpa qui officia deserunt mollit anim id est laborum.
+
+  <p>SwissCyberGrid is an interactive tool that demonstrates the effect of cyber-attacks on the Swiss ultra-high-voltage power grid
+  and the efficiency of several detection algorithms.</p>
+
+  <h3>Choosing a situation</h3>
+  
+  <p>The state of the power grid is determined by 3 parameters that affect the consumption at every node of the grid
+  and the production of the 36 power plants connected to it:</p>
+  <uL>
+    <li>Season</li>
+    <li>Weekday or weekend</li>
+    <li>Time of the day</li>
+  </uL>
+
+  <p>This gives a total of 48 different situations representative of the operational state of the ultra-high-voltage power grid in Switzerland.</p>
+
+  <p>The power flowing through the grid can be monitored by placing the mouse over any line of the map. It is given relative to the capacity of the line.
+  Note that there is often two or more lines running in parallel.
+  The output of the power plants is similarly obtained placing the mouse over the squares representing them.
+  In the absence of cyber-attacks, the information is identical on both maps.</p>
+
+
+  <p>All power injections (consumption and production) can be scaled between 90% and 130% of their original value using the slider.</p>
+
+  <p><i>Example: The state of the grid is typically most critical during peak hours in winter.
+  Setting the season to "winter", the day to "weekday", the time slot to "18-22h", and the scale factor to 130%,
+  one can see that a line connecting the eastern part of Switzerland with Italy is overloaded (105% of its capacity),
+  and another one is close to saturation (96%), as indicated with dashed and dotted lines respectively.</i></p>
+
+
+  <h3>Placing one or several attacks</h3>
+
+  <p>Cyber-attacks can be placed on any of the ten power plants listed under "Target(s)" by clicking on their name, or alternatively by clicking on the white squares in the upper map.
+  In this case, the real state of the power grid shown in the upper map is unchanged, but the information transmitted to the grid operator is affected.
+  The apparent state of the grid undergoing a <b>false data injection attack</b> is shown in the lower map.</p>
+
+  <p><i>Example: Setting again the season to "winter", the day to "weekday", and the time slot to "18-22h", but this time with a scale factor of 110%,
+  all flows of power through the lines remain below dangerous levels. However, a combined attack on the power plants of Sils and Pradella
+  can give the false impression to the grid operator than a line connecting Switzerland and Italy exceeds 90% of its maximum capacity,
+  potentially triggering an inappropriate reaction. In this case the true production of the Sils and Pradella plants is zero,
+  while the operator believes that they produce respectively at their nominal power of 247 MW and 288 MW.</i></p>
+
+
+  
+  <h3>Testing detection algorithms</h3>
+
+  <p>Several machine learning algorithms attempt to detect cyber-attacks on the 10 selected power plants.
+  The algorithms are ordered from simplest to more advanced, NBC being the simplest with moderate performances
+  and MLPR denoting the more advanced and reliable one.
+  Click on the acronym(s) to activate one or more algorithms.
+  A short description of each algorithm is provided when placing the mouse over the corresponding acronym.
+  </p>
+
+  <p>The detection of a cyber-attack is shown in the lower map by the color of the square corresponding to a power plant:
+  the square turns from white to red if an anomaly is detected, and it can be of an intermediate color if multiple algorithms do not agree.
+  Alternatively, detected anomalies are listed at the bottom of the left panel,
+  and a matrix showing the prediction of every algorithm can be shown by clicking on the button "See details".</p>
+
+  <p><i>Example with false negative: Set the season to "Summer", the day to "Weekend", the time slot to "18-22h" and the scale factor to 100%.
+  Place an attack on the "Cavergno" power plant, and select the algorithms "GBC" and "MLPC".
+  The MLPC algorithm correctly identifies both attacks, but the GBC does not detect anything.</i></p>
+
+  <p><i>Example with false positive: Use the same setting as above but with the time slot "22-2h", and remove both attacks.
+  The GBC and MLPC algorithms both falsely detect an attack at the Pradella power plant.</i></p>
+
+
+  <h3>Sources</h3>
+
+  <uL>
+    <li>The model of the Swiss transmission grid is based on the <a href="https://zenodo.org/records/2642175" target="_blank">PanTaGruEl</a> model of the European grid.</li>
+    <li>The synthetic consumption and production data is generated using an <a href="https://doi.org/10.1038/s41597-025-04479-x" target="_blank">open-source method</a>
+      and is similar to an existing <a href="https://zenodo.org/records/13378476" target="_blank">dataset</a> published by Marc Gillioz, Guillaume Dubuis and Philippe Jacquod.</li>
+    <li>The ML algorithms have been trained by the same authors and will be the subject of a publication to appear.</li>
+  </uL>
 </div>
 
 <div mat-dialog-actions>

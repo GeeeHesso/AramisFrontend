@@ -81,7 +81,9 @@ export class MapComponent implements AfterViewInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(ProjectInfoComponent);
+    const dialogRef = this.dialog.open(ProjectInfoComponent, {
+      autoFocus: false,
+    });
 
     dialogRef.afterClosed().subscribe(() => {
       localStorage.setItem('projectInfoRead', 'true');

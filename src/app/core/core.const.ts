@@ -62,7 +62,7 @@ export const ALGO_TOOLTIP = new Map([
   ],
   [
     'MLPC',
-    'Multi-Layer Perceptron Classifier : A shallow neural network classifier with 2 to 4 layers of up to 500 fully-connected neurons per layer. In addition to the context (the state of other generators at the detection time), the MLP takes as input the history of the generator over the last 4 time steps.',
+    'Multi-Layer Perceptron Classifier : A shallow neural network classifier with 2 to 4 layers of up to 500 fully-connected neurons per layer.',
   ],
   [
     'MLPR',
